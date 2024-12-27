@@ -7,7 +7,7 @@ import json
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Abilita CORS su tutte le rotte
+CORS(app, resources={r"/*": {"origins": "*"}})  # Abilita CORS su tutte le rotte
 
 # Leggi le credenziali dalla variabile di ambiente
 credentials_info = json.loads(os.environ['GOOGLE_CREDENTIALS'])
