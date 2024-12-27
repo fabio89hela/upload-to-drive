@@ -1,20 +1,23 @@
+import os
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.service_account import Credentials
+import json
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)  # Abilita CORS su tutte le rotte
 
-# Imposta le credenziali dell'account di servizio
-SERVICE_ACCOUNT_FILE = '../credentials/credentials.json'  # Percorso sicuro
-SCOPES = ['https://www.googleapis.com/auth/drive']
-credentials = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+# Leggi le credenziali dalla variabile di ambiente
+credentials_info = json.loads(os.environ['GOOGLE_CREDENTIALS'])
+credentials = Credentials.from_service_account_info(credentials_info)
+
+# Configura il servizio Google Drive
 drive_service = build('drive', 'v3', credentials=credentials)
 
 # ID della cartella di Google Drive
-FOLDER_ID = '1D-J3C13090LyeI4R7z6efTl-i1mMET7w'  # Sostituisci con l'ID della tua cartella
+FOLDER_ID = '1D-J3C13090LyeI4R7z6efTl-i1mMET7w'
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
