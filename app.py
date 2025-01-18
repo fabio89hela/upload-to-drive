@@ -5,8 +5,8 @@ import json
 
 # Configurazione e autenticazione PyDrive
 def authenticate_pydrive():
-    # Leggi le credenziali dai segreti di Streamlit
-    creds = st.secrets["gdrive_service_account"]
+    # Crea una copia del dizionario dei segreti
+    creds = dict(st.secrets["gdrive_service_account"])
 
     # Assicurati che la chiave privata sia formattata correttamente
     creds["private_key"] = creds["private_key"].replace("\\n", "\n")
