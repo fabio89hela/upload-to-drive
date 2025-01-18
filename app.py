@@ -29,24 +29,22 @@ def upload_to_drive(service, file_name, file_path, folder_id):
 
 # Funzione per inviare il file audio al webhook n8n
 def transcribe_with_n8n(file_path, webhook_url):
-    try:
-        print(f"Inviando file a: {webhook_url}")
-        with open(file_path, "rb") as f:
-            response = requests.post(
-                webhook_url,
-                files={"file": ("audio_file.mp3", f, "audio/mpeg")}
-            )
-        
-        print(f"Codice di stato: {response.status_code}")
-        print(f"Risposta: {response.text}")
-        
-        if response.status_code == 200:
-            return response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
-        else:
-            return f"Errore nella richiesta: {response.status_code} - {response.text}"
-    except Exception as e:
-        print(f"Errore durante la richiesta: {str(e)}")
-        return f"Errore durante la richiesta: {str(e)}"
+    with open(file_path, "rb") as f:
+        response = requests.post(
+            webhook_url,
+            files={"file": f}
+        )
+    # Verifica se la richiesta è andata a buon fine
+    if response.status_code == 200:
+        try:
+            # Parsing del JSON restituito
+            data = response.json()
+            return data.get("transcription", "Errore: nessuna trascrizione ricevuta.")
+        except Exception as e:
+            # Gestione di errori di parsing
+            return f"Errore nel parsing del JSON: {str(e)}"
+    else:
+        return f"Errore nella richiesta: {response.status_code} - {response.text}"
 
 # Titolo dell'app Streamlit
 st.title("Carica file audio su Google Drive")
