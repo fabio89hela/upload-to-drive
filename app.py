@@ -41,7 +41,7 @@ def transcribe_with_n8n(file_path, webhook_url):
         print(f"Risposta: {response.text}")
         
         if response.status_code == 200:
-            return response.json().get("transcription", "Errore: nessuna trascrizione ricevuta.")
+            return response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
         else:
             return f"Errore nella richiesta: {response.status_code} - {response.text}"
     except Exception as e:
