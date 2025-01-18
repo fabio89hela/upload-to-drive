@@ -8,6 +8,8 @@ from googleapiclient.http import MediaFileUpload
 # ID della cartella Google Drive dove salvare i file (sostituisci con il tuo Folder ID)
 FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 
+N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione"
+
 # Funzione per autenticarsi con Google Drive
 def authenticate_drive():
     # Creazione delle credenziali dai segreti di Streamlit
@@ -23,6 +25,18 @@ def upload_to_drive(service, file_name, file_path, folder_id):
     media = MediaFileUpload(file_path, resumable=True)
     file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
     return file.get("id")
+
+# Funzione per inviare il file audio al webhook n8n
+def transcribe_with_n8n(file_path, webhook_url):
+    with open(file_path, "rb") as f:
+        response = requests.post(
+            webhook_url,
+            files={"file": f}
+        )
+    if response.status_code == 200:
+        return response.json().get("transcription", "Errore: nessuna trascrizione ricevuta.")
+    else:
+        return f"Errore nella richiesta: {response.status_code} - {response.text}"
 
 # Titolo dell'app Streamlit
 st.title("Carica file audio su Google Drive")
@@ -45,6 +59,11 @@ if uploaded_file:
     with st.spinner("Caricamento su Google Drive in corso..."):
         file_id = upload_to_drive(service, uploaded_file.name, temp_file_path, FOLDER_ID)
         st.success(f"File caricato su Google Drive con successo! ID del file: {file_id}")
+
+    # Trascrizione del file audio tramite n8n
+    with st.spinner("Trascrizione tramite n8n in corso..."):
+        transcription = transcribe_with_n8n(temp_file_path, N8N_WEBHOOK_URL)
+        st.text_area("Trascrizione", transcription, height=300)
 
     # Rimuovi il file locale temporaneo
     os.remove(temp_file_path)
