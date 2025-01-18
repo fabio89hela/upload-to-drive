@@ -8,14 +8,19 @@ def authenticate_pydrive():
     # Leggi le credenziali dai segreti di Streamlit
     creds = st.secrets["gdrive_service_account"]
 
+    # Assicurati che la chiave privata sia formattata correttamente
+    creds["private_key"] = creds["private_key"].replace("\\n", "\n")
+
     # Scrivi le credenziali in un file temporaneo
     with open("client_secrets.json", "w") as f:
         json.dump(creds, f)
 
     # Configura PyDrive con il file temporaneo
+    from pydrive2.auth import GoogleAuth
     gauth = GoogleAuth()
     gauth.LoadClientConfigFile("client_secrets.json")
     gauth.LocalWebserverAuth()
+    from pydrive2.drive import GoogleDrive
     return GoogleDrive(gauth)
 
 # Autenticazione PyDrive
