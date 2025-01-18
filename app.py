@@ -27,22 +27,15 @@ def upload_to_drive(service, file_name, file_path, folder_id):
     file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
     return file.get("id")
 
-# Funzione per inviare il file audio al webhook n8n
-def transcribe_with_n8n(file_path, webhook_url):
+# Funzione per inviare il file a n8n e ricevere la trascrizione
+def get_transcription_from_n8n(file_path):
     with open(file_path, "rb") as f:
         response = requests.post(
-            webhook_url,
+            N8N_WEBHOOK_URL,
             files={"file": f}
         )
-    # Verifica se la richiesta è andata a buon fine
     if response.status_code == 200:
-        try:
-            # Parsing del JSON restituito
-            data = response.json()
-            return data.get("transcription", "Errore: nessuna trascrizione ricevuta.")
-        except Exception as e:
-            # Gestione di errori di parsing
-            return f"Errore nel parsing del JSON: {str(e)}"
+        return response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
     else:
         return f"Errore nella richiesta: {response.status_code} - {response.text}"
 
@@ -68,9 +61,9 @@ if uploaded_file:
         file_id = upload_to_drive(service, uploaded_file.name, temp_file_path, FOLDER_ID)
         st.success(f"File caricato su Google Drive con successo! ID del file: {file_id}")
 
-    # Trascrizione del file audio tramite n8n
-    with st.spinner("Trascrizione tramite n8n in corso..."):
-        transcription = transcribe_with_n8n(temp_file_path, N8N_WEBHOOK_URL)
+    # Trascrivi il file tramite n8n
+    with st.spinner("Trascrizione in corso tramite n8n..."):
+        transcription = get_transcription_from_n8n(temp_file_path)
         st.text_area("Trascrizione", transcription, height=300)
 
     # Rimuovi il file locale temporaneo
