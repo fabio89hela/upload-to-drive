@@ -1,5 +1,5 @@
 client_config_backend: service
-client_config_file: client_secrets.json
+client_config_file: client_secrets.json  # Questo file viene creato dinamicamente nel codice
 
 save_credentials: True
 save_credentials_backend: file
