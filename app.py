@@ -25,7 +25,7 @@ def authenticate_pydrive():
 drive = authenticate_pydrive()
 
 # ID della cartella Google Drive dove salvare i file (da sostituire con il tuo Folder ID)
-FOLDER_ID = "INSERISCI_LA_TUA_FOLDER_ID"
+FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 
 # Titolo dell'app Streamlit
 st.title("Carica e salva file audio su Google Drive")
