@@ -1,61 +1,50 @@
+import os
 import json
 import streamlit as st
-from pydrive2.auth import GoogleAuth
-from pydrive2.drive import GoogleDrive
-import os
+from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
 
-# Funzione per autenticare PyDrive2
-def authenticate_pydrive():
-    # Crea una copia delle credenziali dai segreti di Streamlit
-    creds = dict(st.secrets["gdrive_service_account"])
-
-    # Assicurati che la chiave privata sia formattata correttamente
-    creds["private_key"] = creds["private_key"].replace("\\n", "\n")
-
-    # Scrivi il file delle credenziali client_secrets.json
-    with open("client_secrets.json", "w") as f:
-        json.dump(creds, f)
-
-    # Configura PyDrive2 utilizzando settings.yaml
-    gauth = GoogleAuth(settings_file="settings.yaml")
-    gauth.LocalWebserverAuth()  # Avvia l'autenticazione
-    return GoogleDrive(gauth)
-
-# Autenticazione PyDrive
-drive = authenticate_pydrive()
-
-# ID della cartella Google Drive dove salvare i file (da sostituire con il tuo Folder ID)
+# ID della cartella Google Drive dove salvare i file (sostituisci con il tuo Folder ID)
 FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 
-# Titolo dell'app Streamlit
-st.title("Carica e salva file audio su Google Drive")
+# Funzione per autenticarsi con Google Drive
+def authenticate_drive():
+    # Creazione delle credenziali dai segreti di Streamlit
+    creds = Credentials.from_service_account_info(st.secrets["gdrive_service_account"])
+    service = build("drive", "v3", credentials=creds)
+    return service
 
-# Caricamento del file da parte dell'utente
+# Funzione per caricare un file su Google Drive
+def upload_to_drive(service, file_name, file_path, folder_id):
+    # Metadati del file
+    file_metadata = {"name": file_name, "parents": [folder_id]}
+    # Caricamento del file
+    media = MediaFileUpload(file_path, resumable=True)
+    file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
+    return file.get("id")
+
+# Titolo dell'app Streamlit
+st.title("Carica file audio su Google Drive")
+
+# Autenticazione con Google Drive
+service = authenticate_drive()
+
+# Caricamento file da parte dell'utente
 uploaded_file = st.file_uploader("Carica un file audio", type=["mp3", "wav", "ogg"])
 
 if uploaded_file:
     st.write(f"File caricato: {uploaded_file.name}")
-    
-    # Salva temporaneamente il file caricato
-    with open(uploaded_file.name, "wb") as f:
+
+    # Salva temporaneamente il file localmente
+    temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
+    with open(temp_file_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
     # Carica il file su Google Drive
     with st.spinner("Caricamento su Google Drive in corso..."):
-        file_drive = drive.CreateFile({"title": uploaded_file.name, "parents": [{"id": FOLDER_ID}]})
-        file_drive.SetContentFile(uploaded_file.name)
-        file_drive.Upload()
-        st.success(f"File caricato con successo su Google Drive: {uploaded_file.name}")
+        file_id = upload_to_drive(service, uploaded_file.name, temp_file_path, FOLDER_ID)
+        st.success(f"File caricato su Google Drive con successo! ID del file: {file_id}")
 
-        # Rimuovi il file locale
-        os.remove(uploaded_file.name)
-
-# Mostra i file esistenti nella cartella su Google Drive (opzionale)
-if st.button("Mostra file salvati su Google Drive"):
-    file_list = drive.ListFile({"q": f"'{FOLDER_ID}' in parents and trashed=false"}).GetList()
-    if file_list:
-        st.write("File nella cartella Google Drive:")
-        for file in file_list:
-            st.write(f"{file['title']} - ID: {file['id']}")
-    else:
-        st.write("Nessun file trovato nella cartella.")
+    # Rimuovi il file locale temporaneo
+    os.remove(temp_file_path)
