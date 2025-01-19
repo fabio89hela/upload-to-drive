@@ -41,6 +41,7 @@ def convert_to_ogg(input_data, output_file_name):
             c="libopus",  # Codec audio
             b="12k",  # Bitrate
             application="voip",  # Ottimizzazione per voce
+            f="ogg"  # Formato di output
         ).global_args("-y")  # Sovrascrivi l'output
 
         # Esegui ffmpeg con input e output in memoria
@@ -49,7 +50,8 @@ def convert_to_ogg(input_data, output_file_name):
     except ffmpeg.Error as e:
         st.error("Errore durante la conversione con FFmpeg.")
         st.error(f"FFmpeg stderr: {e.stderr.decode()}")
-        raise RuntimeError(f"Errore durante la conversione con FFmpeg: {e.stderr.decode()}")        
+        raise RuntimeError(f"Errore durante la conversione con FFmpeg: {e.stderr.decode()}")
+
 # Funzione per inviare il file a n8n e ricevere la trascrizione
 def get_transcription_from_n8n(file_path):
     with open(file_path, "rb") as f:
