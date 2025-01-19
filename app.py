@@ -30,14 +30,13 @@ def upload_to_drive(service, file_name, file_path, folder_id):
 # Funzione per inviare il file a n8n e ricevere la trascrizione
 def get_transcription_from_n8n(file_path):
     with open(file_path, "rb") as f:
-        response = requests.post(
-            N8N_WEBHOOK_URL,
-            files={"file": f}
-        )
-    if response.status_code == 200:
-        return response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
-    else:
-        return f"Errore nella richiesta: {response.status_code} - {response.text}"
+        payload = {"file_id": file_id}
+        response = requests.post(N8N_WEBHOOK_URL, json=payload)        
+        #response = requests.post(N8N_WEBHOOK_URL,files={"file": f}        )
+    #if response.status_code == 200:
+    #    return response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
+    #else:
+    #    return f"Errore nella richiesta: {response.status_code} - {response.text}"
 
 # Titolo dell'app Streamlit
 st.title("Carica file audio su Google Drive")
