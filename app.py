@@ -55,9 +55,9 @@ def convert_to_ogg(input_data, output_file_name):
 
 # Funzione per inviare il file a n8n e ricevere la trascrizione
 def get_transcription_from_n8n(file_path):
-    #with open(file_path, "rb") as f:
-    payload = {"file_id": file_id}
-    response = requests.post(N8N_WEBHOOK_URL, json=payload)        
+    with open(file_path, "rb") as f:
+        payload = {"file_id": file_id}
+        response = requests.post(N8N_WEBHOOK_URL, json=payload)        
         #response = requests.post(N8N_WEBHOOK_URL,files={"file": f}        )
     if response.status_code == 200:
         return response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
