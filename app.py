@@ -47,8 +47,9 @@ def convert_to_ogg(input_data, output_file_name):
         out, _ = ffmpeg.run(output_stream, input=input_data, capture_stdout=True, capture_stderr=True)
         return io.BytesIO(out)  # Ritorna un buffer di BytesIO
     except ffmpeg.Error as e:
-        raise RuntimeError(f"Errore durante la conversione con ffmpeg: {e.stderr.decode()}")
-        
+        st.error("Errore durante la conversione con FFmpeg.")
+        st.error(f"FFmpeg stderr: {e.stderr.decode()}")
+        raise RuntimeError(f"Errore durante la conversione con FFmpeg: {e.stderr.decode()}")        
 # Funzione per inviare il file a n8n e ricevere la trascrizione
 def get_transcription_from_n8n(file_path):
     with open(file_path, "rb") as f:
