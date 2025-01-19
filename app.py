@@ -5,6 +5,7 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 import requests
+import ffmpeg 
 
 # ID della cartella Google Drive dove salvare i file (sostituisci con il tuo Folder ID)
 FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
@@ -27,6 +28,22 @@ def upload_to_drive(service, file_name, file_path, folder_id):
     file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
     return file.get("id")
 
+# Funzione per convertire il file audio in formato .ogg
+def convert_to_ogg(input_path, output_path):
+    try:
+        # Comando equivalente: ffmpeg -i input.mp3 -vn -map_metadata -1 -ac 1 -c:a libopus -b:a 12k -application voip output.ogg
+        ffmpeg.input(input_path).output(
+            output_path,
+            vn=None,  # Nessun video
+            map_metadata=-1,  # Rimuovi metadati
+            ac=1,  # Mono
+            c="libopus",  # Codec audio
+            b="12k",  # Bitrate
+            application="voip",  # Ottimizzazione per voce
+        ).run(overwrite_output=True)
+    except ffmpeg.Error as e:
+        raise RuntimeError(f"Errore durante la conversione con ffmpeg: {e.stderr.decode()}")
+        
 # Funzione per inviare il file a n8n e ricevere la trascrizione
 def get_transcription_from_n8n(file_path):
     with open(file_path, "rb") as f:
@@ -50,14 +67,29 @@ uploaded_file = st.file_uploader("Carica un file audio", type=["mp3", "wav", "og
 if uploaded_file:
     st.write(f"File caricato: {uploaded_file.name}")
 
-    # Salva temporaneamente il file localmente
-    temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
-    with open(temp_file_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
+    # Salva il file caricato temporaneamente
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".tmp") as temp_input:
+        temp_input.write(uploaded_file.getbuffer())
+        input_path = temp_input.name
 
+    # Percorso per il file convertito
+    output_path = input_path.replace(".tmp", ".ogg")
+
+    # Converti il file in formato .ogg
+    with st.spinner("Conversione in corso..."):
+        convert_to_ogg(input_path, output_path)
+        st.success(f"File convertito con successo in formato .ogg!")
+
+    # Salva temporaneamente il file localmente
+    #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
+    #with open(temp_file_path, "wb") as f:
+    #    f.write(uploaded_file.getbuffer())
+    #    input_path = f.name
+    
     # Carica il file su Google Drive
     with st.spinner("Caricamento su Google Drive in corso..."):
-        file_id = upload_to_drive(service, uploaded_file.name, temp_file_path, FOLDER_ID)
+        file_id = upload_to_drive(service, os.path.basename(output_path), output_path, FOLDER_ID)
+        #file_id = upload_to_drive(service, uploaded_file.name, temp_file_path, FOLDER_ID)
         st.success(f"File caricato su Google Drive con successo! ID del file: {file_id}")
         
     # Trascrivi il file tramite n8n
