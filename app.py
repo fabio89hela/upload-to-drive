@@ -29,18 +29,23 @@ def upload_to_drive(service, file_name, file_path, folder_id):
     return file.get("id")
 
 # Funzione per convertire il file audio in formato .ogg
-def convert_to_ogg(input_path, output_path):
+def convert_to_ogg(input_data, output_file_name):
     try:
-        # Comando equivalente: ffmpeg -i input.mp3 -vn -map_metadata -1 -ac 1 -c:a libopus -b:a 12k -application voip output.ogg
-        ffmpeg.input(input_path).output(
-            output_path,
+        input_stream = ffmpeg.input("pipe:0")  # Leggi dati da stdin
+        output_stream = ffmpeg.output(
+            input_stream,
+            "pipe:1",
             vn=None,  # Nessun video
             map_metadata=-1,  # Rimuovi metadati
             ac=1,  # Mono
             c="libopus",  # Codec audio
             b="12k",  # Bitrate
             application="voip",  # Ottimizzazione per voce
-        ).run(overwrite_output=True)
+        ).global_args("-y")  # Sovrascrivi l'output
+
+        # Esegui ffmpeg con input e output in memoria
+        out, _ = ffmpeg.run(output_stream, input=input_data, capture_stdout=True, capture_stderr=True)
+        return io.BytesIO(out)  # Ritorna un buffer di BytesIO
     except ffmpeg.Error as e:
         raise RuntimeError(f"Errore durante la conversione con ffmpeg: {e.stderr.decode()}")
         
@@ -67,19 +72,26 @@ uploaded_file = st.file_uploader("Carica un file audio", type=["mp3", "wav", "og
 if uploaded_file:
     st.write(f"File caricato: {uploaded_file.name}")
 
-    # Salva il file caricato temporaneamente
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".tmp") as temp_input:
-        temp_input.write(uploaded_file.getbuffer())
-        input_path = temp_input.name
-
-    # Percorso per il file convertito
-    output_path = input_path.replace(".tmp", ".ogg")
+    # Leggi i dati dal file caricato
+    input_data = uploaded_file.read()
+    output_file_name = uploaded_file.name.replace(".mp3", ".ogg").replace(".wav", ".ogg")
 
     # Converti il file in formato .ogg
     with st.spinner("Conversione in corso..."):
-        convert_to_ogg(input_path, output_path)
+        converted_audio = convert_to_ogg(input_data, output_file_name)
         st.success(f"File convertito con successo in formato .ogg!")
 
+    # Salva il file convertito su disco temporaneo per caricarlo su Google Drive
+    temp_path = f"/tmp/{output_file_name}"
+    with open(temp_path, "wb") as temp_file:
+        temp_file.write(converted_audio.getbuffer())
+
+    # Carica il file convertito su Google Drive
+    service = authenticate_drive()
+    with st.spinner("Caricamento su Google Drive in corso..."):
+        file_id = upload_to_drive(service, output_file_name, temp_path, FOLDER_ID)
+        st.success(f"File caricato con successo su Google Drive! ID del file: {file_id}")
+        
     # Salva temporaneamente il file localmente
     #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
     #with open(temp_file_path, "wb") as f:
@@ -87,14 +99,14 @@ if uploaded_file:
     #    input_path = f.name
     
     # Carica il file su Google Drive
-    with st.spinner("Caricamento su Google Drive in corso..."):
-        file_id = upload_to_drive(service, os.path.basename(output_path), output_path, FOLDER_ID)
-        #file_id = upload_to_drive(service, uploaded_file.name, temp_file_path, FOLDER_ID)
-        st.success(f"File caricato su Google Drive con successo! ID del file: {file_id}")
+    #with st.spinner("Caricamento su Google Drive in corso..."):
+    #    file_id = upload_to_drive(service, uploaded_file.name, temp_file_path, FOLDER_ID)
+    #    st.success(f"File caricato su Google Drive con successo! ID del file: {file_id}")
         
     # Trascrivi il file tramite n8n
     with st.spinner("Trascrizione in corso tramite n8n..."):
-        transcription = get_transcription_from_n8n(temp_file_path)
+        transcription = get_transcription_from_n8n(temp_path)
+        #transcription = get_transcription_from_n8n(temp_file_path)
         st.text_area("Trascrizione", transcription, height=300)
 
     # Rimuovi il file locale temporaneo
