@@ -21,13 +21,41 @@ def authenticate_drive():
     return service
 
 # Funzione per caricare un file su Google Drive
-def upload_to_drive(service, file_name, file_path, folder_id):
-    # Metadati del file
-    file_metadata = {"name": file_name, "parents": [folder_id]}
-    # Caricamento del file
-    media = MediaFileUpload(file_path, resumable=True)
-    file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
-    return file.get("id")
+def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
+    # Controlla la dimensione del file
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)  # Converti byte in MB
+    # Lista degli ID dei file caricati
+    uploaded_file_ids = []
+    if file_size_mb > max_size_mb:
+        # Suddividi il file in segmenti più piccoli
+        segment_prefix = file_name.rsplit('.', 1)[0]  # Rimuove l'estensione dal nome del file
+        segment_dir = os.path.dirname(file_path)  # Directory del file originale
+        segment_pattern = os.path.join(segment_dir, f"{segment_prefix}_%03d.{file_name.split('.')[-1]}")
+        # Usa ffmpeg per dividere il file
+        segment_duration = int((max_size_mb * 1024 * 1024) / (file_size_mb / 60))  # Durata stimata in secondi
+        try:
+            ffmpeg.input(file_path).output(
+                segment_pattern, f="segment", segment_time=segment_duration, c="copy"
+            ).run(overwrite_output=True)
+        except ffmpeg.Error as e:
+            raise RuntimeError(f"Errore durante la suddivisione del file: {e.stderr.decode()}")
+        # Carica ogni segmento su Google Drive
+        for segment_file in sorted(os.listdir(segment_dir)):
+            if segment_file.startswith(segment_prefix) and segment_file.endswith(file_name.split('.')[-1]):
+                segment_path = os.path.join(segment_dir, segment_file)
+                segment_metadata = {"name": segment_file, "parents": [folder_id]}
+                segment_media = MediaFileUpload(segment_path, resumable=True)
+                file = service.files().create(body=segment_metadata, media_body=segment_media, fields="id").execute()
+                uploaded_file_ids.append(file.get("id"))
+                # Rimuovi il segmento locale
+                os.remove(segment_path)
+    else:
+        # Carica il file intero
+        file_metadata = {"name": file_name, "parents": [folder_id]}
+        media = MediaFileUpload(file_path, resumable=True)
+        file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
+        uploaded_file_ids.append(file.get("id"))
+    return uploaded_file_ids
 
 # Funzione per convertire il file audio in formato .ogg
 def convert_to_ogg(input_data, output_file_name):
