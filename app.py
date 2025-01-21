@@ -81,18 +81,13 @@ def convert_to_ogg(input_data, output_file_name):
 
 # Funzione per inviare una lista di file a n8n e ricevere le trascrizioni
 def get_transcriptions_from_n8n(file_ids):
-    transcriptions = []
     payload = {"file_id": file_id}
     response = requests.post(N8N_WEBHOOK_URL, json=payload)
     if response.status_code == 200:
         transcription = response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
-        transcriptions.append(transcription)
     else:
-        transcriptions.append(f"Errore: {response.status_code} - {response.text}")
-
-    # Combina le trascrizioni in un unico risultato
-    combined_transcription = "\n".join(transcriptions)
-    return combined_transcription
+        transcription(f"Errore: {response.status_code} - {response.text}")
+    return transcription
     
 # Titolo dell'app Streamlit
 st.title("Carica file audio su Google Drive")
@@ -130,14 +125,16 @@ if uploaded_file:
     
         # Pulsante per avviare la trascrizione
         if file_ids:
+            transcriptions=[]
             # Itera su ciascun ID del file
             for file_id in file_ids:
                 with st.spinner("Esecuzione della trascrizione..."):
-                    transcription = get_transcriptions_from_n8n(file_id)
-                st.text_area("Trascrizione combinata:", transcription, height=300)
+                    transcriptions.append(get_transcriptions_from_n8n(file_id))
             else:
                 st.error("Inserisci almeno un ID file per procedere.")
-    
+            combined_transcription = "\n".join(transcriptions)
+            st.text_area("Trascrizione combinata:", combined_transcription, height=600)
+
     # Salva temporaneamente il file localmente
     #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
     #with open(temp_file_path, "wb") as f:
