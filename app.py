@@ -127,14 +127,14 @@ if uploaded_file:
         if file_ids:
             transcriptions=[]
             # Itera su ciascun ID del file
-            for file_id in file_ids:
-                with st.spinner("Esecuzione della trascrizione..."):
+            with st.spinner("Esecuzione della trascrizione..."):
+                for file_id in file_ids:
                     transcription=get_transcriptions_from_n8n(file_id)
                     transcriptions.append(transcription)
-            else:
-                st.error("Inserisci almeno un ID file per procedere.")
-            combined_transcription = "\n".join(transcriptions)
-            st.text_area("Trascrizione combinata:", combined_transcription, height=600)
+        else:
+            st.error("Inserisci almeno un ID file per procedere.")
+        combined_transcription = "\n".join(transcriptions)
+        st.text_area("Trascrizione combinata:", combined_transcription, height=600)
 
     # Salva temporaneamente il file localmente
     #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
