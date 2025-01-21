@@ -122,6 +122,7 @@ if uploaded_file:
             st.success(f"File convertito con successo in formato .ogg!")
         # Salva il file convertito su disco temporaneo per caricarlo su Google Drive
         temp_path = f"/tmp/{output_file_name}"
+        st.success(f"{temp_path}")
         with open(temp_path, "wb") as temp_file:
             temp_file.write(converted_audio.getbuffer())
             st.success(f"Dimensione file: {os.path.getsize(temp_path) / (1024 * 1024)}")
