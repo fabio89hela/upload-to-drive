@@ -12,7 +12,8 @@ import tempfile
 # ID della cartella Google Drive dove salvare i file (sostituisci con il tuo Folder ID)
 FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 
-N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione"
+#N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
+N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 
 # Funzione per autenticarsi con Google Drive
 def authenticate_drive():
