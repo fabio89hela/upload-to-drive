@@ -133,7 +133,7 @@ if uploaded_file:
         # Pulsante per avviare la trascrizione
         if file_id:
             with st.spinner("Esecuzione della trascrizione..."):
-                transcription = get_transcriptions_from_n8n(file_ids)
+                transcription = get_transcriptions_from_n8n(file_id)
             st.text_area("Trascrizione combinata:", transcription, height=300)
         else:
             st.error("Inserisci almeno un ID file per procedere.")
