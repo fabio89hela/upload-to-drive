@@ -80,7 +80,7 @@ def convert_to_ogg(input_data, output_file_name):
         raise RuntimeError(f"Errore durante la conversione con FFmpeg: {e.stderr.decode()}")
 
 # Funzione per inviare una lista di file a n8n e ricevere le trascrizioni
-def get_transcriptions_from_n8n(file_ids):
+def get_transcriptions_from_n8n(file_id):
     payload = {"file_id": file_id}
     response = requests.post(N8N_WEBHOOK_URL, json=payload)
     if response.status_code == 200:
