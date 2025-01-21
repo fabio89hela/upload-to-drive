@@ -115,24 +115,24 @@ if uploaded_file:
     input_data = uploaded_file.read()
     output_file_name = uploaded_file.name.replace(".mp3", ".ogg").replace(".wav", ".ogg")
 
-    if 1>0:
+    :
     # Converti il file in formato .ogg
-        with st.spinner("Conversione in corso..."):
-            converted_audio = convert_to_ogg(input_data, output_file_name)
-            st.success(f"File convertito con successo in formato .ogg!")
-        # Salva il file convertito su disco temporaneo per caricarlo su Google Drive
-        temp_path = f"/tmp/{output_file_name}"
-        st.success(f"{temp_path}")
-        with open(temp_path, "wb") as temp_file:
-            temp_file.write(converted_audio.getbuffer())
-            st.success(f"Dimensione file: {os.path.getsize(temp_path) / (1024 * 1024)}")
+    with st.spinner("Conversione in corso..."):
+        converted_audio = convert_to_ogg(input_data, output_file_name)
+        st.success(f"File convertito con successo in formato .ogg!")
+    # Salva il file convertito su disco temporaneo per caricarlo su Google Drive
+    temp_path = f"/tmp/{output_file_name}"
+    st.success(f"{temp_path}")
+    with open(temp_path, "wb") as temp_file:
+        temp_file.write(converted_audio.getbuffer())
+        st.success(f"Dimensione file: {os.path.getsize(temp_path) / (1024 * 1024)}")
 
-        # Carica il file convertito su Google Drive
-        if st.button("Carica su drive"):
-            service = authenticate_drive()
-            with st.spinner("Caricamento su Google Drive in corso..."):
-                file_id = upload_to_drive(service, output_file_name, temp_path, FOLDER_ID)
-                st.success(f"File caricato con successo su Google Drive! IDs del file: {file_id}")
+    # Carica il file convertito su Google Drive
+    if st.button("Carica su drive"):
+        service = authenticate_drive()
+        with st.spinner("Caricamento su Google Drive in corso..."):
+            file_id = upload_to_drive(service, output_file_name, temp_path, FOLDER_ID)
+            st.success(f"File caricato con successo su Google Drive! IDs del file: {file_id}")
     
         # Pulsante per avviare la trascrizione
         if st.button("Trascrivi file"):
