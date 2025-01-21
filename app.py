@@ -115,7 +115,7 @@ if uploaded_file:
     input_data = uploaded_file.read()
     output_file_name = uploaded_file.name.replace(".mp3", ".ogg").replace(".wav", ".ogg")
 
-    if st.button("Converti"):
+    if 1>0:
     # Converti il file in formato .ogg
         with st.spinner("Conversione in corso..."):
             converted_audio = convert_to_ogg(input_data, output_file_name)
