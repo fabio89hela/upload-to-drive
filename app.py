@@ -26,6 +26,8 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
     file_size_mb = os.path.getsize(file_path) / (1024 * 1024)  # Converti byte in MB
     # Lista degli ID dei file caricati
     uploaded_file_ids = []
+    st.success(f"{file_size_mb}")
+    st.success(f"{max_size_mb}")
     if file_size_mb > max_size_mb:
         # Crea una directory temporanea per i segmenti
         with tempfile.TemporaryDirectory() as temp_dir:
