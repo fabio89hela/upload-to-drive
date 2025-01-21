@@ -137,7 +137,7 @@ if uploaded_file:
         
     # Trascrivi il file tramite n8n
     with st.spinner("Trascrizione in corso tramite n8n..."):
-        transcription = get_transcription_from_n8n(temp_path)
+        #transcription = get_transcription_from_n8n(temp_path)
         #transcription = get_transcription_from_n8n(temp_file_path)
         st.text_area("Trascrizione", transcription, height=300)
 
