@@ -86,7 +86,7 @@ def get_transcriptions_from_n8n(file_id):
     if response.status_code == 200:
         transcription = response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
     else:
-        transcription="Errore"#: {response.status_code} - {response.text}")
+        transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
     
 # Titolo dell'app Streamlit
