@@ -124,20 +124,19 @@ if uploaded_file:
         st.success(f"Dimensione file: {os.path.getsize(temp_path) / (1024 * 1024)}")
 
     # Carica il file convertito su Google Drive
-    if st.button("Carica su drive"):
+    if 1>0:
         service = authenticate_drive()
         with st.spinner("Caricamento su Google Drive in corso..."):
             file_id = upload_to_drive(service, output_file_name, temp_path, FOLDER_ID)
             st.success(f"File caricato con successo su Google Drive! IDs del file: {file_id}")
     
         # Pulsante per avviare la trascrizione
-        if st.button("Trascrivi file"):
-            if file_ids:
-                with st.spinner("Esecuzione della trascrizione..."):
-                    transcription = get_transcriptions_from_n8n(file_ids)
-                st.text_area("Trascrizione combinata:", transcription, height=300)
-            else:
-                st.error("Inserisci almeno un ID file per procedere.")
+        if file_ids:
+            with st.spinner("Esecuzione della trascrizione..."):
+                transcription = get_transcriptions_from_n8n(file_ids)
+            st.text_area("Trascrizione combinata:", transcription, height=300)
+        else:
+            st.error("Inserisci almeno un ID file per procedere.")
     
     # Salva temporaneamente il file localmente
     #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
