@@ -86,7 +86,7 @@ def get_transcriptions_from_n8n(file_ids):
     if response.status_code == 200:
         transcription = response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
     else:
-        transcription(f"Errore: {response.status_code} - {response.text}")
+        transcription="Errore"#: {response.status_code} - {response.text}")
     return transcription
     
 # Titolo dell'app Streamlit
@@ -129,7 +129,8 @@ if uploaded_file:
             # Itera su ciascun ID del file
             for file_id in file_ids:
                 with st.spinner("Esecuzione della trascrizione..."):
-                    transcriptions.append(get_transcriptions_from_n8n(file_id))
+                    transcription=get_transcriptions_from_n8n(file_id)
+                    transcriptions.append(transcription)
             else:
                 st.error("Inserisci almeno un ID file per procedere.")
             combined_transcription = "\n".join(transcriptions)
