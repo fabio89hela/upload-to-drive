@@ -131,7 +131,7 @@ if uploaded_file:
             st.success(f"File caricato con successo su Google Drive! IDs del file: {file_id}")
     
         # Pulsante per avviare la trascrizione
-        if file_ids:
+        if file_id:
             with st.spinner("Esecuzione della trascrizione..."):
                 transcription = get_transcriptions_from_n8n(file_ids)
             st.text_area("Trascrizione combinata:", transcription, height=300)
