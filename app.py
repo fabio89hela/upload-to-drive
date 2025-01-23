@@ -9,11 +9,76 @@ import requests
 import ffmpeg 
 import tempfile
 
+# Configura la pagina
+st.set_page_config(
+    page_title="T-EMA App",
+    page_icon="https://t-ema.it/favicon.ico",
+    layout="wide"
+)
+
 # ID della cartella Google Drive dove salvare i file (sostituisci con il tuo Folder ID)
 FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
+
+#stili tema
+def add_custom_button_styles():
+    st.markdown(
+        """
+        <style>
+        .stButton>button {
+            background-color: #2ea3f2;
+            color: white;
+            font-size: 16px;
+            border-radius: 8px;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        .stButton>button:hover {
+            background-color: #005B99;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+def add_background_gradient():
+    st.markdown(
+        """
+        <style>
+        body {
+            background: linear-gradient(135deg, rgba(6, 147, 227, 1) 0%, rgba(155, 81, 224, 1) 100%);
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+def add_custom_animations():
+    st.markdown(
+        """
+        <style>
+        .fade-in {
+            animation: fadeIn 2s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        </style>
+        <div class="fade-in">
+            <h1>Benvenuto!</h1>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+def add_custom_styles():
+    add_custom_fonts()
+    add_custom_button_styles()
+    add_background_gradient()
 
 # Funzione per autenticarsi con Google Drive
 def authenticate_drive():
@@ -89,7 +154,12 @@ def get_transcriptions_from_n8n(file_id):
     else:
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
-    
+
+add_custom_styles()
+
+# Layout della pagina
+st.image("https://t-ema.it/logo.png", width=200)
+
 # Titolo dell'app Streamlit
 st.title("Carica file audio su Google Drive")
 
