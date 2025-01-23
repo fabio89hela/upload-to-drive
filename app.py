@@ -75,6 +75,24 @@ def add_custom_animations():
         unsafe_allow_html=True
     )
 
+def add_custom_fonts():
+    st.markdown(
+        """
+        <style>
+        @import url('https://t-ema.it/wp-content/uploads/et-fonts/GothamRoundedLight_21020.ttf');
+        @import url('https://t-ema.it/wp-content/uploads/et-fonts/Oswald-VariableFont_wght.ttf');
+        
+        html, body, [class*="css"]  {
+            font-family: 'Gotham Rounded Light', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Oswald', sans-serif;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
 def add_custom_styles():
     add_custom_fonts()
     add_custom_button_styles()
