@@ -188,7 +188,7 @@ if uploaded_file:
         st.success(f"Dimensione file: {os.path.getsize(temp_path) / (1024 * 1024)}")
 
     # Carica il file convertito su Google Drive
-    if 1>0:
+    if 1<0:
         service = authenticate_drive()
         with st.spinner("Caricamento su Google Drive in corso..."):
             file_ids = upload_to_drive(service, output_file_name, temp_path, FOLDER_ID)
@@ -208,6 +208,99 @@ if uploaded_file:
         combined_transcription = "\n".join(transcriptions)
         st.write(combined_transcription)
         st.text_area("Trascrizione combinata:", combined_transcription, height=600)
+    else:
+        # Inserisci il codice HTML + JavaScript
+        st.components.v1.html(
+    """
+    <div id="waveform"></div>
+    <div style="margin-top: 20px;">
+      <button id="startBtn">Start Recording</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="resumeBtn" disabled>Resume</button>
+      <button id="stopBtn" disabled>Stop</button>
+    </div>
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <script>
+      const startBtn = document.getElementById('startBtn');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const resumeBtn = document.getElementById('resumeBtn');
+      const stopBtn = document.getElementById('stopBtn');
+
+      let mediaRecorder;
+      let audioChunks = [];
+      let wavesurfer;
+
+      // Create WaveSurfer instance
+      function createWaveSurfer() {
+        if (wavesurfer) wavesurfer.destroy();
+        wavesurfer = WaveSurfer.create({
+          container: '#waveform',
+          waveColor: 'blue',
+          interact: false,
+          cursorWidth: 0
+        });
+      }
+
+      createWaveSurfer();
+
+      // Handle audio data and render waveform
+      function handleDataAvailable(event) {
+        if (event.data.size > 0) {
+          audioChunks.push(event.data);
+          const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+          const audioURL = URL.createObjectURL(audioBlob);
+          wavesurfer.load(audioURL);
+        }
+      }
+
+      // Start recording
+      startBtn.addEventListener('click', async () => {
+        audioChunks = [];
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = handleDataAvailable;
+
+        mediaRecorder.start();
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+
+        createWaveSurfer();
+      });
+
+      // Pause recording
+      pauseBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.pause();
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = false;
+        }
+      });
+
+      // Resume recording
+      resumeBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'paused') {
+          mediaRecorder.resume();
+          resumeBtn.disabled = true;
+          pauseBtn.disabled = false;
+        }
+      });
+
+      // Stop recording
+      stopBtn.addEventListener('click', () => {
+        if (mediaRecorder) {
+          mediaRecorder.stop();
+          startBtn.disabled = false;
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = true;
+          stopBtn.disabled = true;
+        }
+      });
+    </script>
+    """,
+        height=500,
+    )
 
     # Salva temporaneamente il file localmente
     #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
