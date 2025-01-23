@@ -206,7 +206,7 @@ if uploaded_file:
         # Inserisci il codice HTML + JavaScript
         st.components.v1.html(
     """
-    <div id="waveform" style="margin-bottom: 20px;"></div>
+    <canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
     <div style="margin-bottom: 20px;">
       <button id="startBtn">Start Recording</button>
       <button id="pauseBtn" disabled>Pause</button>
@@ -222,30 +222,57 @@ if uploaded_file:
       const resumeBtn = document.getElementById('resumeBtn');
       const stopBtn = document.getElementById('stopBtn');
       const audioPlayback = document.getElementById('audioPlayback');
+      const waveCanvas = document.getElementById('waveCanvas');
+      const canvasCtx = waveCanvas.getContext('2d');
 
       let mediaRecorder;
       let audioChunks = [];
-      let wavesurfer;
+      let stream;
+      let audioContext;
+      let analyser;
+      let dataArray;
+      let animationId;
 
-      // Crea WaveSurfer
-      function createWaveSurfer() {
-        if (wavesurfer) wavesurfer.destroy();
-        wavesurfer = WaveSurfer.create({
-          container: '#waveform',
-          waveColor: 'blue',
-          progressColor: 'green',
-          cursorWidth: 1,
-          interact: false,
-          backend: 'MediaElement',
-        });
+      function drawWaveform() {
+        analyser.getByteTimeDomainData(dataArray);
+        canvasCtx.fillStyle = 'white';
+        canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = 'blue';
+        canvasCtx.beginPath();
+
+        const sliceWidth = waveCanvas.width / analyser.fftSize;
+        let x = 0;
+
+        for (let i = 0; i < analyser.fftSize; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = (v * waveCanvas.height) / 2;
+
+          if (i === 0) {
+            canvasCtx.moveTo(x, y);
+          } else {
+            canvasCtx.lineTo(x, y);
+          }
+
+          x += sliceWidth;
+        }
+
+        canvasCtx.lineTo(waveCanvas.width, waveCanvas.height / 2);
+        canvasCtx.stroke();
+
+        animationId = requestAnimationFrame(drawWaveform);
       }
 
-      createWaveSurfer();
-
-      // Avvia la registrazione
       startBtn.addEventListener('click', async () => {
         audioChunks = [];
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new AudioContext();
+        analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyser.fftSize = 2048;
+        dataArray = new Uint8Array(analyser.fftSize);
+
         mediaRecorder = new MediaRecorder(stream);
 
         mediaRecorder.ondataavailable = (event) => {
@@ -256,42 +283,42 @@ if uploaded_file:
           const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
           const audioURL = URL.createObjectURL(audioBlob);
 
-          // Rendi l'audio disponibile per la riproduzione
           audioPlayback.src = audioURL;
           audioPlayback.style.display = 'block';
 
-          // Carica l'audio su WaveSurfer
-          wavesurfer.load(audioURL);
+          cancelAnimationFrame(animationId);
         };
 
         mediaRecorder.start();
+        drawWaveform();
+
         startBtn.disabled = true;
         pauseBtn.disabled = false;
         stopBtn.disabled = false;
       });
 
-      // Metti in pausa la registrazione
       pauseBtn.addEventListener('click', () => {
         if (mediaRecorder && mediaRecorder.state === 'recording') {
           mediaRecorder.pause();
           pauseBtn.disabled = true;
           resumeBtn.disabled = false;
+          cancelAnimationFrame(animationId);
         }
       });
 
-      // Riprendi la registrazione
       resumeBtn.addEventListener('click', () => {
         if (mediaRecorder && mediaRecorder.state === 'paused') {
           mediaRecorder.resume();
           resumeBtn.disabled = true;
           pauseBtn.disabled = false;
+          drawWaveform();
         }
       });
 
-      // Ferma la registrazione
       stopBtn.addEventListener('click', () => {
         if (mediaRecorder) {
           mediaRecorder.stop();
+          stream.getTracks().forEach((track) => track.stop());
           startBtn.disabled = false;
           pauseBtn.disabled = true;
           resumeBtn.disabled = true;
@@ -300,9 +327,8 @@ if uploaded_file:
       });
     </script>
     """,
-    height=600,
+    height=500,
 )
-
     # Salva temporaneamente il file localmente
     #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
     #with open(temp_file_path, "wb") as f:
