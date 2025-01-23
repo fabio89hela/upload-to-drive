@@ -203,8 +203,8 @@ if uploaded_file:
         st.write(combined_transcription)
         st.text_area("Trascrizione combinata:", combined_transcription, height=600)
     else:
-# Inserisci il codice HTML + JavaScript
-st.components.v1.html(
+        # Inserisci il codice HTML + JavaScript
+        st.components.v1.html(
     """
     <div id="waveform" style="margin-bottom: 20px;"></div>
     <div style="margin-bottom: 20px;">
