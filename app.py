@@ -176,7 +176,7 @@ def get_transcriptions_from_n8n(file_id):
 add_custom_styles()
 
 # Layout della pagina
-st.image("https://t-ema.it/logo.png", width=200)
+st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
 
 # Titolo dell'app Streamlit
 st.title("Carica file audio su Google Drive")
