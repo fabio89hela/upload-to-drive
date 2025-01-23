@@ -203,8 +203,8 @@ if uploaded_file:
         st.write(combined_transcription)
         st.text_area("Trascrizione combinata:", combined_transcription, height=600)
     else:
-    # Inserisci il codice HTML + JavaScript
-        st.components.v1.html(
+# Inserisci il codice HTML + JavaScript
+st.components.v1.html(
     """
     <div id="waveform" style="margin-bottom: 20px;"></div>
     <div style="margin-bottom: 20px;">
@@ -225,17 +225,17 @@ if uploaded_file:
 
       let mediaRecorder;
       let audioChunks = [];
-      let stream;
       let wavesurfer;
 
-      // Crea un'istanza di WaveSurfer con l'audio in tempo reale
+      // Crea WaveSurfer
       function createWaveSurfer() {
         if (wavesurfer) wavesurfer.destroy();
         wavesurfer = WaveSurfer.create({
           container: '#waveform',
           waveColor: 'blue',
+          progressColor: 'green',
+          cursorWidth: 1,
           interact: false,
-          cursorWidth: 0,
           backend: 'MediaElement',
         });
       }
@@ -245,24 +245,26 @@ if uploaded_file:
       // Avvia la registrazione
       startBtn.addEventListener('click', async () => {
         audioChunks = [];
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-        // Connetti WaveSurfer al flusso audio
-        const audioContext = new AudioContext();
-        const source = audioContext.createMediaStreamSource(stream);
-        const analyser = audioContext.createAnalyser();
-        source.connect(analyser);
-
-        wavesurfer.loadDecodedBuffer(analyser);
-
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder = new MediaRecorder(stream);
+
         mediaRecorder.ondataavailable = (event) => {
           if (event.data.size > 0) audioChunks.push(event.data);
         };
 
-        mediaRecorder.start();
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+          const audioURL = URL.createObjectURL(audioBlob);
 
-        // Disabilita/abilita pulsanti
+          // Rendi l'audio disponibile per la riproduzione
+          audioPlayback.src = audioURL;
+          audioPlayback.style.display = 'block';
+
+          // Carica l'audio su WaveSurfer
+          wavesurfer.load(audioURL);
+        };
+
+        mediaRecorder.start();
         startBtn.disabled = true;
         pauseBtn.disabled = false;
         stopBtn.disabled = false;
@@ -290,29 +292,16 @@ if uploaded_file:
       stopBtn.addEventListener('click', () => {
         if (mediaRecorder) {
           mediaRecorder.stop();
-          stream.getTracks().forEach((track) => track.stop());
           startBtn.disabled = false;
           pauseBtn.disabled = true;
           resumeBtn.disabled = true;
           stopBtn.disabled = true;
         }
-
-        mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
-          const audioURL = URL.createObjectURL(audioBlob);
-          
-          // Mostra l'audio registrato e attiva il player
-          audioPlayback.src = audioURL;
-          audioPlayback.style.display = 'block';
-
-          // Carica l'audio finale su WaveSurfer
-          wavesurfer.load(audioURL);
-        };
       });
     </script>
     """,
-        height=600,
-    )
+    height=600,
+)
 
     # Salva temporaneamente il file localmente
     #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
