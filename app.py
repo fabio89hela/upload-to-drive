@@ -155,7 +155,7 @@ def get_transcriptions_from_n8n(file_id):
 st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
 
 # Titolo dell'app Streamlit
-st.title("Carica file audio su Google Drive")
+st.title("Carica un file già registrato")
 
 # Autenticazione con Google Drive
 service = authenticate_drive()
