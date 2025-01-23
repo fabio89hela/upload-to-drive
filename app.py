@@ -13,7 +13,6 @@ import tempfile
 st.set_page_config(
     page_title="T-EMA App",
     page_icon="https://t-ema.it/favicon.ico",
-    layout="wide"
 )
 
 # ID della cartella Google Drive dove salvare i file (sostituisci con il tuo Folder ID)
@@ -22,81 +21,60 @@ FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 
-#stili tema
-def add_custom_button_styles():
+# Aggiungi stile personalizzato
+def add_custom_css():
     st.markdown(
         """
         <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        html, body, [class*="css"]  {
+            font-family: 'Poppins', sans-serif;
+            color: #333333;  /* Colore del testo */
+        }
+
         .stButton>button {
-            background-color: #2ea3f2;
-            color: white;
+            background-color: #0078d7; /* Blu principale */
+            color: #ffffff; /* Testo bianco */
             font-size: 16px;
+            font-weight: 600;
             border-radius: 8px;
             padding: 10px 20px;
             border: none;
-            cursor: pointer;
         }
-        .stButton>button:hover {
-            background-color: #005B99;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-def add_background_gradient():
-    st.markdown(
-        """
-        <style>
-        body {
-            background: linear-gradient(135deg, rgba(6, 147, 227, 1) 0%, rgba(155, 81, 224, 1) 100%);
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-def add_custom_animations():
-    st.markdown(
-        """
-        <style>
-        .fade-in {
-            animation: fadeIn 2s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        </style>
-        <div class="fade-in">
-            <h1>Benvenuto!</h1>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-def add_custom_fonts():
-    st.markdown(
-        """
-        <style>
-        @import url('https://t-ema.it/wp-content/uploads/et-fonts/GothamRoundedLight_21020.ttf');
-        @import url('https://t-ema.it/wp-content/uploads/et-fonts/Oswald-VariableFont_wght.ttf');
         
-        html, body, [class*="css"]  {
-            font-family: 'Gotham Rounded Light', sans-serif;
+        .stButton>button:hover {
+            background-color: #005a9e; /* Hover più scuro */
+            color: #ffffff; /* Testo bianco */
         }
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Oswald', sans-serif;
+
+        .stTextInput>div>div>input {
+            border: 1px solid #005a9e; /* Bordo blu */
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .stMarkdown {
+            color: #333333;
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        .stHeader {
+            color: #0078d7;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .stSidebar {
+            background-color: #f5f5f5; /* Sfondo grigio chiaro */
         }
         </style>
         """,
         unsafe_allow_html=True
     )
-    
-def add_custom_styles():
-    add_custom_fonts()
-    add_custom_button_styles()
-    add_background_gradient()
+
+add_custom_css()
 
 # Funzione per autenticarsi con Google Drive
 def authenticate_drive():
