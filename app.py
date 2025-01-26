@@ -9,6 +9,7 @@ import tempfile
 import sounddevice as sd
 import numpy as np
 from scipy.io.wavfile import write
+import threading
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -46,19 +47,34 @@ def get_transcriptions_from_n8n(file_id):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-# Funzione per registrare audio
-def record_audio(duration, samplerate=44100):
-    st.info("Inizializzando la registrazione...")
-    try:
-        # Registrazione audio
-        recording = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='float32')
-        sd.wait()  # Attende la fine della registrazione
-        st.success("Registrazione completata.")
-        return recording, samplerate
-    except Exception as e:
-        st.error(f"Errore durante la registrazione: {e}")
-        return None, None
-    
+# Variabili globali per gestire la registrazione
+is_recording = threading.Event()
+audio_data = []
+
+# Funzione per avviare la registrazione
+def start_recording(samplerate=44100):
+    global audio_data
+    audio_data = []
+
+    def callback(indata, frames, time, status):
+        """Callback chiamato durante la registrazione"""
+        if is_recording.is_set():
+            audio_data.append(indata.copy())
+
+    # Configura lo stream audio
+    stream = sd.InputStream(callback=callback, samplerate=samplerate, channels=1, dtype='float32')
+    with stream:
+        is_recording.set()  # Imposta lo stato di registrazione
+        while is_recording.is_set():  # Mantieni attivo finché lo stato è "on"
+            sd.sleep(100)
+
+# Funzione per fermare la registrazione
+def stop_recording(samplerate=44100):
+    global audio_data
+    is_recording.clear()  # Ferma la registrazione
+    # Concatena tutti i frammenti di dati registrati
+    audio_data = np.concatenate(audio_data, axis=0)
+    return audio_data, samplerate    
 # Configura la pagina
 st.set_page_config(
     page_title="T-EMA App",
@@ -97,26 +113,32 @@ if mode == "Carica un file audio":
 
 elif mode == "Registra un nuovo audio":
     if st.button("Avvia Registrazione"):
-        # Registra audio
-        audio_data, samplerate = record_audio()
-        if audio_data is not None:
-            # Salva l'audio temporaneamente in WAV
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
-                wav_path = temp_wav_file.name
-                write(wav_path, samplerate, (audio_data * 32767).astype(np.int16))  # Salva come WAV
+        st.info("Registrazione in corso... premi Stop per fermare.")
+        recording_thread = threading.Thread(target=start_recording)
+        recording_thread.start()
 
-            # Percorso per il file convertito
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-                ogg_path = temp_ogg_file.name
-            # Conversione in OGG
-            st.info("Salvataggio file...")
-            if convert_to_ogg(input_path, output_path):
-                # Carica su Google Drive
-                file_id = authenticate_and_upload("converted_audio.ogg", output_path)
-                st.success(f"File caricato su Google Drive con ID: {file_id}")
-            else:
-                st.error("Impossibile completare la conversione in ogg.")
-            
+    if st.button("Stop"):
+        st.info("Fermando la registrazione...")
+        recorded_audio, samplerate = stop_recording()
+
+        # Salva il file WAV temporaneamente
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
+            wav_path = temp_wav_file.name
+            write(wav_path, samplerate, (recorded_audio * 32767).astype(np.int16))  # Salva come WAV
+
+        # Percorso per il file convertito
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
+            ogg_path = temp_ogg_file.name     
+
+        # Conversione in OGG
+        st.info("Convertendo il file in formato OGG...")
+        if convert_to_ogg(wav_path, ogg_path):
+            # Carica su Google Drive
+            file_id = authenticate_and_upload("converted_audio.ogg", output_path)
+            st.success(f"File caricato su Google Drive con ID: {file_id}")
+        else:
+            st.error("Impossibile completare la conversione in ogg.")
+
     if 1<0:
         service = authenticate_drive()
         with st.spinner("Caricamento su Google Drive in corso..."):
