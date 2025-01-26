@@ -2,6 +2,13 @@ from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 import streamlit as st
+import os 
+import io
+import json
+import requests
+import ffmpeg 
+import tempfile
+
 
 # Funzione per autenticarsi con Google Drive
 def authenticate_drive():
