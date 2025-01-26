@@ -1,133 +1,135 @@
-import os 
-import io
-import json
-import streamlit as st
-from upload_handler import authenticate_drive, upload_to_drive
-import requests
-import ffmpeg 
-import tempfile
-import sounddevice as sd
-import numpy as np
-from scipy.io.wavfile import write
-import threading
+def get_audio_recorder_html():
+    """
+    Genera il codice HTML e JavaScript per registrare l'audio, 
+    salvare il file come WAV e permettere il download.
+    """
+    return """
+    <canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
+    <div style="margin-bottom: 20px;">
+      <button id="startBtn">Start Recording</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="resumeBtn" disabled>Resume</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <a id="downloadLink" style="display:none; margin-top: 20px;">Download Audio</a>
+    </div>
+    <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
 
-#N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
-N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
+    <script>
+      const startBtn = document.getElementById('startBtn');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const resumeBtn = document.getElementById('resumeBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const audioPlayback = document.getElementById('audioPlayback');
+      const downloadLink = document.getElementById('downloadLink');
+      const waveCanvas = document.getElementById('waveCanvas');
+      const canvasCtx = waveCanvas.getContext('2d');
 
-# Autenticazione Google Drive
-def authenticate_and_upload(file_name, file_path):
-    FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  # Cambia con l'ID della tua cartella Drive
-    service = authenticate_drive()
+      let mediaRecorder;
+      let audioChunks = [];
+      let stream;
+      let audioContext;
+      let analyser;
+      let dataArray;
+      let animationId;
 
-    # Carica il file su Google Drive
-    file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
-    return file_id
+      function drawWaveform() {
+        analyser.getByteTimeDomainData(dataArray);
+        canvasCtx.fillStyle = 'white';
+        canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = 'blue';
+        canvasCtx.beginPath();
 
-# Funzione per convertire il file audio in formato .ogg
-def convert_to_ogg(input_path, output_path):
-    try:
-        ffmpeg.input(input_path).output(
-            output_path,
-            acodec="libopus",  # Codec per OGG
-            audio_bitrate="128k",
-            format="ogg"
-        ).run(overwrite_output=True)
-        return True
-    except ffmpeg.Error as e:
-        st.error(f"Errore durante la conversione in OGG: {e.stderr.decode()}")
-        return False
+        const sliceWidth = waveCanvas.width / analyser.fftSize;
+        let x = 0;
 
-# Funzione per inviare una lista di file a n8n e ricevere le trascrizioni
-def get_transcriptions_from_n8n(file_id):
-    payload = {"file_id": file_id}
-    response = requests.post(N8N_WEBHOOK_URL, json=payload)
-    if response.status_code == 200:
-        transcription = response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
-    else:
-        transcription=(f"Errore: {response.status_code} - {response.text}")
-    return transcription
+        for (let i = 0; i < analyser.fftSize; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = (v * waveCanvas.height) / 2;
 
-# Configura la pagina
-st.set_page_config(
-    page_title="T-EMA App",
-    page_icon="https://t-ema.it/favicon.ico",
-)
+          if (i === 0) {
+            canvasCtx.moveTo(x, y);
+          } else {
+            canvasCtx.lineTo(x, y);
+          }
 
-# Layout della pagina
-st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
+          x += sliceWidth;
+        }
 
-# Titolo dell'app Streamlit
-st.title("Carica un file già registrato")
+        canvasCtx.lineTo(waveCanvas.width, waveCanvas.height / 2);
+        canvasCtx.stroke();
 
-# Scelta modalità: Caricamento o Registrazione
-mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"])
+        animationId = requestAnimationFrame(drawWaveform);
+      }
 
-if mode == "Carica un file audio":
-    # Caricamento di un file audio locale
-    uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
-    if uploaded_file:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
-            temp_file.write(uploaded_file.getbuffer())
-            input_path = temp_file.name
+      startBtn.addEventListener('click', async () => {
+        audioChunks = [];
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new AudioContext();
+        analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyser.fftSize = 2048;
+        dataArray = new Uint8Array(analyser.fftSize);
 
-        # Percorso per il file convertito
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-            output_path = temp_ogg_file.name
+        mediaRecorder = new MediaRecorder(stream);
 
-        # Conversione in OGG
-        st.info("Salvataggio file...")
-        if convert_to_ogg(input_path, output_path):
-            # Carica su Google Drive
-            file_id = authenticate_and_upload("converted_audio.ogg", output_path)
-            st.success(f"File caricato su Google Drive con ID: {file_id}")
-        else:
-            st.error("Impossibile completare la conversione in ogg.")
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) audioChunks.push(event.data);
+        };
 
-elif mode == "Registra un nuovo audio":
-    if st.button("Avvia Registrazione"):
-        st.info("Registrazione in corso... premi Stop per fermare.")
-        recording_thread = threading.Thread(target=start_recording)
-        recording_thread.start()
+        mediaRecorder.onstop = () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+          const audioURL = URL.createObjectURL(audioBlob);
 
-    if st.button("Stop"):
-        st.info("Fermando la registrazione...")
-        recorded_audio, samplerate = stop_recording()
+          // Mostra l'audio nel player
+          audioPlayback.src = audioURL;
+          audioPlayback.style.display = 'block';
 
-        # Salva il file WAV temporaneamente
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
-            wav_path = temp_wav_file.name
-            write(wav_path, samplerate, (recorded_audio * 32767).astype(np.int16))  # Salva come WAV
+          // Imposta il link per il download
+          downloadLink.href = audioURL;
+          downloadLink.download = "recording.wav";
+          downloadLink.style.display = 'block';
+          downloadLink.textContent = "Download Audio";
 
-        # Percorso per il file convertito
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-            ogg_path = temp_ogg_file.name     
+          cancelAnimationFrame(animationId);  // Ferma il rendering dell'onda
+        };
 
-        # Conversione in OGG
-        st.info("Convertendo il file in formato OGG...")
-        if convert_to_ogg(wav_path, ogg_path):
-            # Carica su Google Drive
-            file_id = authenticate_and_upload("converted_audio.ogg", output_path)
-            st.success(f"File caricato su Google Drive con ID: {file_id}")
-        else:
-            st.error("Impossibile completare la conversione in ogg.")
+        mediaRecorder.start();
+        drawWaveform();  // Avvia il rendering dell'onda
 
-    if 1<0:
-        service = authenticate_drive()
-        with st.spinner("Caricamento su Google Drive in corso..."):
-            file_ids = upload_to_drive(service, output_file_name, temp_path, FOLDER_ID)
-            st.success(f"File caricato con successo su Google Drive! IDs del file: {file_ids}")
-    
-        # Pulsante per avviare la trascrizione
-        if file_ids:
-            transcriptions=[]
-            # Itera su ciascun ID del file
-            with st.spinner("Esecuzione della trascrizione..."):
-                for file_id in file_ids:
-                    st.success(f"trascrivendo {file_id}")
-                    transcription=get_transcriptions_from_n8n(file_id)
-                    transcriptions.append(transcription)
-        else:
-            st.error("Inserisci almeno un ID file per procedere.")
-        combined_transcription = "\n".join(transcriptions)
-        st.write(combined_transcription)
-        st.text_area("Trascrizione combinata:", combined_transcription, height=600)
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+      });
+
+      pauseBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.pause();
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = false;
+          cancelAnimationFrame(animationId);
+        }
+      });
+
+      resumeBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'paused') {
+          mediaRecorder.resume();
+          resumeBtn.disabled = true;
+          pauseBtn.disabled = false;
+          drawWaveform();
+        }
+      });
+
+      stopBtn.addEventListener('click', () => {
+        if (mediaRecorder) {
+          mediaRecorder.stop();
+          stream.getTracks().forEach((track) => track.stop());
+          startBtn.disabled = false;
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = true;
+          stopBtn.disabled = true;
+        }
+      });
+    </script>
+    """
