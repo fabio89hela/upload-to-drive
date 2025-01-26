@@ -1,20 +1,18 @@
 import streamlit as st
 from io import BytesIO
 
-# Funzione per gestire la registrazione
-def handle_audio_upload():
-    # Verifica se è stato inviato un file
-    if "file" in st.session_state:
-        # Leggi il file audio dalla sessione
-        audio_file = st.session_state["file"]
-
-        st.audio(audio_file, format="audio/wav")
-        st.success("File registrato caricato con successo!")
+# Funzione per salvare e gestire il file audio
+def handle_uploaded_audio(file):
+    """
+    Gestisce il file audio inviato tramite POST.
+    """
+    st.session_state["file"] = file  # Salva il file in session state
+    st.success("File ricevuto con successo!")
+    st.audio(file, format="audio/wav")  # Riproduci l'audio
 
 def get_audio_recorder_html():
     """
-    Genera il codice HTML e JavaScript per registrare l'audio, 
-    salvarlo temporaneamente e inviarlo al backend Streamlit.
+    Genera il codice HTML e JavaScript per registrare l'audio e inviarlo al backend Streamlit.
     """
     return """
     <canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
@@ -90,30 +88,30 @@ def get_audio_recorder_html():
         };
 
         mediaRecorder.onstop = async () => {
-          // Quando la registrazione si ferma
-          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });  // Crea un file WAV
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });  // Crea il file WAV
           const audioURL = URL.createObjectURL(audioBlob);  // Crea un URL per il player
           audioPlayback.src = audioURL;
           audioPlayback.style.display = 'block';
 
-          // Invia il file WAV al backend Streamlit
+          // Invia il file audio al backend Streamlit
           const formData = new FormData();
           formData.append("file", audioBlob, "recording.wav");
 
+          // Aggiunta del POST verso Streamlit
           await fetch("/", {
             method: "POST",
             body: formData,
           }).then((response) => {
             if (response.ok) {
-              console.log("File audio inviato con successo");
+              console.log("File audio inviato con successo!");
             } else {
-              console.error("Errore durante l'invio del file audio");
+              console.error("Errore durante l'invio del file audio.");
             }
           });
         };
 
         mediaRecorder.start();  // Avvia la registrazione
-        drawWaveform();  // Avvia il rendering dell'onda audio
+        drawWaveform();  // Avvia il disegno dell'onda
 
         // Aggiorna lo stato dei pulsanti
         startBtn.disabled = true;
@@ -126,7 +124,7 @@ def get_audio_recorder_html():
           mediaRecorder.pause();
           pauseBtn.disabled = true;
           resumeBtn.disabled = false;
-          cancelAnimationFrame(animationId);  // Ferma il rendering
+          cancelAnimationFrame(animationId);
         }
       });
 
@@ -135,7 +133,7 @@ def get_audio_recorder_html():
           mediaRecorder.resume();
           resumeBtn.disabled = true;
           pauseBtn.disabled = false;
-          drawWaveform();  // Riprendi il rendering
+          drawWaveform();
         }
       });
 
@@ -152,14 +150,14 @@ def get_audio_recorder_html():
     </script>
     """
 
-# Configura Streamlit
+# Layout Streamlit
 st.set_page_config(page_title="Registrazione Audio")
-st.title("Registrazione Audio in Streamlit")
+st.title("Registrazione e Gestione Audio")
 
-# Inserisci l'interfaccia HTML per la registrazione
+# Mostra il registratore
 st.components.v1.html(get_audio_recorder_html(), height=500)
 
-# Gestione dell'upload
+# Gestione dell'upload tramite POST
 if st.session_state.get("file"):
-    handle_audio_upload()
-
+    st.header("Audio Registrato")
+    handle_uploaded_audio(st.session_state["file"])
