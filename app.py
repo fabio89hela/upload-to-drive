@@ -75,6 +75,7 @@ def stop_recording(samplerate=44100):
     # Concatena tutti i frammenti di dati registrati
     audio_data = np.concatenate(audio_data, axis=0)
     return audio_data, samplerate    
+
 # Configura la pagina
 st.set_page_config(
     page_title="T-EMA App",
