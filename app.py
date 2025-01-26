@@ -1,96 +1,165 @@
 import streamlit as st
-import sounddevice as sd
-import numpy as np
-from scipy.io.wavfile import write
-import threading
-import tempfile
 import os
-import ffmpeg
-from upload_handler import authenticate_drive, upload_to_drive
+import tempfile
 
-# Configurazione di Streamlit
-st.set_page_config(page_title="Registrazione Audio con Streamlit", layout="centered")
-st.title("Registrazione Audio con Streamlit")
+def get_audio_recorder_html():
+    """
+    Genera il codice HTML e JavaScript per la registrazione audio.
+    """
+    return """
+    <canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
+    <div style="margin-bottom: 20px;">
+      <button id="startBtn">Start Recording</button>
+      <button id="pauseBtn" disabled>Pause</button>
+      <button id="resumeBtn" disabled>Resume</button>
+      <button id="stopBtn" disabled>Stop</button>
+    </div>
+    <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
 
-# Variabili globali per gestire la registrazione
-is_recording = threading.Event()
-audio_frames = []
-samplerate = 44100
+    <script>
+      const startBtn = document.getElementById('startBtn');
+      const pauseBtn = document.getElementById('pauseBtn');
+      const resumeBtn = document.getElementById('resumeBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const audioPlayback = document.getElementById('audioPlayback');
+      const waveCanvas = document.getElementById('waveCanvas');
+      const canvasCtx = waveCanvas.getContext('2d');
 
+      let mediaRecorder;
+      let audioChunks = [];
+      let stream;
+      let audioContext;
+      let analyser;
+      let dataArray;
+      let animationId;
 
-# Funzione per avviare la registrazione
-def start_recording():
-    global audio_frames
-    audio_frames = []  # Reset delle tracce audio
+      function drawWaveform() {
+        analyser.getByteTimeDomainData(dataArray);
+        canvasCtx.fillStyle = 'white';
+        canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+        canvasCtx.lineWidth = 2;
+        canvasCtx.strokeStyle = 'blue';
+        canvasCtx.beginPath();
 
-    def callback(indata, frames, time, status):
-        """Callback chiamato durante la registrazione."""
-        if is_recording.is_set():
-            audio_frames.append(indata.copy())
+        const sliceWidth = waveCanvas.width / analyser.fftSize;
+        let x = 0;
 
-    # Configura lo stream audio
-    with sd.InputStream(samplerate=samplerate, channels=1, callback=callback, dtype='float32'):
-        while is_recording.is_set():  # Mantieni attivo lo stream finché `is_recording` è True
-            sd.sleep(100)
+        for (let i = 0; i < analyser.fftSize; i++) {
+          const v = dataArray[i] / 128.0;
+          const y = (v * waveCanvas.height) / 2;
 
+          if (i === 0) {
+            canvasCtx.moveTo(x, y);
+          } else {
+            canvasCtx.lineTo(x, y);
+          }
 
-# Funzione per fermare la registrazione
-def stop_recording():
-    is_recording.clear()  # Ferma la registrazione
-    # Concatena tutti i frame in un unico array
-    audio_data = np.concatenate(audio_frames, axis=0)
-    return audio_data, samplerate
+          x += sliceWidth;
+        }
 
+        canvasCtx.lineTo(waveCanvas.width, waveCanvas.height / 2);
+        canvasCtx.stroke();
 
-# Funzione per convertire un file in formato OGG
-def convert_to_ogg(input_path, output_path):
-    try:
-        ffmpeg.input(input_path).output(
-            output_path,
-            acodec="libopus",  # Codec per OGG
-            audio_bitrate="128k",
-            format="ogg"
-        ).run(overwrite_output=True)
-    except ffmpeg.Error as e:
-        st.error(f"Errore durante la conversione in OGG: {e.stderr.decode()}")
-        return False
-    return True
+        animationId = requestAnimationFrame(drawWaveform);
+      }
 
+      startBtn.addEventListener('click', async () => {
+        audioChunks = [];
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        audioContext = new AudioContext();
+        analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyser.fftSize = 2048;
+        dataArray = new Uint8Array(analyser.fftSize);
 
-# Layout dell'interfaccia Streamlit
-if st.button("Avvia Registrazione"):
-    st.info("Registrazione in corso... premi Stop per fermare.")
-    is_recording.set()
-    threading.Thread(target=start_recording).start()  # Avvia la registrazione in un thread separato
+        mediaRecorder = new MediaRecorder(stream);
 
-if st.button("Stop"):
-    if is_recording.is_set():  # Verifica che la registrazione sia in corso
-        st.info("Fermando la registrazione...")
-        audio_data, samplerate = stop_recording()
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) audioChunks.push(event.data);
+        };
 
-        # Salva il file WAV temporaneamente
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
-            wav_path = temp_wav_file.name
-            write(wav_path, samplerate, (audio_data * 32767).astype(np.int16))  # Salva come WAV
+mediaRecorder.onstop = () => {
+  const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+  const audioURL = URL.createObjectURL(audioBlob);
+  audioPlayback.src = audioURL;
+  audioPlayback.style.display = 'block';
 
-        # Percorso per il file convertito
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-            ogg_path = temp_ogg_file.name
+  // Invia il file al backend
+  const formData = new FormData();
+  formData.append('file', audioBlob, 'recorded_audio.ogg');
 
-        # Conversione in OGG
-        st.info("Convertendo il file in formato OGG...")
-        if convert_to_ogg(wav_path, ogg_path):
-            st.success("Conversione completata.")
-            # Carica su Google Drive
-            FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  # Cambia con l'ID della tua cartella Drive
-            service = authenticate_drive(st.secrets["gdrive_service_account"])
-            file_id = upload_to_drive(service, "recorded_audio.ogg", ogg_path, FOLDER_ID)
-            st.success(f"File caricato su Google Drive con ID: {file_id}")
-        else:
-            st.error("Errore durante la conversione.")
+  fetch('/upload-audio', {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('File salvato con successo:', data);
+      // Puoi aggiornare l'interfaccia Streamlit qui
+    })
+    .catch((error) => {
+      console.error('Errore durante l\'upload del file:', error);
+    });
+};
 
-        # Pulizia dei file temporanei
-        os.remove(wav_path)
-        os.remove(ogg_path)
-    else:
-        st.warning("La registrazione non è attualmente in corso.")
+        mediaRecorder.start();
+        drawWaveform();
+
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+      });
+
+      pauseBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.pause();
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = false;
+          cancelAnimationFrame(animationId);
+        }
+      });
+
+      resumeBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state === 'paused') {
+          mediaRecorder.resume();
+          resumeBtn.disabled = true;
+          pauseBtn.disabled = false;
+          drawWaveform();
+        }
+      });
+
+      stopBtn.addEventListener('click', () => {
+        if (mediaRecorder) {
+          mediaRecorder.stop();
+          stream.getTracks().forEach((track) => track.stop());
+          startBtn.disabled = false;
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = true;
+          stopBtn.disabled = true;
+        }
+      });
+    </script>
+    """
+
+# Funzione per salvare il file temporaneamente
+def save_uploaded_file(uploaded_file):
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_file:
+        temp_file.write(uploaded_file.read())
+        return temp_file.name
+
+# Layout Streamlit
+st.title("Audio Recorder")
+
+st.components.v1.html(get_audio_recorder_html(), height=500)
+
+# Placeholder per il caricamento
+uploaded_file = st.file_uploader("Carica un file audio salvato", type=["ogg"])
+
+if uploaded_file:
+    temp_path = save_uploaded_file(uploaded_file)
+    st.success(f"File salvato temporaneamente in: {temp_path}")
+
+    # Puoi usare temp_path come input per altre funzioni
+    st.write("Percorso del file temporaneo:", temp_path)
+
