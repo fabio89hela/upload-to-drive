@@ -163,7 +163,3 @@ st.components.v1.html(get_audio_recorder_html(), height=500)
 if st.session_state.get("file"):
     handle_audio_upload()
 
-# Upload manuale (solo test)
-uploaded_file = st.file_uploader("Carica un file audio", type=["wav", "mp3"])
-if uploaded_file is not None:
-    st.audio(uploaded_file, format="audio/wav")
