@@ -113,7 +113,7 @@ elif mode == "Registra un nuovo audio":
         st.session_state["upload-audio"] = app
 
     # Interfaccia per registrare l'audio
-    st.components.v1.html(get_audio_recorder_html(), height=400)
+    st.components.v1.html(get_audio_recorder_html(), height=500)
 
     # Mostra il file registrato
     audio_file_path = st.query_params.get("audio_file_path", [None])[0]
