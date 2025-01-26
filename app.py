@@ -8,36 +8,17 @@ import requests
 import ffmpeg 
 import tempfile
 
-# Configura la pagina
-st.set_page_config(
-    page_title="T-EMA App",
-    page_icon="https://t-ema.it/favicon.ico",
-)
-
-# ID della cartella Google Drive dove salvare i file (sostituisci con il tuo Folder ID)
-FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
-
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 
-# Layout della pagina
-st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
+# Autenticazione Google Drive
+def authenticate_and_upload(file_name, file_path):
+    FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  # Cambia con l'ID della tua cartella Drive
+    service = authenticate_drive(st.secrets["gdrive_service_account"])
 
-# Titolo dell'app Streamlit
-st.title("Carica un file già registrato")
-
-# Pulsante per registrare un nuovo audio
-if st.button("Registra un nuovo audio"):
-    st.components.v1.html(get_audio_recorder_html(), height=500)
-
-# Pulsante per caricare un file audio locale
-uploaded_file = st.file_uploader("Carica un file audio salvato in locale", type=["ogg", "mp3", "wav"])
-if uploaded_file:
-    temp_path = f"./{uploaded_file.name}"
-    with open(temp_path, "wb") as f:
-        f.write(uploaded_file.getbuffer())
-    st.success(f"File caricato correttamente: {uploaded_file.name}")
-
+    # Carica il file su Google Drive
+    file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
+    return file_id
 
 # Funzione per convertire il file audio in formato .ogg
 def convert_to_ogg(input_data, output_file_name):
@@ -73,31 +54,67 @@ def get_transcriptions_from_n8n(file_id):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-# Autenticazione con Google Drive
-service = authenticate_drive()
+# Configura la pagina
+st.set_page_config(
+    page_title="T-EMA App",
+    page_icon="https://t-ema.it/favicon.ico",
+)
 
-# Caricamento file da parte dell'utente
-uploaded_file = st.file_uploader("Carica un file audio", type=["mp3", "wav"])
+# Layout della pagina
+st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
 
-if uploaded_file:
-    #st.write(f"File caricato: {uploaded_file.name}")
+# Titolo dell'app Streamlit
+st.title("Carica un file già registrato")
 
-    # Leggi i dati dal file caricato
-    input_data = uploaded_file.read()
-    output_file_name = uploaded_file.name.replace(".mp3", ".ogg").replace(".wav", ".ogg")
+# Scelta modalità: Caricamento o Registrazione
+mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"])
 
-    # Converti il file in formato .ogg
-    with st.spinner("Conversione in corso..."):
-        converted_audio = convert_to_ogg(input_data, output_file_name)
-        st.success(f"File convertito con successo in formato .ogg!")
-    # Salva il file convertito su disco temporaneo per caricarlo su Google Drive
-    temp_path = f"/tmp/{output_file_name}"
-    st.success(f"{temp_path}")
-    with open(temp_path, "wb") as temp_file:
-        temp_file.write(converted_audio.getbuffer())
-        st.success(f"Dimensione file: {os.path.getsize(temp_path) / (1024 * 1024)}")
+if mode == "Carica un file audio":
+    # Caricamento di un file audio locale
+    uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
+    if uploaded_file:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
+            temp_file.write(uploaded_file.getbuffer())
+            input_path = temp_file.name
 
-    # Carica il file convertito su Google Drive
+        # Percorso per il file convertito
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
+            output_path = temp_ogg_file.name
+
+        # Conversione in OGG
+        st.info("Salvataggio file...")
+        if convert_to_ogg(input_path, output_path):
+            # Carica su Google Drive
+            file_id = authenticate_and_upload("converted_audio.ogg", output_path)
+            st.success(f"File caricato su Google Drive con ID: {file_id}")
+        else:
+            st.error("Impossibile completare la conversione in ogg.")
+
+elif mode == "Registra un nuovo audio":
+    # Registrazione di un nuovo audio
+    st.components.v1.html(get_audio_recorder_html(), height=500)
+    
+    # Aspetta che il file venga caricato dal backend
+    st.warning("Dopo la registrazione, premi STOP e aspetta che il file venga salvato.")
+    if st.button("Carica file registrato su Google Drive"):
+        response = st.query_params().get("audio_file_path", [None])[0]
+        if response:
+            input_path = response
+
+            # Percorso per il file convertito
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
+                output_path = temp_ogg_file.name
+
+            # Conversione in OGG
+            if convert_to_ogg(input_path, output_path):
+                # Carica su Google Drive
+                file_id = authenticate_and_upload("recorded_audio.ogg", output_path)
+                st.success(f"File caricato su Google Drive con ID: {file_id}")
+            else:
+                st.error("Impossibile completare la conversione.")
+        else:
+            st.error("Nessun file registrato trovato.")
+
     if 1<0:
         service = authenticate_drive()
         with st.spinner("Caricamento su Google Drive in corso..."):
@@ -118,168 +135,3 @@ if uploaded_file:
         combined_transcription = "\n".join(transcriptions)
         st.write(combined_transcription)
         st.text_area("Trascrizione combinata:", combined_transcription, height=600)
-    else:
-        # Inserisci il codice HTML + JavaScript
-        st.components.v1.html(
-    """
-    <canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
-    <div style="margin-bottom: 20px;">
-      <button id="startBtn">Start Recording</button>
-      <button id="pauseBtn" disabled>Pause</button>
-      <button id="resumeBtn" disabled>Resume</button>
-      <button id="stopBtn" disabled>Stop</button>
-    </div>
-    <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
-
-    <script src="https://unpkg.com/wavesurfer.js"></script>
-    <script>
-      const startBtn = document.getElementById('startBtn');
-      const pauseBtn = document.getElementById('pauseBtn');
-      const resumeBtn = document.getElementById('resumeBtn');
-      const stopBtn = document.getElementById('stopBtn');
-      const audioPlayback = document.getElementById('audioPlayback');
-      const waveCanvas = document.getElementById('waveCanvas');
-      const canvasCtx = waveCanvas.getContext('2d');
-
-      let mediaRecorder;
-      let audioChunks = [];
-      let stream;
-      let audioContext;
-      let analyser;
-      let dataArray;
-      let animationId;
-
-      function drawWaveform() {
-        analyser.getByteTimeDomainData(dataArray);
-        canvasCtx.fillStyle = 'white';
-        canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = 'blue';
-        canvasCtx.beginPath();
-
-        const sliceWidth = waveCanvas.width / analyser.fftSize;
-        let x = 0;
-
-        for (let i = 0; i < analyser.fftSize; i++) {
-          const v = dataArray[i] / 128.0;
-          const y = (v * waveCanvas.height) / 2;
-
-          if (i === 0) {
-            canvasCtx.moveTo(x, y);
-          } else {
-            canvasCtx.lineTo(x, y);
-          }
-
-          x += sliceWidth;
-        }
-
-        canvasCtx.lineTo(waveCanvas.width, waveCanvas.height / 2);
-        canvasCtx.stroke();
-
-        animationId = requestAnimationFrame(drawWaveform);
-      }
-
-      startBtn.addEventListener('click', async () => {
-        audioChunks = [];
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioContext = new AudioContext();
-        analyser = audioContext.createAnalyser();
-        const source = audioContext.createMediaStreamSource(stream);
-        source.connect(analyser);
-        analyser.fftSize = 2048;
-        dataArray = new Uint8Array(analyser.fftSize);
-
-        mediaRecorder = new MediaRecorder(stream);
-
-        mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) audioChunks.push(event.data);
-        };
-
-        mediaRecorder.onstop = () => {
-      // Crea il Blob audio
-      const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
-
-      // Crea un URL per l'audio registrato (per il player)
-      const audioURL = URL.createObjectURL(audioBlob);
-
-      // Mostra l'audio nel player
-      audioPlayback.src = audioURL;
-      audioPlayback.style.display = 'block';
-
-      // Invia il file audio al backend
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'recording.ogg');
-
-      fetch('/audio-upload', {
-        method: 'POST',
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('File audio inviato con successo:', data);
-        })
-        .catch((error) => {
-          console.error('Errore durante l\'invio del file audio:', error);
-        });
-
-      // Ferma il rendering dell'onda
-      cancelAnimationFrame(animationId);
-    };
-        mediaRecorder.start();
-        drawWaveform();
-        startBtn.disabled = true;
-        pauseBtn.disabled = false;
-        stopBtn.disabled = false;
-      });
-
-      pauseBtn.addEventListener('click', () => {
-        if (mediaRecorder && mediaRecorder.state === 'recording') {
-          mediaRecorder.pause();
-          pauseBtn.disabled = true;
-          resumeBtn.disabled = false;
-          cancelAnimationFrame(animationId);
-        }
-      });
-
-      resumeBtn.addEventListener('click', () => {
-        if (mediaRecorder && mediaRecorder.state === 'paused') {
-          mediaRecorder.resume();
-          resumeBtn.disabled = true;
-          pauseBtn.disabled = false;
-          drawWaveform();
-        }
-      });
-
-      stopBtn.addEventListener('click', () => {
-        if (mediaRecorder) {
-          mediaRecorder.stop();
-          stream.getTracks().forEach((track) => track.stop());
-          startBtn.disabled = false;
-          pauseBtn.disabled = true;
-          resumeBtn.disabled = true;
-          stopBtn.disabled = true;
-        }
-      });
-    </script>
-    """,
-    height=500,
-)
-        
-    # Salva temporaneamente il file localmente
-    #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
-    #with open(temp_file_path, "wb") as f:
-    #    f.write(uploaded_file.getbuffer())
-    #    input_path = f.name
-    
-    # Carica il file su Google Drive
-    #with st.spinner("Caricamento su Google Drive in corso..."):
-    #    file_id = upload_to_drive(service, uploaded_file.name, temp_file_path, FOLDER_ID)
-    #    st.success(f"File caricato su Google Drive con successo! ID del file: {file_id}")
-        
-    # Trascrivi il file tramite n8n
-    #with st.spinner("Trascrizione in corso tramite n8n..."):
-    #    transcription = get_transcription_from_n8n(temp_file_path)
-    #    st.text_area("Trascrizione", transcription, height=300)
-
-        # Rimuovi il file locale temporaneo
-        #os.remove(temp_path)
