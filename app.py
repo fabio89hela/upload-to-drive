@@ -21,28 +21,26 @@ def authenticate_and_upload(file_name, file_path):
     return file_id
 
 # Funzione per convertire il file audio in formato .ogg
-def convert_to_ogg(input_data, output_file_name):
+def convert_to_ogg(input_path, output_path):
+    """
+    Converte un file audio in formato OGG.
+    Args:
+        input_path (str): Percorso del file di input.
+        output_path (str): Percorso per il file convertito.
+    Returns:
+        bool: True se la conversione ha successo, False in caso contrario.
+    """
     try:
-        input_stream = ffmpeg.input("pipe:0")  # Leggi dati da stdin
-        output_stream = ffmpeg.output(
-            input_stream,
-            "pipe:1",
-            vn=None,  # Nessun video
-            map_metadata=-1,  # Rimuovi metadati
-            ac=1,  # Mono
-            c="libopus",  # Codec audio
-            b="12k",  # Bitrate
-            application="voip",  # Ottimizzazione per voce
-            f="ogg"  # Formato di output
-        ).global_args("-y")  # Sovrascrivi l'output
-
-        # Esegui ffmpeg con input e output in memoria
-        out, _ = ffmpeg.run(output_stream, input=input_data, capture_stdout=True, capture_stderr=True)
-        return io.BytesIO(out)  # Ritorna un buffer di BytesIO
+        ffmpeg.input(input_path).output(
+            output_path,
+            acodec="libopus",  # Codec per OGG
+            audio_bitrate="128k",
+            format="ogg"
+        ).run(overwrite_output=True)
+        return True
     except ffmpeg.Error as e:
-        st.error("Errore durante la conversione con FFmpeg.")
-        st.error(f"FFmpeg stderr: {e.stderr.decode()}")
-        raise RuntimeError(f"Errore durante la conversione con FFmpeg: {e.stderr.decode()}")
+        st.error(f"Errore durante la conversione in OGG: {e.stderr.decode()}")
+        return False
 
 # Funzione per inviare una lista di file a n8n e ricevere le trascrizioni
 def get_transcriptions_from_n8n(file_id):
