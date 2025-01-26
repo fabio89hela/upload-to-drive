@@ -14,7 +14,7 @@ N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #prod
 # Autenticazione Google Drive
 def authenticate_and_upload(file_name, file_path):
     FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  # Cambia con l'ID della tua cartella Drive
-    service = authenticate_drive(st.secrets["gdrive_service_account"])
+    service = authenticate_drive()
 
     # Carica il file su Google Drive
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
