@@ -11,9 +11,10 @@ from datetime import datetime
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
+FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
 
 # Autenticazione Google Drive
-def authenticate_and_upload(file_name, file_path,cartella):
+def authenticate_and_upload(file_name, file_path):
     service = authenticate_drive()
     # Carica il file su Google Drive
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
@@ -61,12 +62,6 @@ mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuov
 if mode == "Carica un file audio":
     # Scelta cartella
     cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
-    if cartella=="Ematologia":
-        FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
-    elif cartella=="EMOFILIA":
-        FOLDER_ID="1CH9Pw0ZoWFFF2gSlOEo9UVa45akAgrz-"
-    else:
-        FOLDER_ID="15FhRa5wa7zxNEN4GyGzJKtwc6q7jK2rR"
 
     # Scelta farmacista e data
     fo=st.text_input("Indica il nome del farmacista intervistato", value="")
@@ -88,7 +83,7 @@ if mode == "Carica un file audio":
         st.info("Salvataggio file...")
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
-            file_ids = authenticate_and_upload(data+"_"+fo+".ogg", output_path,cartella)
+            file_ids = authenticate_and_upload(cartella+"_"+data+"_"+fo+".ogg", output_path,cartella)
             st.success(f"File caricato correttamente su Google Drive")
         else:
             st.error("Impossibile completare la conversione in ogg.")
