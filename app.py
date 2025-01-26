@@ -70,6 +70,7 @@ if mode == "Carica un file audio":
 
     # Scelta farmacista e data
     fo=st.text_input("Indica il nome del farmacista intervistato", value="")
+    now = datetime.now()
     data=now.strftime("%Y%m%d_%H%M%S")
     
     # Caricamento di un file audio locale
