@@ -7,3 +7,6 @@ openai-whisper
 openai
 requests
 ffmpeg-python
+sounddevice 
+numpy 
+matplotlib 
