@@ -89,32 +89,20 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    # Endpoint personalizzato per ricevere i file audio
-    if "upload-audio" not in st.session_state:
-        from flask import Flask, request, jsonify
-
-        app = Flask(__name__)
-
-        @app.route('/upload-audio', methods=['POST'])
-        def upload_audio():
-            if 'file' not in request.files:
-                return jsonify({'error': 'No file part in the request'}), 400
-
-            audio_file = request.files['file']
-            if audio_file.filename == '':
-                return jsonify({'error': 'No file selected for uploading'}), 400
-
-            # Salva il file in una directory temporanea
-            temp_path = os.path.join(tempfile.gettempdir(), audio_file.filename)
-            audio_file.save(temp_path)
-
-            return jsonify({'status': 'success', 'file_path': temp_path}), 200
-
-        st.session_state["upload-audio"] = app
-
     # Interfaccia per registrare l'audio
     st.components.v1.html(get_audio_recorder_html(), height=500)
 
+    # Bottone per simulare il salvataggio del file
+    if "audio_blob" not in st.session_state:
+        st.session_state["audio_blob"] = None
+
+    # Simula un'interazione dal frontend per salvare il file
+    if st.session_state["audio_blob"]:
+        audio_data = base64.b64decode(st.session_state["audio_blob"])
+        saved_path = save_audio_file("recording.wav", audio_data)
+        st.success(f"File registrato e salvato: {saved_path}")
+        st.audio(saved_path)
+    
     # Mostra il file registrato
     audio_file_path = st.query_params.get("audio_file_path", [None])[0]
 
