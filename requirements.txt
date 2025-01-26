@@ -10,3 +10,4 @@ ffmpeg-python
 sounddevice 
 numpy 
 matplotlib 
+scipy
