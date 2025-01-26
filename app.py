@@ -87,7 +87,7 @@ elif mode == "Registra un nuovo audio":
         # Mostra l'interfaccia per registrare l'audio
         st.components.v1.html(get_audio_recorder_html(), height=500)
 
-    if 1<0:
+if 1<0:
         service = authenticate_drive()
         with st.spinner("Caricamento su Google Drive in corso..."):
             file_ids = upload_to_drive(service, output_file_name, temp_path, FOLDER_ID)
