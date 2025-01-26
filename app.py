@@ -101,23 +101,23 @@ elif mode == "Registra un nuovo audio":
 elif mode=="Trascrivi": 
     # Elenca i file nella cartella
     if os.path.exists(FOLDER_ID):
-        audio_files = [f for f in os.listdir(AUDIO_FOLDER) if f.endswith(('.wav', '.mp3', '.ogg'))]
+        audio_files = [f for f in os.listdir(FOLDER_ID) if f.endswith(('.wav', '.mp3', '.ogg'))]
         if audio_files:
-            st.title("File Audio Conservati")
+            st.title("File audio")
             selected_file = st.selectbox("Seleziona un file audio", audio_files)
 
             # Mostra il nome del file selezionato
             st.write(f"Hai selezionato: {selected_file}")
 
             # Riproduci l'audio selezionato
-            file_path = os.path.join(AUDIO_FOLDER, selected_file)
+            file_path = os.path.join(FOLDER_ID, selected_file)
             with open(file_path, "rb") as audio_file:
                 audio_bytes = audio_file.read()
                 st.audio(audio_bytes, format="audio/wav" if selected_file.endswith(".wav") else "audio/mp3")
         else:
             st.warning("Nessun file audio trovato nella cartella.")
     else:
-        st.error(f"La cartella {AUDIO_FOLDER} non esiste. Creala e aggiungi file audio.")
+        st.error(f"La cartella {FOLDER_ID} non esiste. Creala e aggiungi file audio.")
         
         # Pulsante per avviare la trascrizione
         if 1<0:#file_ids:
