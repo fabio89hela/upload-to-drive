@@ -60,19 +60,15 @@ def save_audio_file(file_name, audio_data):
         f.write(audio_data)
     return temp_path
 
-# Endpoint per ricevere dati audio
+# Event handler per catturare l'audio
 if "audio_blob" not in st.session_state:
     st.session_state["audio_blob"] = None
 
-@st.cache_data
-def process_audio_blob(audio_blob):
-    """Processa il blob audio inviato dal frontend."""
-    if audio_blob:
-        audio_data = base64.b64decode(audio_blob)
-        saved_path = save_audio_file("recording.wav", audio_data)
-        st.session_state["audio_blob"] = None  # Reset del blob dopo il salvataggio
-        return saved_path
-    return None
+# Ascolta gli eventi personalizzati per salvare il blob audio
+def handle_audio_blob(base64_blob):
+    st.session_state["audio_blob"] = base64_blob
+
+st.custom_event("sendAudio", handle_audio_blob)
     
 # Configura la pagina
 st.set_page_config(
@@ -114,15 +110,17 @@ elif mode == "Registra un nuovo audio":
     # Interfaccia per registrare l'audio
     st.components.v1.html(get_audio_recorder_html(), height=300)
 
-    # Controlla se il blob audio è stato inviato
+   # Controlla se il blob audio è stato inviato
     if st.session_state["audio_blob"]:
-        audio_file_path = process_audio_blob(st.session_state["audio_blob"])
+        audio_blob = st.session_state["audio_blob"]
+        audio_data = base64.b64decode(audio_blob)
+        audio_file_path = save_audio_file("recording.wav", audio_data)
 
-        if audio_file_path:
-            st.success(f"File audio registrato salvato in: {audio_file_path}")
-            st.audio(audio_file_path, format="audio/wav")
-        else:
-            st.warning("Nessun audio registrato trovato.")
+        st.success(f"File audio registrato salvato in: {audio_file_path}")
+        st.audio(audio_file_path, format="audio/wav")
+        st.session_state["audio_blob"] = None  # Reset blob dopo il salvataggio
+    else:
+        st.info("Registra un nuovo audio e invialo al backend.")
             
     if 1<0:
         service = authenticate_drive()
