@@ -16,7 +16,7 @@ N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #prod
 def authenticate_and_upload(file_name, file_path,cartella):
     if cartella=="EMATOLOGIA":
         FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
-    elif cartella="EMOFILIA":
+    elif cartella=="EMOFILIA":
         FOLDER_ID="1CH9Pw0ZoWFFF2gSlOEo9UVa45akAgrz-"
     else:
         FOLDER_ID="15FhRa5wa7zxNEN4GyGzJKtwc6q7jK2rR"
