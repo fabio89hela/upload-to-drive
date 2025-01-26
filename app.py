@@ -8,6 +8,10 @@ import requests
 import ffmpeg 
 import tempfile
 import base64
+import sounddevice as sd
+import numpy as np
+import matplotlib.pyplot as plt
+import wave
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -53,22 +57,46 @@ def get_transcriptions_from_n8n(file_id):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-# Funzione per salvare un file audio
-def save_audio_file(file_name, audio_data):
-    temp_path = os.path.join(tempfile.gettempdir(), file_name)
-    with open(temp_path, "wb") as f:
-        f.write(audio_data)
-    return temp_path
+# Variabili globali
+duration = st.slider("Durata della registrazione (in secondi):", min_value=1, max_value=60, value=5)
+sample_rate = 44100  # Frequenza di campionamento (44.1 kHz)
 
-# Event handler per catturare l'audio
-if "audio_blob" not in st.session_state:
-    st.session_state["audio_blob"] = None
+# Funzione per registrare l'audio
+def record_audio(duration, sample_rate):
+    """
+    Registra audio per una durata specificata e restituisce i dati audio e il sample rate.
+    """
+    st.info("Registrazione in corso...")
+    audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype="float64")
+    sd.wait()  # Aspetta che la registrazione finisca
+    st.success("Registrazione completata!")
+    return audio_data
 
-# Ascolta gli eventi personalizzati per salvare il blob audio
-def handle_audio_blob(base64_blob):
-    st.session_state["audio_blob"] = base64_blob
+# Funzione per salvare l'audio in un file WAV temporaneo
+def save_audio(audio_data, sample_rate):
+    """
+    Salva i dati audio in un file WAV temporaneo.
+    """
+    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
+    with wave.open(temp_file.name, "w") as wf:
+        wf.setnchannels(1)  # Mono
+        wf.setsampwidth(2)  # 2 byte per campione
+        wf.setframerate(sample_rate)
+        wf.writeframes((audio_data * 32767).astype(np.int16).tobytes())
+    return temp_file.name
 
-st.custom_event("sendAudio", handle_audio_blob)
+# Funzione per disegnare l'onda audio
+def plot_waveform(audio_data, sample_rate):
+    """
+    Disegna l'onda audio usando matplotlib.
+    """
+    fig, ax = plt.subplots(figsize=(10, 4))
+    time = np.linspace(0, len(audio_data) / sample_rate, num=len(audio_data))
+    ax.plot(time, audio_data, color="blue")
+    ax.set_xlabel("Tempo (s)")
+    ax.set_ylabel("Ampiezza")
+    ax.set_title("Onda Audio")
+    st.pyplot(fig)
     
 # Configura la pagina
 st.set_page_config(
@@ -107,20 +135,23 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    # Interfaccia per registrare l'audio
-    st.components.v1.html(get_audio_recorder_html(), height=300)
+    audio_data = record_audio(duration, sample_rate)
+    audio_data = audio_data.flatten()  # Trasforma in array 1D
+    plot_waveform(audio_data, sample_rate)  # Mostra l'onda audio
 
-   # Controlla se il blob audio è stato inviato
-    if st.session_state["audio_blob"]:
-        audio_blob = st.session_state["audio_blob"]
-        audio_data = base64.b64decode(audio_blob)
-        audio_file_path = save_audio_file("recording.wav", audio_data)
+    # Salva l'audio in un file temporaneo
+    temp_wav_path = save_audio(audio_data, sample_rate)
+    st.audio(temp_wav_path, format="audio/wav")
 
-        st.success(f"File audio registrato salvato in: {audio_file_path}")
-        st.audio(audio_file_path, format="audio/wav")
-        st.session_state["audio_blob"] = None  # Reset blob dopo il salvataggio
-    else:
-        st.info("Registra un nuovo audio e invialo al backend.")
+    # Conversione in OGG
+    st.info("Convertendo in formato OGG...")
+    temp_ogg_path = temp_wav_path.replace(".wav", ".ogg")
+    os.system(f"ffmpeg -i {temp_wav_path} -c:a libopus {temp_ogg_path}")
+    st.success("Conversione completata!")
+
+    # Mostra il file convertito
+    with open(temp_ogg_path, "rb") as f:
+        st.download_button("Scarica il file audio in formato OGG", f, file_name="registrazione.ogg")
             
     if 1<0:
         service = authenticate_drive()
