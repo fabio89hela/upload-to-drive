@@ -90,7 +90,7 @@ if mode == "Carica un file audio":
 
 elif mode == "Registra un nuovo audio":
     # Registrazione di un nuovo audio
-    st.components.v1.html(get_audio_recorder_html(), height=500)
+    st.components.v1.html(get_audio_recorder_html(), height=300)
     
     # Aspetta che il file venga caricato dal backend
     st.warning("Dopo la registrazione, premi STOP e aspetta che il file venga salvato.")
