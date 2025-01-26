@@ -3,15 +3,12 @@ import io
 import json
 import streamlit as st
 from upload_handler import authenticate_drive, upload_to_drive
-from audio_recorder import get_audio_recorder_html
 import requests
 import ffmpeg 
 import tempfile
-import base64
 import sounddevice as sd
 import numpy as np
-import matplotlib.pyplot as plt
-import wave
+from scipy.io.wavfile import write
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
