@@ -19,6 +19,25 @@ FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 
+# Layout della pagina
+st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
+
+# Titolo dell'app Streamlit
+st.title("Carica un file già registrato")
+
+# Pulsante per registrare un nuovo audio
+if st.button("Registra un nuovo audio"):
+    st.components.v1.html(get_audio_recorder_html(), height=500)
+
+# Pulsante per caricare un file audio locale
+uploaded_file = st.file_uploader("Carica un file audio salvato in locale", type=["ogg", "mp3", "wav"])
+if uploaded_file:
+    temp_path = f"./{uploaded_file.name}"
+    with open(temp_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    st.success(f"File caricato correttamente: {uploaded_file.name}")
+
+
 # Funzione per convertire il file audio in formato .ogg
 def convert_to_ogg(input_data, output_file_name):
     try:
@@ -52,12 +71,6 @@ def get_transcriptions_from_n8n(file_id):
     else:
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
-
-# Layout della pagina
-st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
-
-# Titolo dell'app Streamlit
-st.title("Carica un file già registrato")
 
 # Autenticazione con Google Drive
 service = authenticate_drive()
