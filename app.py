@@ -1,6 +1,5 @@
 import streamlit as st
 from io import BytesIO
-from audio_recorder import get_audio_recorder_html
 
 # Funzione per gestire la registrazione
 def handle_audio_upload():
