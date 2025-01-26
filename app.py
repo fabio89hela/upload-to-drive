@@ -60,17 +60,17 @@ def save_audio_file(file_name, audio_data):
         f.write(audio_data)
     return temp_path
 
-# Endpoint personalizzato per ricevere dati audio
-if "send_audio_blob" not in st.session_state:
+# Endpoint per ricevere dati audio
+if "audio_blob" not in st.session_state:
     st.session_state["audio_blob"] = None
 
-@st.cache_data
+@st.experimental_memo
 def process_audio_blob(audio_blob):
     """Processa il blob audio inviato dal frontend."""
     if audio_blob:
         audio_data = base64.b64decode(audio_blob)
         saved_path = save_audio_file("recording.wav", audio_data)
-        st.session_state["audio_blob"] = None  # Reset blob dopo il salvataggio
+        st.session_state["audio_blob"] = None  # Reset del blob dopo il salvataggio
         return saved_path
     return None
     
@@ -111,9 +111,10 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    st.components.v1.html(get_audio_recorder_html(), height=500)
-    
-    # Se il file audio è stato inviato
+    # Interfaccia per registrare l'audio
+    st.components.v1.html(get_audio_recorder_html(), height=300)
+
+    # Controlla se il blob audio è stato inviato
     if st.session_state["audio_blob"]:
         audio_file_path = process_audio_blob(st.session_state["audio_blob"])
 
