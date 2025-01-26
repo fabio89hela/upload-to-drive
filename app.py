@@ -14,7 +14,7 @@ N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #prod
 
 # Autenticazione Google Drive
 def authenticate_and_upload(file_name, file_path,cartella):
-    if cartella=="EMATOLOGIA":
+    if cartella=="Ematologia":
         FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
     elif cartella=="EMOFILIA":
         FOLDER_ID="1CH9Pw0ZoWFFF2gSlOEo9UVa45akAgrz-"
