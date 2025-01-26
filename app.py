@@ -24,14 +24,6 @@ def authenticate_and_upload(file_name, file_path):
 
 # Funzione per convertire il file audio in formato .ogg
 def convert_to_ogg(input_path, output_path):
-    """
-    Converte un file audio in formato OGG.
-    Args:
-        input_path (str): Percorso del file di input.
-        output_path (str): Percorso per il file convertito.
-    Returns:
-        bool: True se la conversione ha successo, False in caso contrario.
-    """
     try:
         ffmpeg.input(input_path).output(
             output_path,
@@ -104,10 +96,9 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    duration = st.slider("Durata della registrazione (secondi):", min_value=1, max_value=60, value=10)
     if st.button("Avvia Registrazione"):
         # Registra audio
-        audio_data, samplerate = record_audio(duration)
+        audio_data, samplerate = record_audio()
         if audio_data is not None:
             # Salva l'audio temporaneamente in WAV
             with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
