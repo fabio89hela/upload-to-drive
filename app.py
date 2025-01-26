@@ -54,46 +54,18 @@ def get_transcriptions_from_n8n(file_id):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-# Variabili globali
-duration = st.slider("Durata della registrazione (in secondi):", min_value=1, max_value=60, value=5)
-sample_rate = 44100  # Frequenza di campionamento (44.1 kHz)
-
-# Funzione per registrare l'audio
-def record_audio(duration, sample_rate):
-    """
-    Registra audio per una durata specificata e restituisce i dati audio e il sample rate.
-    """
-    st.info("Registrazione in corso...")
-    audio_data = sd.rec(int(duration * sample_rate), samplerate=sample_rate, channels=1, dtype="float64")
-    sd.wait()  # Aspetta che la registrazione finisca
-    st.success("Registrazione completata!")
-    return audio_data
-
-# Funzione per salvare l'audio in un file WAV temporaneo
-def save_audio(audio_data, sample_rate):
-    """
-    Salva i dati audio in un file WAV temporaneo.
-    """
-    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".wav")
-    with wave.open(temp_file.name, "w") as wf:
-        wf.setnchannels(1)  # Mono
-        wf.setsampwidth(2)  # 2 byte per campione
-        wf.setframerate(sample_rate)
-        wf.writeframes((audio_data * 32767).astype(np.int16).tobytes())
-    return temp_file.name
-
-# Funzione per disegnare l'onda audio
-def plot_waveform(audio_data, sample_rate):
-    """
-    Disegna l'onda audio usando matplotlib.
-    """
-    fig, ax = plt.subplots(figsize=(10, 4))
-    time = np.linspace(0, len(audio_data) / sample_rate, num=len(audio_data))
-    ax.plot(time, audio_data, color="blue")
-    ax.set_xlabel("Tempo (s)")
-    ax.set_ylabel("Ampiezza")
-    ax.set_title("Onda Audio")
-    st.pyplot(fig)
+# Funzione per registrare audio
+def record_audio(duration, samplerate=44100):
+    st.info("Inizializzando la registrazione...")
+    try:
+        # Registrazione audio
+        recording = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='float32')
+        sd.wait()  # Attende la fine della registrazione
+        st.success("Registrazione completata.")
+        return recording, samplerate
+    except Exception as e:
+        st.error(f"Errore durante la registrazione: {e}")
+        return None, None
     
 # Configura la pagina
 st.set_page_config(
@@ -132,23 +104,27 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    audio_data = record_audio(duration, sample_rate)
-    audio_data = audio_data.flatten()  # Trasforma in array 1D
-    plot_waveform(audio_data, sample_rate)  # Mostra l'onda audio
+    duration = st.slider("Durata della registrazione (secondi):", min_value=1, max_value=60, value=10)
+    if st.button("Avvia Registrazione"):
+        # Registra audio
+        audio_data, samplerate = record_audio(duration)
+        if audio_data is not None:
+            # Salva l'audio temporaneamente in WAV
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
+                wav_path = temp_wav_file.name
+                write(wav_path, samplerate, (audio_data * 32767).astype(np.int16))  # Salva come WAV
 
-    # Salva l'audio in un file temporaneo
-    temp_wav_path = save_audio(audio_data, sample_rate)
-    st.audio(temp_wav_path, format="audio/wav")
-
-    # Conversione in OGG
-    st.info("Convertendo in formato OGG...")
-    temp_ogg_path = temp_wav_path.replace(".wav", ".ogg")
-    os.system(f"ffmpeg -i {temp_wav_path} -c:a libopus {temp_ogg_path}")
-    st.success("Conversione completata!")
-
-    # Mostra il file convertito
-    with open(temp_ogg_path, "rb") as f:
-        st.download_button("Scarica il file audio in formato OGG", f, file_name="registrazione.ogg")
+            # Percorso per il file convertito
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
+                ogg_path = temp_ogg_file.name
+            # Conversione in OGG
+            st.info("Salvataggio file...")
+            if convert_to_ogg(input_path, output_path):
+                # Carica su Google Drive
+                file_id = authenticate_and_upload("converted_audio.ogg", output_path)
+                st.success(f"File caricato su Google Drive con ID: {file_id}")
+            else:
+                st.error("Impossibile completare la conversione in ogg.")
             
     if 1<0:
         service = authenticate_drive()
