@@ -7,15 +7,20 @@ from audio_recorder import get_audio_recorder_html
 import requests
 import ffmpeg 
 import tempfile
+from datetime import datetime
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 
 # Autenticazione Google Drive
-def authenticate_and_upload(file_name, file_path):
-    FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  # Cambia con l'ID della tua cartella Drive
+def authenticate_and_upload(file_name, file_path,cartella):
+    if cartella=="EMATOLOGIA":
+        FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
+    elif cartella="EMOFILIA":
+        FOLDER_ID="1CH9Pw0ZoWFFF2gSlOEo9UVa45akAgrz-"
+    else:
+        FOLDER_ID="15FhRa5wa7zxNEN4GyGzJKtwc6q7jK2rR"
     service = authenticate_drive()
-
     # Carica il file su Google Drive
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
     return file_id
@@ -57,9 +62,16 @@ st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width
 st.title("Carica un file già registrato")
 
 # Scelta modalità: Caricamento o Registrazione
-mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"])
+mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio","Trascrivi"])
 
 if mode == "Carica un file audio":
+    # Scelta cartella
+    cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
+
+    # Scelta farmacista e data
+    fo=st.text_input("Indica il nome del farmacista intervistato", value="")
+    data=now.strftime("%Y%m%d_%H%M%S")
+    
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
     if uploaded_file:
@@ -70,13 +82,14 @@ if mode == "Carica un file audio":
         # Percorso per il file convertito
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
             output_path = temp_ogg_file.name
+            output_path2=data+fo+".ogg"
 
         # Conversione in OGG
         st.info("Salvataggio file...")
-        if convert_to_ogg(input_path, output_path):
+        if convert_to_ogg(input_path, output_path2):
             # Carica su Google Drive
-            file_id = authenticate_and_upload("converted_audio.ogg", output_path)
-            st.success(f"File caricato su Google Drive con ID: {file_id}")
+            file_ids = authenticate_and_upload("converted_audio.ogg", output_path2)
+            st.success(f"File caricato correttamente su Google Drive")
         else:
             st.error("Impossibile completare la conversione in ogg.")
 
@@ -84,14 +97,29 @@ elif mode == "Registra un nuovo audio":
         # Mostra l'interfaccia per registrare l'audio
         st.components.v1.html(get_audio_recorder_html(), height=500)
 
-if 1<0:
-        service = authenticate_drive()
-        with st.spinner("Caricamento su Google Drive in corso..."):
-            file_ids = upload_to_drive(service, output_file_name, temp_path, FOLDER_ID)
-            st.success(f"File caricato con successo su Google Drive! IDs del file: {file_ids}")
-    
+elif mode=="Trascrivi": 
+    # Elenca i file nella cartella
+    if os.path.exists(FOLDER_ID):
+        audio_files = [f for f in os.listdir(AUDIO_FOLDER) if f.endswith(('.wav', '.mp3', '.ogg'))]
+        if audio_files:
+            st.title("File Audio Conservati")
+            selected_file = st.selectbox("Seleziona un file audio", audio_files)
+
+            # Mostra il nome del file selezionato
+            st.write(f"Hai selezionato: {selected_file}")
+
+            # Riproduci l'audio selezionato
+            file_path = os.path.join(AUDIO_FOLDER, selected_file)
+            with open(file_path, "rb") as audio_file:
+                audio_bytes = audio_file.read()
+                st.audio(audio_bytes, format="audio/wav" if selected_file.endswith(".wav") else "audio/mp3")
+        else:
+            st.warning("Nessun file audio trovato nella cartella.")
+    else:
+        st.error(f"La cartella {AUDIO_FOLDER} non esiste. Creala e aggiungi file audio.")
+        
         # Pulsante per avviare la trascrizione
-        if file_ids:
+        if 1<0:#file_ids:
             transcriptions=[]
             # Itera su ciascun ID del file
             with st.spinner("Esecuzione della trascrizione..."):
@@ -101,6 +129,7 @@ if 1<0:
                     transcriptions.append(transcription)
         else:
             st.error("Inserisci almeno un ID file per procedere.")
-        combined_transcription = "\n".join(transcriptions)
-        st.write(combined_transcription)
-        st.text_area("Trascrizione combinata:", combined_transcription, height=600)
+            
+        #combined_transcription = "\n".join(transcriptions)
+        #st.write(combined_transcription)
+        #st.text_area("Trascrizione combinata:", combined_transcription, height=600)
