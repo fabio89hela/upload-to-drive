@@ -84,32 +84,8 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    if st.button("Avvia Registrazione"):
-        st.info("Registrazione in corso... premi Stop per fermare.")
-        recording_thread = threading.Thread(target=start_recording)
-        recording_thread.start()
-
-    if st.button("Stop"):
-        st.info("Fermando la registrazione...")
-        recorded_audio, samplerate = stop_recording()
-
-        # Salva il file WAV temporaneamente
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav_file:
-            wav_path = temp_wav_file.name
-            write(wav_path, samplerate, (recorded_audio * 32767).astype(np.int16))  # Salva come WAV
-
-        # Percorso per il file convertito
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-            ogg_path = temp_ogg_file.name     
-
-        # Conversione in OGG
-        st.info("Convertendo il file in formato OGG...")
-        if convert_to_ogg(wav_path, ogg_path):
-            # Carica su Google Drive
-            file_id = authenticate_and_upload("converted_audio.ogg", output_path)
-            st.success(f"File caricato su Google Drive con ID: {file_id}")
-        else:
-            st.error("Impossibile completare la conversione in ogg.")
+        # Mostra l'interfaccia per registrare l'audio
+        st.components.v1.html(get_audio_recorder_html(), height=500)
 
     if 1<0:
         service = authenticate_drive()
