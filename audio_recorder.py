@@ -1,6 +1,6 @@
 def get_audio_recorder_html():
     """
-    Genera il codice HTML e JavaScript per registrare l'audio e inviarlo al backend Streamlit.
+    Genera il codice HTML e JavaScript per registrare l'audio e inviarlo al backend Streamlit tramite Streamlit Custom Events.
     """
     return """
     <div style="text-align: center; margin-top: 20px;">
@@ -18,7 +18,6 @@ def get_audio_recorder_html():
       const statusMsg = document.getElementById("statusMsg");
 
       startBtn.addEventListener("click", async () => {
-        // Richiedi permesso per il microfono e inizializza la registrazione
         statusMsg.textContent = "Recording..."; // Messaggio di stato
         startBtn.disabled = true;
         stopBtn.disabled = false;
@@ -34,6 +33,7 @@ def get_audio_recorder_html():
           };
 
           mediaRecorder.start();
+          audioChunks = [];
         } catch (error) {
           statusMsg.textContent = "Errore: impossibile accedere al microfono.";
           console.error("Errore durante la registrazione:", error);
@@ -41,11 +41,9 @@ def get_audio_recorder_html():
       });
 
       stopBtn.addEventListener("click", async () => {
-        // Ferma la registrazione
+        statusMsg.textContent = "Processing audio..."; // Messaggio di stato
         stopBtn.disabled = true;
         startBtn.disabled = false;
-
-        statusMsg.textContent = "Processing audio..."; // Messaggio di stato
 
         mediaRecorder.stop();
 
@@ -55,24 +53,10 @@ def get_audio_recorder_html():
 
           reader.onloadend = () => {
             const base64data = reader.result.split(",")[1]; // Estrai il contenuto Base64
-
-            // Invia il file audio al backend Streamlit
-            fetch("/_stcore/send_audio_blob", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ audio_blob: base64data }),
-            }).then((response) => {
-              if (response.ok) {
-                statusMsg.textContent = "Audio inviato con successo al backend!";
-              } else {
-                statusMsg.textContent = "Errore durante l'invio dell'audio.";
-              }
-            }).catch((error) => {
-              console.error("Errore durante l'invio dell'audio:", error);
-              statusMsg.textContent = "Errore durante l'invio dell'audio.";
-            });
+            // Invia i dati al backend Streamlit usando streamlit-custom-event
+            const event = new CustomEvent("streamlit:sendAudio", { detail: base64data });
+            document.dispatchEvent(event);
+            statusMsg.textContent = "Audio inviato con successo al backend!";
           };
 
           reader.readAsDataURL(audioBlob); // Leggi il Blob audio
