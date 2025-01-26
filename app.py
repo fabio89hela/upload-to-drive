@@ -89,10 +89,41 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    # Registrazione di un nuovo audio
-    st.components.v1.html(get_audio_recorder_html(), height=300)
+    # Endpoint personalizzato per ricevere i file audio
+    if "upload-audio" not in st.session_state:
+        from flask import Flask, request, jsonify
+
+        app = Flask(__name__)
+
+        @app.route('/upload-audio', methods=['POST'])
+        def upload_audio():
+            if 'file' not in request.files:
+                return jsonify({'error': 'No file part in the request'}), 400
+
+            audio_file = request.files['file']
+            if audio_file.filename == '':
+                return jsonify({'error': 'No file selected for uploading'}), 400
+
+            # Salva il file in una directory temporanea
+            temp_path = os.path.join(tempfile.gettempdir(), audio_file.filename)
+            audio_file.save(temp_path)
+
+            return jsonify({'status': 'success', 'file_path': temp_path}), 200
+
+        st.session_state["upload-audio"] = app
+
+    # Interfaccia per registrare l'audio
+    st.components.v1.html(get_audio_recorder_html(), height=400)
+
+    # Mostra il file registrato
+    audio_file_path = st.query_params.get("audio_file_path", [None])[0]
+
+    if audio_file_path:
+        st.success(f"File audio salvato: {audio_file_path}")
+        st.audio(audio_file_path, format="audio/wav")
+    else:
+        st.warning("Nessun file audio registrato trovato.")
     
-    # Aspetta che il file venga caricato dal backend
     st.warning("Dopo la registrazione, premi STOP e aspetta che il file venga salvato.")
     if st.button("Carica file registrato su Google Drive"):
         response = st.query_params.get("audio_file_path", [None])[0]
