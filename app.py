@@ -62,6 +62,12 @@ mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuov
 if mode == "Carica un file audio":
     # Scelta cartella
     cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
+    if cartella=="Ematologia":
+        c="Ematologia"
+    elif cartella=="Emofilia":
+        c="Emofilia"
+    else:
+        c="Oncoematologia"
 
     # Scelta farmacista e data
     fo=st.text_input("Indica il nome del farmacista intervistato", value="")
@@ -83,7 +89,7 @@ if mode == "Carica un file audio":
         st.info("Salvataggio file...")
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
-            file_ids = authenticate_and_upload(cartella+"_"+data+"_"+fo+".ogg", output_path,cartella)
+            file_ids = authenticate_and_upload(c+"_"+data+"_"+fo+".ogg", output_path)
             st.success(f"File caricato correttamente su Google Drive")
         else:
             st.error("Impossibile completare la conversione in ogg.")
