@@ -21,61 +21,6 @@ FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 
-# Aggiungi stile personalizzato
-def add_custom_css():
-    st.markdown(
-        """
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-        html, body, [class*="css"]  {
-            font-family: 'Poppins', sans-serif;
-            color: #333333;  /* Colore del testo */
-        }
-
-        .stButton>button {
-            background-color: #0078d7; /* Blu principale */
-            color: #ffffff; /* Testo bianco */
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            padding: 10px 20px;
-            border: none;
-        }
-        
-        .stButton>button:hover {
-            background-color: #005a9e; /* Hover più scuro */
-            color: #ffffff; /* Testo bianco */
-        }
-
-        .stTextInput>div>div>input {
-            border: 1px solid #005a9e; /* Bordo blu */
-            border-radius: 6px;
-            padding: 8px;
-        }
-
-        .stMarkdown {
-            color: #333333;
-            font-size: 18px;
-            font-weight: 400;
-        }
-
-        .stHeader {
-            color: #0078d7;
-            font-size: 28px;
-            font-weight: 600;
-        }
-        
-        .stSidebar {
-            background-color: #f5f5f5; /* Sfondo grigio chiaro */
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
-add_custom_css()
-
 # Funzione per autenticarsi con Google Drive
 def authenticate_drive():
     # Creazione delle credenziali dai segreti di Streamlit
