@@ -100,7 +100,7 @@ elif mode == "Registra un nuovo audio":
 
 elif mode=="Trascrivi": 
     # Elenca i file nella cartella
-    if os.path.exists(FOLDER_ID):
+    if os.path.exists("https://drive.google.com/drive/folders/"+FOLDER_ID):
         audio_files = [f for f in os.listdir(FOLDER_ID) if f.endswith(('.wav', '.mp3', '.ogg'))]
         if audio_files:
             st.title("File audio")
