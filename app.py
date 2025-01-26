@@ -95,7 +95,7 @@ elif mode == "Registra un nuovo audio":
     # Aspetta che il file venga caricato dal backend
     st.warning("Dopo la registrazione, premi STOP e aspetta che il file venga salvato.")
     if st.button("Carica file registrato su Google Drive"):
-        response = st.query_params().get("audio_file_path", [None])[0]
+        response = st.query_params.get("audio_file_path", [None])[0]
         if response:
             input_path = response
 
