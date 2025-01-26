@@ -7,6 +7,7 @@ from audio_recorder import get_audio_recorder_html
 import requests
 import ffmpeg 
 import tempfile
+import base64
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -52,6 +53,27 @@ def get_transcriptions_from_n8n(file_id):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
+# Funzione per salvare un file audio
+def save_audio_file(file_name, audio_data):
+    temp_path = os.path.join(tempfile.gettempdir(), file_name)
+    with open(temp_path, "wb") as f:
+        f.write(audio_data)
+    return temp_path
+
+# Endpoint personalizzato per ricevere dati audio
+if "send_audio_blob" not in st.session_state:
+    st.session_state["audio_blob"] = None
+
+@st.experimental_singleton
+def process_audio_blob(audio_blob):
+    """Processa il blob audio inviato dal frontend."""
+    if audio_blob:
+        audio_data = base64.b64decode(audio_blob)
+        saved_path = save_audio_file("recording.wav", audio_data)
+        st.session_state["audio_blob"] = None  # Reset blob dopo il salvataggio
+        return saved_path
+    return None
+    
 # Configura la pagina
 st.set_page_config(
     page_title="T-EMA App",
@@ -89,49 +111,18 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    # Interfaccia per registrare l'audio
     st.components.v1.html(get_audio_recorder_html(), height=500)
-
-    # Bottone per simulare il salvataggio del file
-    if "audio_blob" not in st.session_state:
-        st.session_state["audio_blob"] = None
-
-    # Simula un'interazione dal frontend per salvare il file
+    
+    # Se il file audio è stato inviato
     if st.session_state["audio_blob"]:
-        audio_data = base64.b64decode(st.session_state["audio_blob"])
-        saved_path = save_audio_file("recording.wav", audio_data)
-        st.success(f"File registrato e salvato: {saved_path}")
-        st.audio(saved_path)
-    
-    # Mostra il file registrato
-    audio_file_path = st.query_params.get("audio_file_path", [None])[0]
+        audio_file_path = process_audio_blob(st.session_state["audio_blob"])
 
-    if audio_file_path:
-        st.success(f"File audio salvato: {audio_file_path}")
-        st.audio(audio_file_path, format="audio/wav")
-    else:
-        st.warning("Nessun file audio registrato trovato.")
-    
-    st.warning("Dopo la registrazione, premi STOP e aspetta che il file venga salvato.")
-    if st.button("Carica file registrato su Google Drive"):
-        response = st.query_params.get("audio_file_path", [None])[0]
-        if response:
-            input_path = response
-
-            # Percorso per il file convertito
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-                output_path = temp_ogg_file.name
-
-            # Conversione in OGG
-            if convert_to_ogg(input_path, output_path):
-                # Carica su Google Drive
-                file_id = authenticate_and_upload("recorded_audio.ogg", output_path)
-                st.success(f"File caricato su Google Drive con ID: {file_id}")
-            else:
-                st.error("Impossibile completare la conversione.")
+        if audio_file_path:
+            st.success(f"File audio registrato salvato in: {audio_file_path}")
+            st.audio(audio_file_path, format="audio/wav")
         else:
-            st.error("Nessun file registrato trovato.")
-
+            st.warning("Nessun audio registrato trovato.")
+            
     if 1<0:
         service = authenticate_drive()
         with st.spinner("Caricamento su Google Drive in corso..."):
