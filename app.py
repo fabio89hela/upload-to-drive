@@ -83,13 +83,12 @@ if mode == "Carica un file audio":
         # Percorso per il file convertito
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
             output_path = temp_ogg_file.name
-            output_path2=data+fo+".ogg"
 
         # Conversione in OGG
         st.info("Salvataggio file...")
         if convert_to_ogg(input_path, output_path2):
             # Carica su Google Drive
-            file_ids = authenticate_and_upload("converted_audio.ogg", output_path2)
+            file_ids = authenticate_and_upload(data+"_"+fo+".ogg", output_path)
             st.success(f"File caricato correttamente su Google Drive")
         else:
             st.error("Impossibile completare la conversione in ogg.")
