@@ -88,7 +88,7 @@ if mode == "Carica un file audio":
         st.info("Salvataggio file...")
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
-            file_ids = authenticate_and_upload(data+"_"+fo+".ogg", output_path)
+            file_ids = authenticate_and_upload(data+"_"+fo+".ogg", output_path,cartella)
             st.success(f"File caricato correttamente su Google Drive")
         else:
             st.error("Impossibile completare la conversione in ogg.")
