@@ -280,18 +280,37 @@ if uploaded_file:
         };
 
         mediaRecorder.onstop = () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
-          const audioURL = URL.createObjectURL(audioBlob);
+      // Crea il Blob audio
+      const audioBlob = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
 
-          audioPlayback.src = audioURL;
-          audioPlayback.style.display = 'block';
+      // Crea un URL per l'audio registrato (per il player)
+      const audioURL = URL.createObjectURL(audioBlob);
 
-          cancelAnimationFrame(animationId);
-        };
+      // Mostra l'audio nel player
+      audioPlayback.src = audioURL;
+      audioPlayback.style.display = 'block';
 
+      // Invia il file audio al backend
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'recording.ogg');
+
+      fetch('/audio-upload', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('File audio inviato con successo:', data);
+        })
+        .catch((error) => {
+          console.error('Errore durante l\'invio del file audio:', error);
+        });
+
+      // Ferma il rendering dell'onda
+      cancelAnimationFrame(animationId);
+    };
         mediaRecorder.start();
         drawWaveform();
-
         startBtn.disabled = true;
         pauseBtn.disabled = false;
         stopBtn.disabled = false;
@@ -329,6 +348,7 @@ if uploaded_file:
     """,
     height=500,
 )
+        
     # Salva temporaneamente il file localmente
     #temp_file_path = os.path.join(os.getcwd(), uploaded_file.name)
     #with open(temp_file_path, "wb") as f:
