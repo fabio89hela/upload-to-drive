@@ -64,7 +64,7 @@ def save_audio_file(file_name, audio_data):
 if "audio_blob" not in st.session_state:
     st.session_state["audio_blob"] = None
 
-@st.experimental_memo
+@st.cache_data
 def process_audio_blob(audio_blob):
     """Processa il blob audio inviato dal frontend."""
     if audio_blob:
