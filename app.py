@@ -95,9 +95,10 @@ if mode == "Carica un file audio":
             temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
             if not st.session_state["file_uploaded"]:
                 file_ids = authenticate_and_upload(temp_name_personalised, output_path)
-                st.session_state["file_uploaded"]=True
+                st.session_state["file_uploaded"]=file_ids
             st.success(f"File caricato correttamente su Google Drive")
             if st.button("Trascrivi il file caricato"):
+                file_ids=st.session_state["file_uploaded"]
                 if file_ids:
                     transcriptions=[]
                     # Itera su ciascun ID del file
