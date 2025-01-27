@@ -102,7 +102,6 @@ if mode == "Carica un file audio":
                 else:
                     st.error("Inserisci almeno un ID file per procedere.")       
                 combined_transcription = "\n".join(transcriptions)
-                st.write(combined_transcription)
                 st.text_area("Trascrizione:", combined_transcription, height=600)
         else:
             st.error("Impossibile completare la conversione in ogg.")
