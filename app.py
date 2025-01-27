@@ -105,7 +105,7 @@ if mode == "Carica un file audio":
                     # Itera su ciascun ID del file
                     with st.spinner("Esecuzione della trascrizione..."):
                         for file_id in file_ids:
-                            #transcription=get_transcriptions_from_n8n(file_id)
+                            transcription=get_transcriptions_from_n8n(file_id)
                             transcriptions.append(transcription)
                 else:
                     st.error("Inserisci almeno un ID file per procedere.")       
