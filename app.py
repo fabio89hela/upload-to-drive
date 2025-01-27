@@ -16,7 +16,6 @@ FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 
 # Autenticazione Google Drive
 def authenticate_and_upload(file_name, file_path):
-    service = authenticate_drive()
     # Carica il file su Google Drive
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
     return file_id
@@ -90,6 +89,7 @@ if mode == "Carica un file audio":
         # Conversione in OGG
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
+            service = authenticate_drive()
             if file_already_uploaded(service,FOLDER_ID,file_ids[0]):
                 file_ids = authenticate_and_upload(c+"_"+data+"_"+fo+".ogg", output_path)
             st.success(f"File caricato correttamente su Google Drive")
