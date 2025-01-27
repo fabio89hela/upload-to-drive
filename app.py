@@ -89,7 +89,8 @@ if mode == "Carica un file audio":
         # Conversione in OGG
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
-            file_ids = authenticate_and_upload(c+"_"+data+"_"+fo+".ogg", output_path)
+            if file_already_uploaded(service,FOLDER_ID,file_ids[0]):
+                file_ids = authenticate_and_upload(c+"_"+data+"_"+fo+".ogg", output_path)
             st.success(f"File caricato correttamente su Google Drive")
             if st.button("Trascrivi il file caricato"):
                 if file_ids:
@@ -97,7 +98,7 @@ if mode == "Carica un file audio":
                     # Itera su ciascun ID del file
                     with st.spinner("Esecuzione della trascrizione..."):
                         for file_id in file_ids:
-                            transcription=get_transcriptions_from_n8n(file_id)
+                            #transcription=get_transcriptions_from_n8n(file_id)
                             transcriptions.append(transcription)
                 else:
                     st.error("Inserisci almeno un ID file per procedere.")       
