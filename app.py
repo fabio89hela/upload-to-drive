@@ -37,6 +37,7 @@ def convert_to_ogg(input_path, output_path):
 # Funzione per inviare una lista di file a n8n e ricevere le trascrizioni
 def get_transcriptions_from_n8n(file_id):
     payload = {"file_id": file_id}
+    payload["prompt"]="Trascrivi la riunione e formatta come interventi dei diversi partecipanti"
     response = requests.post(N8N_WEBHOOK_URL, json=payload)
     if response.status_code == 200:
         transcription = response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
@@ -103,6 +104,21 @@ if mode == "Carica un file audio":
                     st.error("Inserisci almeno un ID file per procedere.")       
                 combined_transcription = "\n".join(transcriptions)
                 st.text_area("Trascrizione:", combined_transcription, height=600)
+                if st.button("Salva la trascrizione su Google Drive"):
+                    if transcription_content.strip():
+                        # Salva il contenuto temporaneamente come file di testo
+                        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
+                            temp_text_file.write(transcription_content.encode('utf-8'))
+                            temp_text_file_path = temp_text_file.name
+                        # Carica il file su Google Drive
+                        file_name = f"Trascrizione_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+                        try:
+                            file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                            st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
+                        except Exception as e:
+                            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+                    else:
+                        st.warning("L'area di testo è vuota. Inserisci del testo per salvare.")
         else:
             st.error("Impossibile completare la conversione in ogg.")
 
