@@ -10,7 +10,7 @@ import tempfile
 from datetime import datetime
 
 if "file_uploaded" not in st.session_state:
-    st.session_state["file_uploaded"] = False
+    st.session_state["file_uploaded"] = []
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -98,6 +98,7 @@ if mode == "Carica un file audio":
                 st.session_state["file_uploaded"]=file_ids
             st.success(f"File caricato correttamente su Google Drive")
             if st.button("Trascrivi il file caricato"):
+                st.write(st.session_state["file_uploaded"])
                 file_ids=st.session_state["file_uploaded"]
                 if file_ids:
                     transcriptions=[]
