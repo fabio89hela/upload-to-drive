@@ -8,7 +8,9 @@ import requests
 import ffmpeg 
 import tempfile
 from datetime import datetime
-from file_already_uploaded import file_already_uploaded
+
+if "file_uploaded" not in st.session_state:
+    st.session_state["file_uploaded"] = False
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -16,6 +18,7 @@ FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"
 
 # Autenticazione Google Drive
 def authenticate_and_upload(file_name, file_path):
+    service = authenticate_drive()
     # Carica il file su Google Drive
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
     return file_id
@@ -89,9 +92,10 @@ if mode == "Carica un file audio":
         # Conversione in OGG
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
-            service = authenticate_drive()
-            if file_already_uploaded(service,FOLDER_ID,file_ids[0]):
-                file_ids = authenticate_and_upload(c+"_"+data+"_"+fo+".ogg", output_path)
+            temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
+            if not st.session_state["file_uploaded"]:
+                file_ids = authenticate_and_upload(temp_name_personalised, output_path)
+                st.session_state["file_uploaded"]=True
             st.success(f"File caricato correttamente su Google Drive")
             if st.button("Trascrivi il file caricato"):
                 if file_ids:
