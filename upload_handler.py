@@ -35,7 +35,7 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
                 ).run(overwrite_output=True)
                 st.write("Segmentazione completata.")
             except ffmpeg.Error as e:
-                raise RuntimeError(f"Errore durante la suddivisione del file: {e}")
+                st.write(e)
             segments = os.listdir(temp_dir)
             if not segments:
                 raise RuntimeError("La segmentazione non ha prodotto alcun file.")
