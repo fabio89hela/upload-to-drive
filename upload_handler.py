@@ -23,13 +23,10 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
     # Lista degli ID dei file caricati
     uploaded_file_ids = []
     if file_size_mb > max_size_mb:
-        st.write("qui")
         # Crea una directory temporanea per i segmenti
         with tempfile.TemporaryDirectory() as temp_dir:
             segment_prefix = file_name.rsplit('.', 1)[0]  # Nome base senza estensione
             segment_pattern = os.path.join(temp_dir, f"{segment_prefix}_%03d.ogg")
-            st.write(segment_prefix)
-            st.write(segment_pattern)
             # Usa ffmpeg per dividere il file in segmenti più piccoli
             segment_duration =600 #int((max_size_mb * 1024 * 1024) / (file_size_mb / 60))  # Durata stimata in secondi
             try:
@@ -40,12 +37,15 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
                 raise RuntimeError(f"Errore durante la suddivisione del file: {e.stderr.decode()}")
             # Carica ogni segmento su Google Drive
             for segment_file in sorted(os.listdir(temp_dir)):
+                st.write(segment_file)
                 if segment_file.startswith(segment_prefix) and segment_file.endswith(".ogg"):
                     segment_path = os.path.join(temp_dir, segment_file)
                     segment_metadata = {"name": segment_file, "parents": [folder_id]}
                     segment_media = MediaFileUpload(segment_path, resumable=True)
                     file = service.files().create(body=segment_metadata, media_body=segment_media, fields="id").execute()
                     uploaded_file_ids.append(file.get("id"))
+                else:
+                    st.write("siamo qui")
     else:
         # Carica il file intero se non supera il limite
         file_metadata = {"name": file_name, "parents": [folder_id]}
