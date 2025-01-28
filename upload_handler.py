@@ -32,14 +32,14 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
             try:
                 ffmpeg.input(file_path).output(
                     segment_pattern, f="segment", segment_time=segment_duration, c="copy"
-                ).run(overwrite_output=True)
+                ).run(overwrite_output=False)
                 st.write("Segmentazione completata.")
             except ffmpeg.Error as e:
                 raise RuntimeError(f"Errore durante la suddivisione del file: {e.stderr.decode()}")
             segments = os.listdir(temp_dir)
             if not segments:
                 raise RuntimeError("La segmentazione non ha prodotto alcun file.")
-                st.write(f"Segmenti trovati: {segments}")
+            st.write(f"Segmenti trovati: {segments}")
             # Carica ogni segmento su Google Drive
             for segment_file in sorted(os.listdir(temp_dir)):
                 if segment_file.startswith(segment_prefix) and segment_file.endswith(".ogg"):
