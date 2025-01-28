@@ -68,15 +68,17 @@ if mode == "Carica un file audio":
     cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
     if cartella=="Ematologia":
         c="Ematologia"
+        FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
     elif cartella=="Emofilia":
         c="Emofilia"
+        FOLDER_ID = "1CH9Pw0ZoWFFF2gSlOEo9UVa45akAgrz-"  
     else:
         c="Oncoematologia"
+        FOLDER_ID = "15FhRa5wa7zxNEN4GyGzJKtwc6q7jK2rR"  
 
     # Scelta farmacista e data
     fo=st.text_input("Indica il nome del farmacista intervistato", value="")
-    now = datetime.now()
-    data=now.strftime("%Y%m%d_%H%M%S")
+    data=st.date_input("Data dell'intervista", value="today")
     
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
