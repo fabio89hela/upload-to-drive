@@ -80,7 +80,7 @@ if mode == "Carica un file audio":
     fo=st.text_input("Indica il nome del farmacista intervistato", value="")
     data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
     now = datetime.now()
-    data=data_valore.strftime("%Y-%m-%d")+now.strftime("%H:%M:%S")
+    data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H:%M:%S")
     
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
