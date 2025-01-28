@@ -16,6 +16,14 @@ if "file_uploaded" not in st.session_state:
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
 
+def convert_mp3_to_wav(input_path, output_path):
+    try:
+        ffmpeg.input(input_path).output(output_path, format="wav").run(overwrite_output=True)
+        return True
+    except ffmpeg.Error as e:
+        st.error(f"Errore durante la conversione MP3 -> WAV: {e.stderr.decode()}")
+        return False
+
 # Autenticazione Google Drive
 def authenticate_and_upload(file_name, file_path):
     service = authenticate_drive()
@@ -93,6 +101,9 @@ if mode == "Carica un file audio":
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
             output_path = temp_ogg_file.name
 
+        if convert_mp3_to_wav(input_path, output_path):
+        st.success("Conversione completata con successo!")
+        
         # Conversione in OGG
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
