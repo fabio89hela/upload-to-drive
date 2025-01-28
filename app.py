@@ -97,6 +97,8 @@ if mode == "Carica un file audio":
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
             temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
+            st.write(temp_name_personalised)
+            st.write( output_path)
             if not st.session_state["file_uploaded"]:
                 file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                 st.session_state["file_uploaded"]=file_ids
