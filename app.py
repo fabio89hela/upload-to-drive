@@ -126,7 +126,7 @@ if mode == "Carica un file audio":
                 if st.button("Salva la trascrizione su Google Drive"):
                         st.write("qui")
                         # Salva il contenuto temporaneamente come file di testo
-                        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
+                        #with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
                             #temp_text_file.write(transcription_content.encode('utf-8'))
                             #temp_text_file_path = temp_text_file.name
                         # Carica il file su Google Drive
