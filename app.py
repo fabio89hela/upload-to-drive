@@ -13,6 +13,9 @@ from datetime import datetime
 if "file_uploaded" not in st.session_state:
     st.session_state["file_uploaded"] = []
 
+if "transcription" not in st.session_state:
+    st.sessions_state["transcription"]=""
+
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder("Ematologia")
@@ -122,22 +125,22 @@ if mode == "Carica un file audio":
                 else:
                     st.error("Inserisci almeno un ID file per procedere.")       
                 combined_transcription = "\n".join(transcriptions)
-                transcription_content=st.text_area("Trascrizione:", combined_transcription, height=600)
-                if st.button("Salva la trascrizione su Google Drive"):
-                    st.write("qui")
+                st.session_state["transcription"] = combined_transcription
+                if "transcription" in st.session_state and st.session_state["transcription"]:
+                    transcription_content = st.session_state["transcription"]
+                    transcription_content = st.text_area("Trascrizione:", transcription_content, height=600)
+                    if st.button("Salva la trascrizione su Google Drive"):
                         # Salva il contenuto temporaneamente come file di testo
-                        #with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
-                            #temp_text_file.write(transcription_content.encode('utf-8'))
-                            #temp_text_file_path = temp_text_file.name
+                        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
+                            temp_text_file.write(transcription_content.encode('utf-8'))
+                            temp_text_file_path = temp_text_file.name
                         # Carica il file su Google Drive
-                    file_name = f"Trascrizione_{temp_name_personalised}.txt"
-                        #try:
-                        #    st.write(file_name)
-                        #    st.write(temp_text_file_path)
-                            #file_id = authenticate_and_upload(file_name, temp_text_file_path)
-                        #    st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
-                        #except Exception as e:
-                        #    st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+                        file_name = f"Trascrizione_{temp_name_personalised}.txt"
+                        try:
+                            file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                            st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
+                        except Exception as e:
+                            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
         else:
             st.error("Impossibile completare la conversione in ogg.")
 
