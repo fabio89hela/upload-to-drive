@@ -99,18 +99,17 @@ if mode == "Carica un file audio":
             output_path = temp_ogg_file.name
 
         if convert_mp3_to_wav(input_path, output_path):
-            st.success("Conversione completata con successo!")
+            a=1
+            #st.success("Conversione completata con successo!")
         
         # Conversione in OGG
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
             temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-            st.write(temp_name_personalised)
-            st.write( output_path)
             if not st.session_state["file_uploaded"]:
                 file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                 st.session_state["file_uploaded"]=file_ids
-            st.success(f"File caricato correttamente su Google Drive")
+            st.success(f"File caricato su Google Drive")
             if st.button("Trascrivi il file caricato"):
                 file_ids=st.session_state["file_uploaded"]
                 if file_ids:
@@ -131,8 +130,10 @@ if mode == "Carica un file audio":
                             temp_text_file.write(transcription_content.encode('utf-8'))
                             temp_text_file_path = temp_text_file.name
                         # Carica il file su Google Drive
-                        file_name = f"Trascrizione_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
+                        file_name = f"Trascrizione_{temp_name_personalised}.txt"
                         try:
+                            st.write(file_name)
+                            st.write(temp_text_file_path)
                             file_id = authenticate_and_upload(file_name, temp_text_file_path)
                             st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
                         except Exception as e:
