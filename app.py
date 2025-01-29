@@ -148,6 +148,9 @@ elif mode == "Registra un nuovo audio":
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         st.components.v1.html(get_audio_recorder_html(), height=500)
+    with st.expander("Sezione 2"):
+        st.markdown(domanda2)
+        st.components.v1.html(get_audio_recorder_html(), height=500)
 
 elif mode=="Trascrivi": 
     # Elenca i file nella cartella
