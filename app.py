@@ -131,7 +131,7 @@ if mode == "Carica un file audio":
     if st.session_state["transcription"]:
         with st.form(key="save_transcription_form"):
                 st.subheader("Trascrizione:")
-                transcription_content = st.text_area("Puoi modificare la trascrizione prima di salvarla:", st.session_state["transcription"], height=600)
+                transcription_content = st.text_area("Puoi modificare la trascrizione prima di salvarla:", st.session_state["transcription"], height=300)
                 submit_button = st.form_submit_button("Salva la trascrizione su Google Drive")
                 if submit_button and not st.session_state["transcription_saved"]:
                     if transcription_content != st.session_state["transcription"]:
