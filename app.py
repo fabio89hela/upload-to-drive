@@ -10,8 +10,10 @@ import ffmpeg
 import tempfile
 from datetime import datetime
 
-if "file_uploaded" not in st.session_state:
-    st.session_state["file_uploaded"] = []
+if "file_upload" not in st.session_state:
+    st.session_state["file_upload"] = []
+if "file_upload_ids" not in st.session_state:
+    st.session_state["file_upload_ids"] = []
 if "transcription" not in st.session_state:
     st.session_state["transcription"]=""
 if "transcription_saved" not in st.session_state:
@@ -93,7 +95,7 @@ if mode == "Carica un file audio":
     
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
-    if uploaded_file:
+    if uploaded_file and st.session_state["file_upload"]!=uploaded_file:
         with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
             temp_file.write(uploaded_file.getbuffer())
             input_path = temp_file.name
@@ -110,12 +112,12 @@ if mode == "Carica un file audio":
         if convert_to_ogg(input_path, output_path):
             # Carica su Google Drive
             temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-            if not st.session_state["file_uploaded"]:
+            if not st.session_state["file_upload_ids"]:
                 file_ids = authenticate_and_upload(temp_name_personalised, output_path)
-                st.session_state["file_uploaded"]=file_ids
+                st.session_state["file_upload_ids"]=file_ids
             st.success(f"File caricato su Google Drive")
             if st.button("Trascrivi il file caricato"):
-                file_ids=st.session_state["file_uploaded"]
+                file_ids=st.session_state["file_upload_ids"]
                 if file_ids:
                     transcriptions=[]
                     # Itera su ciascun ID del file
