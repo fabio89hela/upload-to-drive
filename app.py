@@ -69,13 +69,16 @@ st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width
 # Titolo dell'app Streamlit
 st.title("Carica un file già registrato")
 
-# Scelta modalità: Caricamento o Registrazione
-mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio","Trascrivi"])
+col1,col2=st.columns(2)
+
+with col1:
+    # Scelta modalità: Caricamento o Registrazione
+    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio","Trascrivi"])
 
 if mode == "Carica un file audio":
-    # Scelta cartella
-    cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
-    c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
+    with col2:
+        cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
+        c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
     
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
