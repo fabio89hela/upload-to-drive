@@ -15,7 +15,7 @@ if "file_uploaded" not in st.session_state:
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
-c,FOLDER_ID,regional,domanda1,domanda2=settings_folder("Ematologia")
+c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder("Ematologia")
 
 def convert_mp3_to_wav(input_path, output_path):
     try:
@@ -75,10 +75,11 @@ mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuov
 if mode == "Carica un file audio":
     # Scelta cartella
     cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
-    c,FOLDER_ID,regional,domanda1,domanda2=settings_folder(cartella)
+    c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
     
     # Scelta farmacista e data
-    fo=st.selectbox("Nome del farmacista intervistato",regional)
+    fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
+    fo=nome[fo_lungo]
     #fo=st.text_input("Indica il nome del farmacista intervistato", value="")
     data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
     now = datetime.now()
