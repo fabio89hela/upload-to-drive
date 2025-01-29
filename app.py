@@ -71,14 +71,14 @@ st.title("Carica un file già registrato")
 
 col1,col2=st.columns(2)
 
-with col1:
+with col2:
     # Scelta modalità: Caricamento o Registrazione
     mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio","Trascrivi"])
+with col1:
+    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"])
+    c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 
 if mode == "Carica un file audio":
-    with col2:
-        cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
-        c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
     
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
