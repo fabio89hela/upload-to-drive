@@ -128,22 +128,25 @@ if mode == "Carica un file audio":
                 combined_transcription = "\n".join(transcriptions)
                 st.session_state["transcription"] = combined_transcription
                 st.session_state["transcription_saved"] = False
-                with st.form(key="save_transcription_form"):
-                    submit_button = st.form_submit_button("Salva la trascrizione su Google Drive")
-                    if submit_button and not st.session_state["transcription_saved"]:
-                        transcription_content = st.session_state["transcription"]
-                        transcription_content = st.text_area("Trascrizione:", transcription_content, height=600)
-                        # Salva il contenuto temporaneamente come file di testo
-                        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
-                            temp_text_file.write(transcription_content.encode('utf-8'))
-                            temp_text_file_path = temp_text_file.name
-                        # Carica il file su Google Drive
-                        file_name = f"Trascrizione_{temp_name_personalised}.txt"
-                        try:
-                            file_id = authenticate_and_upload(file_name, temp_text_file_path)
-                            st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
-                        except Exception as e:
-                            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+    if st.session_state["transcription"]:
+        st.subheader("Trascrizione:")
+        transcription_content = st.text_area("Puoi modificare la trascrizione prima di salvarla:", st.session_state["transcription"], height=600)
+        with st.form(key="save_transcription_form"):
+                submit_button = st.form_submit_button("Salva la trascrizione su Google Drive")
+                if submit_button and not st.session_state["transcription_saved"]:
+                    transcription_content = st.session_state["transcription"]
+                    transcription_content = st.text_area("Trascrizione:", transcription_content, height=600)
+                    # Salva il contenuto temporaneamente come file di testo
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
+                        temp_text_file.write(transcription_content.encode('utf-8'))
+                        temp_text_file_path = temp_text_file.name
+                    # Carica il file su Google Drive
+                    file_name = f"Trascrizione_{temp_name_personalised}.txt"
+                    try:
+                        file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                        st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
+                    except Exception as e:
+                        st.error(f"Errore durante il salvataggio su Google Drive: {e}")
         else:
             st.error("Impossibile completare la conversione in ogg.")
 
