@@ -124,7 +124,7 @@ if mode == "Carica un file audio":
                 combined_transcription = "\n".join(transcriptions)
                 transcription_content=st.text_area("Trascrizione:", combined_transcription, height=600)
                 if st.button("Salva la trascrizione su Google Drive"):
-                    if transcription_content.strip():
+                        st.write("qui")
                         # Salva il contenuto temporaneamente come file di testo
                         with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
                             temp_text_file.write(transcription_content.encode('utf-8'))
@@ -138,8 +138,6 @@ if mode == "Carica un file audio":
                             st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
                         except Exception as e:
                             st.error(f"Errore durante il salvataggio su Google Drive: {e}")
-                    else:
-                        st.warning("L'area di testo è vuota. Inserisci del testo per salvare.")
         else:
             st.error("Impossibile completare la conversione in ogg.")
 
