@@ -4,6 +4,7 @@ import json
 import streamlit as st
 from upload_handler import authenticate_drive, upload_to_drive
 from audio_recorder import get_audio_recorder_html
+from settings_folder import settings_folder
 import requests
 import ffmpeg 
 import tempfile
@@ -14,7 +15,7 @@ if "file_uploaded" not in st.session_state:
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
-FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
+c,FOLDER_ID,regional,domanda1,domanda2=settings_folder("Ematologia")
 
 def convert_mp3_to_wav(input_path, output_path):
     try:
@@ -74,18 +75,11 @@ mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuov
 if mode == "Carica un file audio":
     # Scelta cartella
     cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
-    if cartella=="Ematologia":
-        c="Ematologia"
-        FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
-    elif cartella=="Emofilia":
-        c="Emofilia"
-        FOLDER_ID = "1CH9Pw0ZoWFFF2gSlOEo9UVa45akAgrz-"  
-    else:
-        c="Oncoematologia"
-        FOLDER_ID = "15FhRa5wa7zxNEN4GyGzJKtwc6q7jK2rR"  
-
+    c,FOLDER_ID,regional,domanda1,domanda2=settings_folder(cartella)
+    
     # Scelta farmacista e data
-    fo=st.text_input("Indica il nome del farmacista intervistato", value="")
+    fo=st.selectbox("Nome del farmacista intervistato",regional)
+    #fo=st.text_input("Indica il nome del farmacista intervistato", value="")
     data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
     now = datetime.now()
     data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H:%M:%S")
