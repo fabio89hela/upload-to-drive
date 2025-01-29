@@ -73,7 +73,7 @@ col1,col2=st.columns(2)
 
 with col2:
     # Scelta modalità: Caricamento o Registrazione
-    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio","Trascrivi"])
+    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"])
 with col1:
     cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"])
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
@@ -131,13 +131,13 @@ if mode == "Carica un file audio":
                             #temp_text_file_path = temp_text_file.name
                         # Carica il file su Google Drive
                         file_name = f"Trascrizione_{temp_name_personalised}.txt"
-                        try:
-                            st.write(file_name)
-                            st.write(temp_text_file_path)
+                        #try:
+                        #    st.write(file_name)
+                        #    st.write(temp_text_file_path)
                             #file_id = authenticate_and_upload(file_name, temp_text_file_path)
-                            st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
-                        except Exception as e:
-                            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+                        #    st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
+                        #except Exception as e:
+                        #    st.error(f"Errore durante il salvataggio su Google Drive: {e}")
         else:
             st.error("Impossibile completare la conversione in ogg.")
 
@@ -168,8 +168,7 @@ elif mode=="Trascrivi":
         else:
             st.warning("Nessun file audio trovato nella cartella.")
     else:
-        st.error(f"La cartella {FOLDER_ID} non esiste. Creala e aggiungi file audio.")
-        
+        st.error(f"La cartella {FOLDER_ID} non esiste. Creala e aggiungi file audio.")   
         # Pulsante per avviare la trascrizione
         if 1<0:#file_ids:
             transcriptions=[]
@@ -181,7 +180,3 @@ elif mode=="Trascrivi":
                     transcriptions.append(transcription)
         else:
             st.error("Inserisci almeno un ID file per procedere.")
-            
-        #combined_transcription = "\n".join(transcriptions)
-        #st.write(combined_transcription)
-        #st.text_area("Trascrizione combinata:", combined_transcription, height=600)
