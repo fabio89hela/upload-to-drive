@@ -14,7 +14,7 @@ if "file_uploaded" not in st.session_state:
     st.session_state["file_uploaded"] = []
 
 if "transcription" not in st.session_state:
-    st.sessions_state["transcription"]=""
+    st.session_state["transcription"]=""
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
