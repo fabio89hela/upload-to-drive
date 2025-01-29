@@ -124,13 +124,13 @@ if mode == "Carica un file audio":
                 combined_transcription = "\n".join(transcriptions)
                 transcription_content=st.text_area("Trascrizione:", combined_transcription, height=600)
                 if st.button("Salva la trascrizione su Google Drive"):
-                        st.write("qui")
+                    st.write("qui")
                         # Salva il contenuto temporaneamente come file di testo
                         #with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
                             #temp_text_file.write(transcription_content.encode('utf-8'))
                             #temp_text_file_path = temp_text_file.name
                         # Carica il file su Google Drive
-                        file_name = f"Trascrizione_{temp_name_personalised}.txt"
+                    file_name = f"Trascrizione_{temp_name_personalised}.txt"
                         #try:
                         #    st.write(file_name)
                         #    st.write(temp_text_file_path)
