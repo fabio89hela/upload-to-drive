@@ -1,4 +1,9 @@
 def settings_folder(cartella):
+  c=""
+  FOLDER_ID=""
+  regional=[]
+  domanda1=[]
+  domanda2=[]
   if cartella=="Ematologia":
     c="Ematologia"
     FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
@@ -21,3 +26,4 @@ def settings_folder(cartella):
   else:
     c="Oncoematologia"
     FOLDER_ID = "15FhRa5wa7zxNEN4GyGzJKtwc6q7jK2rR"  
+return c,FOLDER_ID,regional,domanda1,domanda2
