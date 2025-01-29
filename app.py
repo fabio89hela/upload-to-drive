@@ -12,9 +12,10 @@ from datetime import datetime
 
 if "file_uploaded" not in st.session_state:
     st.session_state["file_uploaded"] = []
-
 if "transcription" not in st.session_state:
     st.session_state["transcription"]=""
+if "transcription_saved" not in st.session_state:
+    st.session_state["transcription_saved"] = False
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -126,10 +127,12 @@ if mode == "Carica un file audio":
                     st.error("Inserisci almeno un ID file per procedere.")       
                 combined_transcription = "\n".join(transcriptions)
                 st.session_state["transcription"] = combined_transcription
-                if "transcription" in st.session_state and st.session_state["transcription"]:
-                    transcription_content = st.session_state["transcription"]
-                    transcription_content = st.text_area("Trascrizione:", transcription_content, height=600)
-                    if st.button("Salva la trascrizione su Google Drive"):
+                st.session_state["transcription_saved"] = False
+                with st.form(key="save_transcription_form"):
+                    submit_button = st.form_submit_button("Salva la trascrizione su Google Drive")
+                    if submit_button and not st.session_state["transcription_saved"]:
+                        transcription_content = st.session_state["transcription"]
+                        transcription_content = st.text_area("Trascrizione:", transcription_content, height=600)
                         # Salva il contenuto temporaneamente come file di testo
                         with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
                             temp_text_file.write(transcription_content.encode('utf-8'))
