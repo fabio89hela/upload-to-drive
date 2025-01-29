@@ -79,7 +79,6 @@ with col1:
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 
 if mode == "Carica un file audio":
-    
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
     fo=nome[fo_lungo]
@@ -145,9 +144,6 @@ if mode == "Carica un file audio":
             st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
-    # Scelta cartella
-    cartella=st.radio("Scegli un'opzione:",["Ematologia","Emofilia","Oncoematologia"])
-    c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         st.components.v1.html(get_audio_recorder_html(), height=500)
