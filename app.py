@@ -13,8 +13,8 @@ from datetime import datetime
 if "file_uploaded" not in st.session_state:
     st.session_state["file_uploaded"] = []
 
-#N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
-N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
+N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
+#N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder("Ematologia")
 
 def convert_mp3_to_wav(input_path, output_path):
@@ -85,7 +85,7 @@ if mode == "Carica un file audio":
     #fo=st.text_input("Indica il nome del farmacista intervistato", value="")
     data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
     now = datetime.now()
-    data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H:%M:%S")
+    data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
     
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
@@ -112,7 +112,6 @@ if mode == "Carica un file audio":
                 st.session_state["file_uploaded"]=file_ids
             st.success(f"File caricato correttamente su Google Drive")
             if st.button("Trascrivi il file caricato"):
-                st.write(st.session_state["file_uploaded"])
                 file_ids=st.session_state["file_uploaded"]
                 if file_ids:
                     transcriptions=[]
@@ -132,7 +131,7 @@ if mode == "Carica un file audio":
                             temp_text_file.write(transcription_content.encode('utf-8'))
                             temp_text_file_path = temp_text_file.name
                         # Carica il file su Google Drive
-                        file_name = f"Trascrizione_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+                        file_name = f"Trascrizione_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
                         try:
                             file_id = authenticate_and_upload(file_name, temp_text_file_path)
                             st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
@@ -154,9 +153,9 @@ elif mode == "Registra un nuovo audio":
 elif mode=="Trascrivi": 
     # Elenca i file nella cartella
     if os.path.exists("https://drive.google.com/drive/folders/"+FOLDER_ID):
-        audio_files = [f for f in os.listdir(FOLDER_ID) if f.endswith(('.wav', '.mp3', '.ogg'))]
+        audio_files = [f for f in os.listdir(FOLDER_ID) if f.endswith(('.ogg'))]
         if audio_files:
-            st.title("File audio")
+            st.title("File caricati")
             selected_file = st.selectbox("Seleziona un file audio", audio_files)
 
             # Mostra il nome del file selezionato
