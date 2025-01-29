@@ -129,13 +129,13 @@ if mode == "Carica un file audio":
                 st.session_state["transcription"] = combined_transcription
                 st.session_state["transcription_saved"] = False
     if st.session_state["transcription"]:
-        st.subheader("Trascrizione:")
-        transcription_content = st.text_area("Puoi modificare la trascrizione prima di salvarla:", st.session_state["transcription"], height=600)
         with st.form(key="save_transcription_form"):
+                st.subheader("Trascrizione:")
+                transcription_content = st.text_area("Puoi modificare la trascrizione prima di salvarla:", st.session_state["transcription"], height=600)
                 submit_button = st.form_submit_button("Salva la trascrizione su Google Drive")
                 if submit_button and not st.session_state["transcription_saved"]:
-                    transcription_content = st.session_state["transcription"]
-                    transcription_content = st.text_area("Trascrizione:", transcription_content, height=600)
+                    if transcription_content != st.session_state["transcription"]:
+                        st.session_state["transcription"]=transcription_content
                     # Salva il contenuto temporaneamente come file di testo
                     with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
                         temp_text_file.write(transcription_content.encode('utf-8'))
