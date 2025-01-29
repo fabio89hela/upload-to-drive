@@ -147,8 +147,6 @@ if mode == "Carica un file audio":
                         st.success(f"File della trascrizione salvato correttamente su Google Drive con ID: {file_id}")
                     except Exception as e:
                         st.error(f"Errore durante il salvataggio su Google Drive: {e}")
-        else:
-            st.error("Impossibile completare la conversione in ogg.")
 
 elif mode == "Registra un nuovo audio":
     with st.expander("Sezione 1"):
