@@ -87,6 +87,7 @@ with col1:
 if mode == "Carica un file audio":
     if st.session_state["avvio"]==1:
         st.session_state["avvio"]=0
+        st.write("Qui")
         st.rerun()
     file_ids=[]
     # Scelta farmacista e data
