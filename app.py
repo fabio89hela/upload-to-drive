@@ -95,6 +95,8 @@ if mode == "Carica un file audio":
     
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
+    st.write(st.session_state["file_upload"])
+    st.write(uploaded_file)
     if uploaded_file and st.session_state["file_upload"]!=uploaded_file:
         with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
             temp_file.write(uploaded_file.getbuffer())
