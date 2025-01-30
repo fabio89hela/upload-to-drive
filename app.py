@@ -9,6 +9,7 @@ import requests
 import ffmpeg 
 import tempfile
 from datetime import datetime
+import time
 
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=0
@@ -88,6 +89,7 @@ if mode == "Carica un file audio":
     if st.session_state["avvio"]==1:
         st.session_state["avvio"]=0
         st.write("Qui")
+        time.sleep(2)
         st.rerun()
     file_ids=[]
     # Scelta farmacista e data
@@ -120,6 +122,10 @@ if mode == "Carica un file audio":
                     file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                     st.session_state["file_upload_ids"]=file_ids
                     st.success("File caricato su Drive")
+                    if st.session_state["avvio"]==0:
+                        st.session_state["avvio"]=1
+                        time.sleep(2)
+                        st.rerun()
                 if st.button("Trascrivi il file caricato"):
                     file_ids=st.session_state["file_upload_ids"]
                     if file_ids:
