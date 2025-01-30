@@ -85,6 +85,7 @@ with col1:
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 
 if mode == "Carica un file audio":
+    file_ids=[]
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
     fo=nome[fo_lungo]
@@ -92,11 +93,9 @@ if mode == "Carica un file audio":
     data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
     now = datetime.now()
     data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
-    
+    st.write(st.session_state["file_upload_ids"])
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
-    st.write(st.session_state["file_upload"])
-    st.write(uploaded_file)
     if uploaded_file and st.session_state["file_upload"]!=uploaded_file:
         with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
             temp_file.write(uploaded_file.getbuffer())
@@ -105,8 +104,6 @@ if mode == "Carica un file audio":
         # Percorso per il file convertito
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
             output_path = temp_ogg_file.name
-        st.write(input_path)
-        st.write(output_path)
         if convert_mp3_to_wav(input_path, output_path):
             a=1
             #st.success("Conversione completata con successo!")
