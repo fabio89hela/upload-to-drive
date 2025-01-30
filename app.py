@@ -94,39 +94,40 @@ if mode == "Carica un file audio":
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
     if uploaded_file and (not st.session_state["file_upload_ids"] or st.session_state["file_upload_ids"] !=file_ids) :
-        with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
-            temp_file.write(uploaded_file.getbuffer())
-            input_path = temp_file.name
+        with st.spinner("Caricando..."):
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
+                temp_file.write(uploaded_file.getbuffer())
+                input_path = temp_file.name
 
-        # Percorso per il file convertito
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-            output_path = temp_ogg_file.name
-        if convert_mp3_to_wav(input_path, output_path):
-            a=1
-            #st.success("Conversione completata con successo!")
+            # Percorso per il file convertito
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
+                output_path = temp_ogg_file.name
+            if convert_mp3_to_wav(input_path, output_path):
+                a=1
+                #st.success("Conversione completata con successo!")
         
-        # Conversione in OGG
-        if convert_to_ogg(input_path, output_path):
-            # Carica su Google Drive
-            temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-            if not st.session_state["file_upload_ids"]:
-                file_ids = authenticate_and_upload(temp_name_personalised, output_path)
-                st.session_state["file_upload_ids"]=file_ids
-                st.success("File caricato su Drive")
-            if st.button("Trascrivi il file caricato"):
-                file_ids=st.session_state["file_upload_ids"]
-                if file_ids:
-                    transcriptions=[]
-                    # Itera su ciascun ID del file
-                    with st.spinner("Esecuzione della trascrizione..."):
-                        for file_id in file_ids:
-                            transcription=get_transcriptions_from_n8n(file_id)
-                            transcriptions.append(transcription)
-                else:
-                    st.error("Inserisci almeno un ID file per procedere.")       
-                combined_transcription = "\n".join(transcriptions)
-                st.session_state["transcription"] = combined_transcription
-                st.session_state["transcription_saved"] = False
+            # Conversione in OGG
+            if convert_to_ogg(input_path, output_path):
+                # Carica su Google Drive
+                temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
+                if not st.session_state["file_upload_ids"]:
+                    file_ids = authenticate_and_upload(temp_name_personalised, output_path)
+                    st.session_state["file_upload_ids"]=file_ids
+                    st.success("File caricato su Drive")
+                if st.button("Trascrivi il file caricato"):
+                    file_ids=st.session_state["file_upload_ids"]
+                    if file_ids:
+                        transcriptions=[]
+                        # Itera su ciascun ID del file
+                        with st.spinner("Esecuzione della trascrizione..."):
+                            for file_id in file_ids:
+                                transcription=get_transcriptions_from_n8n(file_id)
+                                transcriptions.append(transcription)
+                    else:
+                        st.error("Inserisci almeno un ID file per procedere.")       
+                    combined_transcription = "\n".join(transcriptions)
+                    st.session_state["transcription"] = combined_transcription
+                    st.session_state["transcription_saved"] = False
     if st.session_state["transcription"]:
         with st.form(key="save_transcription_form"):
                 st.subheader("Trascrizione:")
