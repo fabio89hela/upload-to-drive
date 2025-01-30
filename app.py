@@ -10,6 +10,8 @@ import ffmpeg
 import tempfile
 from datetime import datetime
 
+if "avvio" not in st.session_state:
+    st.session_state["avvio"]=0
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = []
 if "transcription" not in st.session_state:
@@ -83,7 +85,9 @@ with col1:
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 
 if mode == "Carica un file audio":
-    st.rerun()
+    if st.session_state["avvio"]==1:
+        st.session_state["avvio"]=0
+        st.rerun()
     file_ids=[]
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
@@ -150,6 +154,7 @@ if mode == "Carica un file audio":
                         st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
 elif mode == "Registra un nuovo audio":
+    st.session_state["avvio"]=1
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         st.components.v1.html(get_audio_recorder_html(), height=500)
