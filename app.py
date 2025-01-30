@@ -83,6 +83,7 @@ with col1:
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 
 if mode == "Carica un file audio":
+    st.rerun()
     file_ids=[]
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
@@ -93,7 +94,7 @@ if mode == "Carica un file audio":
     data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
-    if uploaded_file and (not st.session_state["file_upload_ids"] or st.session_state["file_upload_ids"] !=file_ids) :
+    if uploaded_file:
         with st.spinner("Caricando..."):
             with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
                 temp_file.write(uploaded_file.getbuffer())
