@@ -105,7 +105,8 @@ if mode == "Carica un file audio":
         # Percorso per il file convertito
         with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
             output_path = temp_ogg_file.name
-
+        st.write(input_path)
+        st.write(output_path)
         if convert_mp3_to_wav(input_path, output_path):
             a=1
             #st.success("Conversione completata con successo!")
