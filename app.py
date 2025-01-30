@@ -93,10 +93,9 @@ if mode == "Carica un file audio":
     data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
     now = datetime.now()
     data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
-    st.write(st.session_state["file_upload_ids"])
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
-    if uploaded_file and st.session_state["file_upload"]!=uploaded_file:
+    if uploaded_file and st.session_state["file_upload_ids"]!=file_ids:
         with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
             temp_file.write(uploaded_file.getbuffer())
             input_path = temp_file.name
@@ -116,6 +115,7 @@ if mode == "Carica un file audio":
                 file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                 st.session_state["file_upload_ids"]=file_ids
             st.success(f"File caricato su Google Drive")
+            st.write(st.session_state["file_upload_ids"])
             if st.button("Trascrivi il file caricato"):
                 file_ids=st.session_state["file_upload_ids"]
                 if file_ids:
