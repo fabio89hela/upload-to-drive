@@ -11,8 +11,6 @@ import tempfile
 from datetime import datetime
 import time
 
-if "disabled" not in st.session_state:
-    st.session_state.disabled = True
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=0
 if "file_upload_ids" not in st.session_state:
@@ -104,9 +102,8 @@ if mode == "Carica un file audio":
     with st.form("upload_form"):
         # Caricamento di un file audio locale
         uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
-        submitted = st.form_submit_button("Salva in Drive",disabled=st.session_state.disabled)
+        submitted = st.form_submit_button("Salva in Drive")
         if uploaded_file:
-            st.session_state.disabled=True
             with st.spinner("Caricando..."):
                 with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
                     temp_file.write(uploaded_file.getbuffer())
