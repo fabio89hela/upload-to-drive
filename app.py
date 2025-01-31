@@ -102,7 +102,7 @@ if mode == "Carica un file audio":
     with st.form("upload_form"):
         # Caricamento di un file audio locale
         uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
-        submitted = st.form_submit_button("Salva in Drive",disable=True)
+        submitted = st.form_submit_button("Salva in Drive",disabled=True)
         if uploaded_file:
             with st.spinner("Caricando..."):
                 with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
