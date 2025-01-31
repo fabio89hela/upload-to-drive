@@ -99,34 +99,32 @@ if mode == "Carica un file audio":
     data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
     now = datetime.now()
     data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
-    with st.form("upload_form"):
-        # Caricamento di un file audio locale
-        uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
-        submitted = st.form_submit_button("Salva in Drive")
-        if uploaded_file:
-            with st.spinner("Caricando..."):
-                with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
-                    temp_file.write(uploaded_file.getbuffer())
-                    input_path = temp_file.name
+    # Caricamento di un file audio locale
+    uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
+    if uploaded_file:
+        with st.spinner("Caricando..."):
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
+                temp_file.write(uploaded_file.getbuffer())
+                input_path = temp_file.name
 
-                # Percorso per il file convertito
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-                    output_path = temp_ogg_file.name
-                #if convert_mp3_to_wav(input_path, output_path):
-                    #st.success("Conversione completata con successo!")
+            # Percorso per il file convertito
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
+                output_path = temp_ogg_file.name
+            #if convert_mp3_to_wav(input_path, output_path):
+                #st.success("Conversione completata con successo!")
         
-                # Conversione in OGG
-                if convert_to_ogg(input_path, output_path):
-                    # Carica su Google Drive
-                    temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-                    if submitted:#not st.session_state["file_upload_ids"]:
-                        file_ids = authenticate_and_upload(temp_name_personalised, output_path)
-                        st.session_state["file_upload_ids"]=file_ids
-                        st.success("File caricato su Drive")
-                        #if st.session_state["avvio"]==0:
-                        #    st.session_state["avvio"]=1
-                        #    time.sleep(2)
-                        #    st.rerun()
+            # Conversione in OGG
+            if convert_to_ogg(input_path, output_path):
+                # Carica su Google Drive
+                temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
+                if st.button("Salva su Drive"):#not st.session_state["file_upload_ids"]:
+                    file_ids = authenticate_and_upload(temp_name_personalised, output_path)
+                    st.session_state["file_upload_ids"]=file_ids
+                    st.success("File caricato su Drive")
+                    #if st.session_state["avvio"]==0:
+                    #    st.session_state["avvio"]=1
+                    #    time.sleep(2)
+                    #    st.rerun()
                     if st.button("Trascrivi il file caricato"):
                         file_ids=st.session_state["file_upload_ids"]
                         if file_ids:
