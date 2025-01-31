@@ -103,7 +103,7 @@ if mode == "Carica un file audio":
         # Caricamento di un file audio locale
         uploaded_file = st.file_uploader("Carica un file audio (MP3, WAV)", type=["mp3", "wav"])
         submitted = st.form_submit_button("Salva in Drive")
-        if submitted and uploaded_file:
+        if uploaded_file:
             with st.spinner("Caricando..."):
                 with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
                     temp_file.write(uploaded_file.getbuffer())
@@ -119,7 +119,7 @@ if mode == "Carica un file audio":
                 if convert_to_ogg(input_path, output_path):
                     # Carica su Google Drive
                     temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-                    if 1>0:#not st.session_state["file_upload_ids"]:
+                    if submitted:#not st.session_state["file_upload_ids"]:
                         file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                         st.session_state["file_upload_ids"]=file_ids
                         st.success("File caricato su Drive")
