@@ -20,8 +20,8 @@ if "transcription" not in st.session_state:
 if "transcription_saved" not in st.session_state:
     st.session_state["transcription_saved"] = False
 
-N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
-#N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
+#N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
+N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder("Ematologia")
 
 def convert_mp3_to_wav(input_path, output_path):
