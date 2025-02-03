@@ -12,7 +12,7 @@ from datetime import datetime
 import time
 
 if "avvio" not in st.session_state:
-    st.session_state["avvio"]=0
+    st.session_state["avvio"]=False
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = []
 if "transcription" not in st.session_state:
@@ -120,7 +120,8 @@ if mode == "Carica un file audio":
                     #    st.session_state["avvio"]=1
                     #    time.sleep(2)
                     #    st.rerun()
-                    if st.button("Trascrivi il file caricato"):
+                    st.session_state["avvio"]=True
+            if st.button("Trascrivi il file caricato",disabled=st.session_state["avvio"]):
                         st.write("Qui")
                         time.sleep(3)
                         file_ids=st.session_state["file_upload_ids"]
