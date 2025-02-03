@@ -13,6 +13,8 @@ import time
 
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=True
+if "ricomincia" not in st.session_state:
+    st.session_state["ricomincia"]=False
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = []
 if "transcription" not in st.session_state:
@@ -77,16 +79,22 @@ st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width
 # Titolo dell'app Streamlit
 st.title("Carica un file già registrato")
 
-col1,col2=st.columns(2)
+col1,col2,col3=st.columns(3)
 
-with col2:
+with col3:
     # Scelta modalità: Caricamento o Registrazione
-    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"])
-with col1:
+    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"],disabled=st.session_state["ricomincia"])
+with col2:
     cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"])
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
+with col1:
+    if st.button("Riavvia"):
+        st.session_state["ricomincia"]=True
+        time.sleep(2)
+        st.rerun()
 
 if mode == "Carica un file audio":
+    st.session_state["ricomincia"]=False
     file_ids=[]
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
@@ -154,7 +162,7 @@ if mode == "Carica un file audio":
                         st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
 elif mode == "Registra un nuovo audio":
-    st.session_state["avvio"]=1
+    st.session_state["ricomincia"]=False
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         st.components.v1.html(get_audio_recorder_html(), height=500)
