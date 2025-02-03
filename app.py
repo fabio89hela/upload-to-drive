@@ -17,6 +17,8 @@ if "selezione1" not in st.session_state:
     st.session_state["selezione1"]=0
 if "selezione2" not in st.session_state:
     st.session_state["selezione2"]=0
+if "uploaded_file" not in st.session_state:
+    st.session_state["uploaded_file"]=None
 if "ricomincia" not in st.session_state:
     st.session_state["ricomincia"]=False
 if "file_upload_ids" not in st.session_state:
@@ -117,14 +119,14 @@ if mode == "Carica un file audio":
     now = datetime.now()
     data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
     # Caricamento di un file audio locale
-    uploaded_file = st.file_uploader("Carica un file audio (WAV)", type=["wav","mp3"])
-    if uploaded_file:
+    st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV)", type=["wav","mp3"])
+    if st.session_state["uploaded_file"]:
         if st.session_state["ricomincia"]==False:
             st.session_state["ricomincia"]=True
             st.rerun()
         with st.spinner("Caricando..."):
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
-                temp_file.write(uploaded_file.getbuffer())
+            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{st.session_state["uploaded_file"].name.split('.')[-1]}") as temp_file:
+                temp_file.write(st.session_state["uploaded_file"].getbuffer())
                 input_path = temp_file.name
 
             # Percorso per il file convertito
