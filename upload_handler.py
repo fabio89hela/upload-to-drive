@@ -38,7 +38,7 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
                 st.write(e)
             segments = os.listdir(temp_dir)
             if not segments:
-                raise RuntimeError("La segmentazione non ha prodotto alcun file.")
+                st.error("La segmentazione non ha prodotto alcun file.")
             st.write(f"Segmenti trovati: {segments}")
             # Carica ogni segmento su Google Drive
             for segment_file in sorted(os.listdir(temp_dir)):
