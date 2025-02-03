@@ -54,9 +54,10 @@ def convert_to_ogg(input_path, output_path):
         return False
 
 # Funzione per inviare una lista di file a n8n e ricevere le trascrizioni
-def get_transcriptions_from_n8n(file_id):
+def get_transcriptions_from_n8n(file_id,nome,cartella):
     payload = {"file_id": file_id}
-    payload["prompt"]="Trascrivi la riunione e fanne una sintesi"
+    payload["file_name"]=nome
+    payload["folder"]=cartella
     response = requests.post(N8N_WEBHOOK_URL, json=payload)
     if response.status_code == 200:
         transcription = response.json().get("text", "Errore: nessuna trascrizione ricevuta.")
@@ -125,7 +126,7 @@ if mode == "Carica un file audio":
                             # Itera su ciascun ID del file
                             with st.spinner("Esecuzione della trascrizione..."):
                                 for file_id in file_ids:
-                                    transcription=get_transcriptions_from_n8n(file_id)
+                                    transcription=get_transcriptions_from_n8n(file_id,c+"_"+data+"_"+fo+",cartella)
                                     transcriptions.append(transcription)
                         else:
                             st.error("Inserisci almeno un ID file per procedere.")       
@@ -188,7 +189,7 @@ elif mode=="Trascrivi":
             with st.spinner("Esecuzione della trascrizione..."):
                 for file_id in file_ids:
                     st.success(f"trascrivendo {file_id}")
-                    transcription=get_transcriptions_from_n8n(file_id)
+                    transcription=get_transcriptions_from_n8n(file_id,"",cartella)
                     transcriptions.append(transcription)
         else:
             st.error("Inserisci almeno un ID file per procedere.")
