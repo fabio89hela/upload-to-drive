@@ -95,7 +95,6 @@ with col1:
         st.rerun()
 
 if mode == "Carica un file audio":
-    st.session_state["ricomincia"]=False
     file_ids=[]
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
@@ -107,6 +106,7 @@ if mode == "Carica un file audio":
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (WAV)", type=["wav","mp3"])
     if uploaded_file:
+        st.session_state["ricomincia"]=False
         with st.spinner("Caricando..."):
             with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
                 temp_file.write(uploaded_file.getbuffer())
