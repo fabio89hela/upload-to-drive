@@ -88,7 +88,7 @@ with col2:
     cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"])
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 with col1:
-    if st.button("Riavvia"):
+    if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
         st.session_state["ricomincia"]=True
         st.session_state["transcription"]=""
         time.sleep(2)
