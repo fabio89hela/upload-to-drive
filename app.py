@@ -183,11 +183,11 @@ if mode == "Carica un file audio":
                         st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
 elif mode == "Registra un nuovo audio":
-    if st.session_state["ricomincia"]==False:
-        st.session_state["ricomincia"]=True
-        st.session_state["uploaded_file"]=None
-        st.session_state["avvio"]=True
-        st.rerun()
+    #if st.session_state["ricomincia"]==False:
+    #    st.session_state["ricomincia"]=True
+    #    st.session_state["uploaded_file"]=None
+    #    st.session_state["avvio"]=True
+    #    st.rerun()
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         st.components.v1.html(get_audio_recorder_html(), height=500)
