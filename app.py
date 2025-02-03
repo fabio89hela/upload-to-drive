@@ -90,6 +90,7 @@ with col2:
 with col1:
     if st.button("Riavvia"):
         st.session_state["ricomincia"]=True
+        st.session_state["transcription"]=""
         time.sleep(2)
         st.rerun()
 
