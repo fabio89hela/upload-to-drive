@@ -107,6 +107,8 @@ with col1:
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
         st.session_state["ricomincia"]=False
         st.session_state["transcription"]=""
+        st.session_state["uploaded_file"]=None
+        st.session_state["avvio"]=True
         st.rerun()
 
 if mode == "Carica un file audio":
