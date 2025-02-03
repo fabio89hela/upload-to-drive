@@ -88,7 +88,6 @@ with col1:
 if mode == "Carica un file audio":
     if st.session_state["avvio"]==1:
         st.session_state["avvio"]=0
-        st.write("Qui")
         time.sleep(2)
         st.rerun()
     file_ids=[]
@@ -110,8 +109,8 @@ if mode == "Carica un file audio":
             # Percorso per il file convertito
             with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
                 output_path = temp_ogg_file.name
-            if convert_mp3_to_wav(input_path, output_path):
-                st.success("Conversione completata con successo!")
+            #if convert_mp3_to_wav(input_path, output_path):
+            #    st.success("Conversione completata con successo!")
                 st.write(output_path)
                 st.write(os.path.getsize(output_path) / (1024 * 1024))
         
