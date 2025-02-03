@@ -185,7 +185,6 @@ if mode == "Carica un file audio":
 elif mode == "Registra un nuovo audio":
     if st.session_state["ricomincia"]==False:
         st.session_state["ricomincia"]=True
-        st.session_state["selezione1"]=0
         st.session_state["uploaded_file"]=None
         st.session_state["avvio"]=True
         st.rerun()
