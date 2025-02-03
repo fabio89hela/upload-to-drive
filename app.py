@@ -109,7 +109,7 @@ with col1:
         st.session_state["transcription"]=""
         st.session_state["uploaded_file"]=None
         st.session_state["avvio"]=True
-        st.session_state["selezione2"]=0
+        st.session_state["selezione1"]=0
         st.rerun()
 
 if mode == "Carica un file audio":
@@ -185,9 +185,9 @@ if mode == "Carica un file audio":
 elif mode == "Registra un nuovo audio":
     if st.session_state["ricomincia"]==False:
         st.session_state["ricomincia"]=True
-        st.session_state["selezione2"]=0
-    #    st.session_state["uploaded_file"]=None
-    #    st.session_state["avvio"]=True
+        st.session_state["selezione1"]=0
+        st.session_state["uploaded_file"]=None
+        st.session_state["avvio"]=True
         st.rerun()
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
