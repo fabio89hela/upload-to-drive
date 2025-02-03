@@ -13,6 +13,10 @@ import time
 
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=True
+if "selezione1" not in st.session_state:
+    st.session_state["selezione1"]=0
+if "selezione2" not in st.session_state:
+    st.session_state["selezione2"]=0
 if "ricomincia" not in st.session_state:
     st.session_state["ricomincia"]=False
 if "file_upload_ids" not in st.session_state:
@@ -83,9 +87,19 @@ col1,col2,col3=st.columns(3)
 
 with col3:
     # Scelta modalità: Caricamento o Registrazione
-    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"],disabled=st.session_state["ricomincia"])
+    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
+    if mode=="Registra un nuovo audio":
+        st.session_state["selezione1"]=1
+    else:
+        st.session_state["selezione1"]=0
 with col2:
-    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],disabled=st.session_state["ricomincia"])
+    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"],disabled=st.session_state["ricomincia"])
+    if cartella=="Emofilia":
+        st.session_state["selezione2"]=1
+    elif cartella=="Oncoematologia":
+        st.session_state["selezione2"]=2
+    else:
+        st.session_state["selezione2"]=0
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 with col1:
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
@@ -162,7 +176,9 @@ if mode == "Carica un file audio":
                         st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
 elif mode == "Registra un nuovo audio":
-    st.session_state["ricomincia"]=False
+    if st.session_state["ricomincia"]==False:
+        st.session_state["ricomincia"]=True
+        st.rerun()
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         st.components.v1.html(get_audio_recorder_html(), height=500)
