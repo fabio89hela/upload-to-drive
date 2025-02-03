@@ -12,7 +12,7 @@ from datetime import datetime
 import time
 
 if "avvio" not in st.session_state:
-    st.session_state["avvio"]=False
+    st.session_state["avvio"]=True
 if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = []
 if "transcription" not in st.session_state:
@@ -116,11 +116,7 @@ if mode == "Carica un file audio":
                     file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                     st.session_state["file_upload_ids"]=file_ids
                     st.success("File caricato su Drive")
-                    #if st.session_state["avvio"]==0:
-                    #    st.session_state["avvio"]=1
-                    #    time.sleep(2)
-                    #    st.rerun()
-                    st.session_state["avvio"]=True
+                    st.session_state["avvio"]=False
             if st.button("Trascrivi il file caricato",disabled=st.session_state["avvio"]):
                         st.write("Qui")
                         time.sleep(3)
