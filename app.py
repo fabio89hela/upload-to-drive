@@ -111,10 +111,6 @@ if mode == "Carica un file audio":
                 output_path = temp_ogg_file.name
             #if convert_mp3_to_wav(input_path, output_path):
             #    st.success("Conversione completata con successo!")
-                st.write(output_path)
-                st.write(os.path.getsize(output_path) / (1024 * 1024))
-                st.write(input_path)
-                st.write(os.path.getsize(input_path) / (1024 * 1024))
         
             # Conversione in OGG
             if convert_to_ogg(input_path, output_path):
@@ -130,17 +126,20 @@ if mode == "Carica un file audio":
                     #    st.rerun()
                     if st.button("Trascrivi il file caricato"):
                         file_ids=st.session_state["file_upload_ids"]
+                        st.write(file_ids)
                         if file_ids:
                             transcriptions=[]
                             # Itera su ciascun ID del file
                             with st.spinner("Esecuzione della trascrizione..."):
                                 for file_id in file_ids:
+                                    st.write(file_id)
                                     transcription=get_transcriptions_from_n8n(file_id)
                                     transcriptions.append(transcription)
                         else:
                             st.error("Inserisci almeno un ID file per procedere.")       
                         combined_transcription = "\n".join(transcriptions)
                         st.session_state["transcription"] = combined_transcription
+                        st.write(st.session_state["transcription"])
                         st.session_state["transcription_saved"] = False
     if st.session_state["transcription"]:
         with st.form(key="save_transcription_form"):
