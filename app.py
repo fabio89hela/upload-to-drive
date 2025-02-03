@@ -86,10 +86,6 @@ with col1:
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 
 if mode == "Carica un file audio":
-    if st.session_state["avvio"]==1:
-        st.session_state["avvio"]=0
-        time.sleep(2)
-        st.rerun()
     file_ids=[]
     # Scelta farmacista e data
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional)
