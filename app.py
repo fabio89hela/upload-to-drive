@@ -85,7 +85,7 @@ with col3:
     # Scelta modalità: Caricamento o Registrazione
     mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"],disabled=st.session_state["ricomincia"])
 with col2:
-    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"])
+    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],disabled=st.session_state["ricomincia"])
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 with col1:
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
