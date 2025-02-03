@@ -106,7 +106,9 @@ if mode == "Carica un file audio":
     # Caricamento di un file audio locale
     uploaded_file = st.file_uploader("Carica un file audio (WAV)", type=["wav","mp3"])
     if uploaded_file:
-        st.session_state["ricomincia"]=False
+        if st.session_state["ricomincia"]==True:
+            st.session_state["ricomincia"]=False
+            st.rerun()
         with st.spinner("Caricando..."):
             with tempfile.NamedTemporaryFile(delete=False, suffix=f".{uploaded_file.name.split('.')[-1]}") as temp_file:
                 temp_file.write(uploaded_file.getbuffer())
@@ -128,21 +130,18 @@ if mode == "Carica un file audio":
                     st.success("File caricato su Drive")
                     st.session_state["avvio"]=False
             if st.button("Trascrivi il file caricato",disabled=st.session_state["avvio"]):
-                        time.sleep(3)
-                        file_ids=st.session_state["file_upload_ids"]
-                        if file_ids:
-                            transcriptions=[]
-                            # Itera su ciascun ID del file
-                            with st.spinner("Esecuzione della trascrizione..."):
-                                for file_id in file_ids:
-                                    transcription=get_transcriptions_from_n8n(file_id,c+"_"+data+"_"+fo+".txt",FOLDER_ID)
-                                    st.write(transcriptions)
-                                    transcriptions.append(transcription)
-                        else:
-                            st.error("Inserisci almeno un ID file per procedere.")       
-                        combined_transcription = "\n".join(transcriptions)
-                        st.session_state["transcription"] = combined_transcription
-                        st.session_state["transcription_saved"] = False
+                    file_ids=st.session_state["file_upload_ids"]
+                    if file_ids:
+                        transcriptions=[]
+                        # Itera su ciascun ID del file
+                        for file_id in file_ids:
+                            transcription=get_transcriptions_from_n8n(file_id,c+"_"+data+"_"+fo+".txt",FOLDER_ID)
+                            transcriptions.append(transcription)
+                    else:
+                        st.error("Inserisci almeno un ID file per procedere.")       
+                    combined_transcription = "\n".join(transcriptions)
+                    st.session_state["transcription"] = combined_transcription
+                    st.session_state["transcription_saved"] = False
     if st.session_state["transcription"]:
         with st.form(key="save_transcription_form"):
                 st.subheader("Trascrizione:")
