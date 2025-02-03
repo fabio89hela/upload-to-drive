@@ -118,23 +118,19 @@ if mode == "Carica un file audio":
                     st.success("File caricato su Drive")
                     st.session_state["avvio"]=False
             if st.button("Trascrivi il file caricato",disabled=st.session_state["avvio"]):
-                        st.write("Qui")
                         time.sleep(3)
                         file_ids=st.session_state["file_upload_ids"]
-                        st.write(file_ids)
                         if file_ids:
                             transcriptions=[]
                             # Itera su ciascun ID del file
                             with st.spinner("Esecuzione della trascrizione..."):
                                 for file_id in file_ids:
-                                    st.write(file_id)
                                     transcription=get_transcriptions_from_n8n(file_id)
                                     transcriptions.append(transcription)
                         else:
                             st.error("Inserisci almeno un ID file per procedere.")       
                         combined_transcription = "\n".join(transcriptions)
                         st.session_state["transcription"] = combined_transcription
-                        st.write(st.session_state["transcription"])
                         st.session_state["transcription_saved"] = False
     if st.session_state["transcription"]:
         with st.form(key="save_transcription_form"):
