@@ -113,6 +113,7 @@ if mode == "Carica un file audio":
             if convert_mp3_to_wav(input_path, output_path):
                 st.success("Conversione completata con successo!")
                 st.write(output_path)
+                st.write(os.path.getsize(output_path) / (1024 * 1024))
         
             # Conversione in OGG
             if convert_to_ogg(input_path, output_path):
