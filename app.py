@@ -107,6 +107,7 @@ if mode == "Carica un file audio":
     uploaded_file = st.file_uploader("Carica un file audio (WAV)", type=["wav","mp3"])
     if uploaded_file:
         if st.session_state["ricomincia"]==True:
+            st.write(st.session_state["ricomincia"])
             st.session_state["ricomincia"]=False
             st.rerun()
         with st.spinner("Caricando..."):
