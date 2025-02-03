@@ -109,6 +109,7 @@ with col1:
         st.session_state["transcription"]=""
         st.session_state["uploaded_file"]=None
         st.session_state["avvio"]=True
+        st.session_state["selezione2"]=0
         st.rerun()
 
 if mode == "Carica un file audio":
