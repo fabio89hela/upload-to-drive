@@ -115,7 +115,7 @@ with col1:
 if mode == "Carica un file audio":
     file_ids=[]
     # Scelta farmacista e data
-    fo_lungo=st.selectbox("Nome del farmacista intervistato",[regional,"Altro"])
+    fo_lungo=st.selectbox("Nome del farmacista intervistato",regional+["Altro"])
     if fo_lungo=="Altro":
         fo_lungo=st.text_input("Specificare")
         specia=st.text_input("Ruolo")
