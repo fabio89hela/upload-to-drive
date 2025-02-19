@@ -30,9 +30,9 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
             segment_pattern = os.path.join(temp_dir, f"{segment_prefix}_%03d.ogg")
             # Usa ffmpeg per dividere il file in segmenti più piccoli
             segment_duration =600 #int((max_size_mb * 1024 * 1024) / (file_size_mb / 60))  # Durata stimata in secondi
-            try: #c="copy"
+            try: 
                 ffmpeg.input(file_path).output(
-                    segment_pattern, f="segment", segment_time=segment_duration, reset_timestamps=1,acodec="libopus",b:a="96k",flush_packets=1 
+                    segment_pattern, f="segment", segment_time=segment_duration, reset_timestamps=1,acodec="libopus",b:a="96k"
                 ).run(overwrite_output=True)
                 st.write("Segmentazione completata.")
             except ffmpeg.Error as e:
