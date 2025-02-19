@@ -54,7 +54,7 @@ def convert_to_ogg(input_path, output_path):
         ffmpeg.input(input_path).output(
             output_path,
             acodec="libopus",  # Codec per OGG
-            audio_bitrate="128k",
+            audio_bitrate="192k",
             format="ogg"
         ).run(overwrite_output=True)
         return True
@@ -141,7 +141,7 @@ if mode == "Carica un file audio":
         now = datetime.now()
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
         # Caricamento di un file audio locale
-        st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV)", type=["wav","mp3"])
+        st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV o MP3)", type=["wav","mp3"])
         if st.session_state["uploaded_file"]:
             if st.session_state["ricomincia"]==False:
                 st.session_state["ricomincia"]=True
@@ -152,16 +152,20 @@ if mode == "Carica un file audio":
                 with tempfile.NamedTemporaryFile(delete=False, suffix=f".{st.session_state["uploaded_file"].name.split('.')[-1]}") as temp_file:
                     temp_file.write(st.session_state["uploaded_file"].getbuffer())
                     input_path = temp_file.name
+                    st.write(input_path)
 
                 # Percorso per il file convertito
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
                     output_path = temp_ogg_file.name
+                    st.write(output_path)
         
                 # Conversione in OGG
                 if convert_to_ogg(input_path, output_path):
+                    st.write("Dopo conversione ogg")
+                    st.write(output_path)
                     # Carica su Google Drive
                     temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-                    if st.button("Salva su Drive"):#not st.session_state["file_upload_ids"]:
+                    if st.button("Salva su Drive"):
                         file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                         st.session_state["file_upload_ids"]=file_ids
                         st.success("File caricato su Drive")
