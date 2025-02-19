@@ -45,6 +45,8 @@ def convert_mp3_to_wav(input_path, output_path):
 def authenticate_and_upload(file_name, file_path):
     service = authenticate_drive()
     # Carica il file su Google Drive
+    st.write(file_name)
+    st.write(file_path)
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
     return file_id
 
@@ -152,17 +154,13 @@ if mode == "Carica un file audio":
                 with tempfile.NamedTemporaryFile(delete=False, suffix=f".{st.session_state["uploaded_file"].name.split('.')[-1]}") as temp_file:
                     temp_file.write(st.session_state["uploaded_file"].getbuffer())
                     input_path = temp_file.name
-                    st.write(input_path)
 
                 # Percorso per il file convertito
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
                     output_path = temp_ogg_file.name
-                    st.write(output_path)
         
                 # Conversione in OGG
                 if convert_to_ogg(input_path, output_path):
-                    st.write("Dopo conversione ogg")
-                    st.write(output_path)
                     # Carica su Google Drive
                     temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
                     if st.button("Salva su Drive"):
