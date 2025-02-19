@@ -8,6 +8,7 @@ import json
 import requests
 import ffmpeg 
 import tempfile
+import gspread
 
 
 # Funzione per autenticarsi con Google Drive
@@ -55,6 +56,11 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
         file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
         uploaded_file_ids.append(file.get("id"))
     return uploaded_file_ids
+
+def get_gsheet_connection():
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    creds = Credentials.from_service_account_info(st.secrets["gdrive_service_account"],scopes=scope)
+    return gspread.authorize(creds)
 
 def upload_to_drive_old(service, file_name, file_path, folder_id, max_size_mb=20):
     # Controlla la dimensione del file
