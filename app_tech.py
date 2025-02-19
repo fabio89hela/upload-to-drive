@@ -165,12 +165,6 @@ if mode == "Carica un file audio":
                     # Carica su Google Drive
                     temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
                     if st.button("Salva su Drive"):
-                        st.write("input path")
-                        st.write(input_path)
-                        st.write("output file")
-                        st.write(output_path)
-                        st.write("temp name personalised")
-                        st.write(temp_name_personalised)
                         file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                         st.session_state["file_upload_ids"]=file_ids
                         st.success("File caricato su Drive")
