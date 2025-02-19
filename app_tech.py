@@ -163,11 +163,7 @@ if mode == "Carica un file audio":
                 # Conversione in OGG
                 if convert_to_ogg(input_path, output_path):
                     # Carica su Google Drive
-                    st.write(c)
-                    st.write(data)
-                    st.write(fo)
                     temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-                    st.write(temp_name_personalised)
                     if st.button("Salva su Drive"):
                         st.write("input path")
                         st.write(input_path)
