@@ -38,6 +38,8 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
                     reset_timestamps=1,
                     acodec="libopus",
                     max_muxing_queue_size=1024,
+                    map="0:a",  # Solo l'audio
+                    c="copy" 
                     fs=max_size_mb * 1024 * 1024  # Limita la dimensione massima a ~20MB
                 ).run(overwrite_output=True)
                 st.write("Segmentazione completata.")
