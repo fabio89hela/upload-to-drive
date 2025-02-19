@@ -8,14 +8,8 @@ def settings_folder(cartella):
   if cartella=="Ematologia":
     c="Ematologia"
     FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
-    regional=["Alessandro D'Arpino, Dirigente farmacista Ospedale di Perugia","Andrea Di Mattia, Dirigente farmacista Campus Bio Medico di Roma","Lorenzo Fiorino, Dirigente farmacista Policlinico S.Orsola-Malpighi","Gaspare Guglielmi, Dirigente farmacista Ospedale Cardarelli di Napoli","Paolo Silimbani, Responsabile Aziendale di Farmacovigilanza IRST IRCCS Dino Amadori"]
-    nome={
-      "Alessandro D'Arpino, Dirigente farmacista Ospedale di Perugia":"AlessandroDArpino",
-      "Andrea Di Mattia, Dirigente farmacista Campus Bio Medico di Roma":"AndreaDiMattia",
-      "Lorenzo Fiorino, Dirigente farmacista Policlinico S.Orsola-Malpighi":"LorenzoFiorino",
-      "Gaspare Guglielmi, Dirigente farmacista Ospedale Cardarelli di Napoli":"GaspareGuglielmi",
-      "Paolo Silimbani, Responsabile Aziendale di Farmacovigilanza IRST IRCCS Dino Amadori":"PaoloSilimbani"
-      }
+    regional = st.secrets["fo_name_emato"]["regional"]
+    nome=st.secrets["fo_name_emato"]["nome"]
     domanda1="""
               **Impatto della presenza di Centri Hub/Spoke e modello erogativo/assistenziale**\n
               - Come viene coordinata l'erogazione di farmaci per l’ematologia tra centro Hub e centro Spoke, nella sua attuale esperienza?
