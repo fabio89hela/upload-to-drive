@@ -139,6 +139,8 @@ if mode == "Carica un file audio":
                 st.error("Inserisci tutti i campi!")
     else:
         fo=df.loc[df["Figura"] == fo_lungo, "Abbreviazione"].values
+        st.write(fo)
+        st.write(str(fo))
         data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
         now = datetime.now()
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
@@ -162,7 +164,7 @@ if mode == "Carica un file audio":
                 # Conversione in OGG
                 if convert_to_ogg(input_path, output_path):
                     # Carica su Google Drive
-                    temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
+                    temp_name_personalised=str(c+"_"+data+"_"+fo+".ogg")
                     if st.button("Salva su Drive"):
                         st.write("input path")
                         st.write(input_path)
