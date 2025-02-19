@@ -32,7 +32,7 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
             segment_duration =600 #int((max_size_mb * 1024 * 1024) / (file_size_mb / 60))  # Durata stimata in secondi
             try: #c="copy"
                 ffmpeg.input(file_path).output(
-                    segment_pattern, f="segment", segment_time=segment_duration, reset_timestamps=1,acodec="libopus"
+                    segment_pattern, f="segment", segment_time=segment_duration, reset_timestamps=1,acodec="libopus",b:a="96k",flush_packets=1 
                 ).run(overwrite_output=True)
                 st.write("Segmentazione completata.")
             except ffmpeg.Error as e:
