@@ -164,8 +164,8 @@ if mode == "Carica un file audio":
                     # Carica su Google Drive
                     temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
                     if st.button("Salva su Drive"):
-                        st.write("input file")
-                        st.write(input_file)
+                        st.write("input path")
+                        st.write(input_path)
                         st.write("output file")
                         st.write(output_path)
                         st.write("temp name personalised")
