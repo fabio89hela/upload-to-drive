@@ -111,7 +111,7 @@ with col1:
     worksheet = sh.sheet1
     data_fo = worksheet.get_all_values()
     df = pd.DataFrame(data_fo[1:], columns=data_fo[0])
-    regional=df["Label"].tolist()
+    regional=df.loc[df["Specializzazione"] == c, "Label"].values
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
         st.session_state["ricomincia"]=False
