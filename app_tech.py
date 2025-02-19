@@ -105,6 +105,14 @@ with col2:
         st.session_state["selezione2"]=0
     c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
 with col1:
+    gc = get_gsheet_connection()
+    SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
+    sh = gc.open_by_key(SHEET_ID)
+    worksheet = sh.sheet1
+    data_fo = worksheet.get_all_values()
+    df = pd.DataFrame(data[1:], columns=data[0])
+    regional=df["Label"].tolist()
+    nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
         st.session_state["ricomincia"]=False
         st.session_state["transcription"]=""
@@ -120,81 +128,75 @@ if mode == "Carica un file audio":
     if fo_lungo=="Altro":
         fo_lungo=st.text_input("Specificare")
         ruolo=st.text_input("Ruolo")
-        if st.button("Salva Dati"):
+        if st.button("Aggiungi farmacista"):
             if fo_lungo and ruolo:
-                gc = get_gsheet_connection()
-                SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
-                sh = gc.open_by_key(SHEET_ID)
-                worksheet = sh.sheet1
                 worksheet.append_row([fo_lungo, ruolo,c])  
-                st.success("Dati salvati con successo su Google Sheets! ✅")
+                st.rerun()
             else:
                 st.error("Inserisci tutti i campi!")
-    fo=nome[fo_lungo]
-    #fo=st.text_input("Indica il nome del farmacista intervistato", value="")
-    data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
-    now = datetime.now()
-    data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
-    # Caricamento di un file audio locale
-    st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV)", type=["wav","mp3"])
-    if st.session_state["uploaded_file"]:
-        if st.session_state["ricomincia"]==False:
-            st.session_state["ricomincia"]=True
-            st.session_state["uploaded_file"]=None
-            st.session_state["avvio"]=True
-            st.rerun()
-        with st.spinner("Caricando..."):
-            with tempfile.NamedTemporaryFile(delete=False, suffix=f".{st.session_state["uploaded_file"].name.split('.')[-1]}") as temp_file:
-                temp_file.write(st.session_state["uploaded_file"].getbuffer())
-                input_path = temp_file.name
+    else:
+        fo=nome[fo_lungo]
+        data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
+        now = datetime.now()
+        data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
+        # Caricamento di un file audio locale
+        st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV)", type=["wav","mp3"])
+        if st.session_state["uploaded_file"]:
+            if st.session_state["ricomincia"]==False:
+                st.session_state["ricomincia"]=True
+                st.session_state["uploaded_file"]=None
+                st.session_state["avvio"]=True
+                st.rerun()
+            with st.spinner("Caricando..."):
+                with tempfile.NamedTemporaryFile(delete=False, suffix=f".{st.session_state["uploaded_file"].name.split('.')[-1]}") as temp_file:
+                    temp_file.write(st.session_state["uploaded_file"].getbuffer())
+                    input_path = temp_file.name
 
-            # Percorso per il file convertito
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
-                output_path = temp_ogg_file.name
-            #if convert_mp3_to_wav(input_path, output_path):
-            #    st.success("Conversione completata con successo!")
+                # Percorso per il file convertito
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
+                    output_path = temp_ogg_file.name
         
-            # Conversione in OGG
-            if convert_to_ogg(input_path, output_path):
-                # Carica su Google Drive
-                temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-                if st.button("Salva su Drive"):#not st.session_state["file_upload_ids"]:
-                    file_ids = authenticate_and_upload(temp_name_personalised, output_path)
-                    st.session_state["file_upload_ids"]=file_ids
-                    st.success("File caricato su Drive")
-                    st.session_state["avvio"]=False
-            if st.button("Trascrivi il file caricato",disabled=st.session_state["avvio"]):
-                    file_ids=st.session_state["file_upload_ids"]
-                    if file_ids:
-                        transcriptions=[]
-                        # Itera su ciascun ID del file
-                        for file_id in file_ids:
-                            transcription=get_transcriptions_from_n8n(file_id,c+"_"+data+"_"+fo+".txt",FOLDER_ID)
-                            transcriptions.append(transcription)
-                    else:
-                        st.error("Inserisci almeno un ID file per procedere.")       
-                    combined_transcription = "\n".join(transcriptions)
-                    st.session_state["transcription"] = combined_transcription
-                    st.session_state["transcription_saved"] = False
-    if st.session_state["transcription"]:
-        with st.form(key="save_transcription_form"):
-                st.subheader("Trascrizione:")
-                transcription_content = st.text_area("Puoi modificare la trascrizione prima di salvarla:", st.session_state["transcription"], height=300)
-                submit_button = st.form_submit_button("Salva la trascrizione su Google Drive")
-                if submit_button and not st.session_state["transcription_saved"]:
-                    if transcription_content != st.session_state["transcription"]:
-                        st.session_state["transcription"]=transcription_content
-                    # Salva il contenuto temporaneamente come file di testo
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
-                        temp_text_file.write(transcription_content.encode('utf-8'))
-                        temp_text_file_path = temp_text_file.name
-                    # Carica il file su Google Drive
-                    file_name = f"Trascrizione_{temp_name_personalised}.txt"
-                    try:
-                        file_id = authenticate_and_upload(file_name, temp_text_file_path)
-                        st.success(f"Salvataggio completato")
-                    except Exception as e:
-                        st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+                # Conversione in OGG
+                if convert_to_ogg(input_path, output_path):
+                    # Carica su Google Drive
+                    temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
+                    if st.button("Salva su Drive"):#not st.session_state["file_upload_ids"]:
+                        file_ids = authenticate_and_upload(temp_name_personalised, output_path)
+                        st.session_state["file_upload_ids"]=file_ids
+                        st.success("File caricato su Drive")
+                        st.session_state["avvio"]=False
+                if st.button("Trascrivi il file caricato",disabled=st.session_state["avvio"]):
+                        file_ids=st.session_state["file_upload_ids"]
+                        if file_ids:
+                            transcriptions=[]
+                            # Itera su ciascun ID del file
+                            for file_id in file_ids:
+                                transcription=get_transcriptions_from_n8n(file_id,c+"_"+data+"_"+fo+".txt",FOLDER_ID)
+                                transcriptions.append(transcription)
+                        else:
+                            st.error("Inserisci almeno un ID file per procedere.")       
+                        combined_transcription = "\n".join(transcriptions)
+                        st.session_state["transcription"] = combined_transcription
+                        st.session_state["transcription_saved"] = False
+        if st.session_state["transcription"]:
+            with st.form(key="save_transcription_form"):
+                    st.subheader("Trascrizione:")
+                    transcription_content = st.text_area("Puoi modificare la trascrizione prima di salvarla:", st.session_state["transcription"], height=300)
+                    submit_button = st.form_submit_button("Salva la trascrizione su Google Drive")
+                    if submit_button and not st.session_state["transcription_saved"]:
+                        if transcription_content != st.session_state["transcription"]:
+                            st.session_state["transcription"]=transcription_content
+                        # Salva il contenuto temporaneamente come file di testo
+                        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
+                            temp_text_file.write(transcription_content.encode('utf-8'))
+                            temp_text_file_path = temp_text_file.name
+                        # Carica il file su Google Drive
+                        file_name = f"Trascrizione_{temp_name_personalised}.txt"
+                        try:
+                            file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                            st.success(f"Salvataggio completato")
+                        except Exception as e:
+                            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
 elif mode == "Registra un nuovo audio":
     if st.session_state["ricomincia"]==False:
