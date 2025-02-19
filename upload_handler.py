@@ -37,7 +37,6 @@ def upload_to_drive(service, file_name, file_path, folder_id, max_size_mb=20):
                     segment_time=segment_duration,  
                     reset_timestamps=1,
                     acodec="libopus",
-                    b:a="64k",  
                     max_muxing_queue_size=1024,
                     fs=max_size_mb * 1024 * 1024  # Limita la dimensione massima a ~20MB
                 ).run(overwrite_output=True)
