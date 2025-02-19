@@ -10,6 +10,7 @@ import ffmpeg
 import tempfile
 from datetime import datetime
 import time
+import pandas as pd
 
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=True
@@ -118,15 +119,14 @@ if mode == "Carica un file audio":
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional+["Altro"])
     if fo_lungo=="Altro":
         fo_lungo=st.text_input("Specificare")
-        specia=st.text_input("Ruolo")
+        ruolo=st.text_input("Ruolo")
         if st.button("Salva Dati"):
-            if fo_lungo:
-                # Connettiamoci al foglio Google
+            if fo_lungo and ruolo:
                 gc = get_gsheet_connection()
                 SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
                 sh = gc.open_by_key(SHEET_ID)
                 worksheet = sh.sheet1
-                worksheet.append_row([fo_lungo, specia,c])  
+                worksheet.append_row([fo_lungo, ruolo,c])  
                 st.success("Dati salvati con successo su Google Sheets! ✅")
             else:
                 st.error("Inserisci tutti i campi!")
