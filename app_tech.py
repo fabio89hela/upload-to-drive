@@ -139,6 +139,7 @@ if mode == "Carica un file audio":
                 st.error("Inserisci tutti i campi!")
     else:
         fo=df.loc[df["Label"] == fo_lungo, "Abbreviazione"].tolist()
+        fo=fo[0]
         data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
         now = datetime.now()
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
