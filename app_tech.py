@@ -138,6 +138,7 @@ if mode == "Carica un file audio":
             else:
                 st.error("Inserisci tutti i campi!")
     else:
+        st.write(regional)
         st.write(fo_lungo)
         fo=df.loc[df["Label"] == fo_lungo, "Abbreviazione"].values
         st.write(fo)
