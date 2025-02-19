@@ -110,7 +110,7 @@ with col1:
     sh = gc.open_by_key(SHEET_ID)
     worksheet = sh.sheet1
     data_fo = worksheet.get_all_values()
-    df = pd.DataFrame(data_fo[1:], columns=data[0])
+    df = pd.DataFrame(data_fo[1:], columns=data_fo[0])
     regional=df["Label"].tolist()
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
