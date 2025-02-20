@@ -16,7 +16,7 @@ import streamlit.components.v1 as components
 
 mycomponent=components.declare_component(
     "mycomponent",
-    path="./mycomponent"
+    path="./.mycomponent"
 )
 
 if "avvio" not in st.session_state:
