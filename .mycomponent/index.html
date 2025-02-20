@@ -1,10 +1,3 @@
-def get_audio_recorder_html():
-    """
-    Genera il codice HTML e JavaScript per registrare l'audio, 
-    salvare il file come WAV e permettere il download.
-    """
-    return """
-  <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -67,6 +60,26 @@ def get_audio_recorder_html():
 <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
 
 <script>
+    function sendMessageToStreamlitClient(type,data){
+        var outData=Object.assign({
+            isStreamlitMessage:true,
+            type:type,
+        },data);
+        window.parent.postMessage(outData,"*")
+    }
+
+    function init(){
+        sendMessageToStreamlitClient("streamlit:componentReady",{apiVersion:1});
+    }
+
+    function setFrameHeight(height){
+        sendMessageToStreamlitClient("streamlit:setFrameHeight",{height:height});
+    }
+
+    function sendDataToPython(data){
+        sendMessageToStreamlitClient("streamlit:setComponentValue",data);
+    }
+    
     const startBtn = document.getElementById('startBtn');
     const pauseBtn = document.getElementById('pauseBtn');
     const resumeBtn = document.getElementById('resumeBtn');
@@ -142,9 +155,6 @@ def get_audio_recorder_html():
             }
             let textArea = document.getElementById('transcription');
             textArea.value = finalTranscript + interimTranscript;
-
-                // Salva il testo in localStorage in automatico
-            localStorage.setItem("transcription", textArea.value);
         };
 
         recognition.onerror = (event) => {
@@ -154,10 +164,12 @@ def get_audio_recorder_html():
         recognition.start();
     }
 
-            // Quando l'utente preme "Salva Trascrizione", aggiorna `localStorage`
-        document.getElementById('saveBtn').addEventListener('click', () => {
-            let transcript = document.getElementById('transcription').value;
-            localStorage.setItem("transcription", transcript);
+        // Quando l'utente preme "Salva Trascrizione", aggiorna `localStorage`
+        document.getElementById('saveBtn').addEventListener('click', function() => {
+            sendDataToPython({
+                value:document.getElementById('transcription').value,
+                dataType:"json",
+            });
         });
 
     function startTranscription2() {
