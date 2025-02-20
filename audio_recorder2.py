@@ -38,12 +38,15 @@ def get_audio_recorder_html():
 
         #transcription {
             margin-top: 20px;
+            height: 150px; /* Imposta un'altezza fissa */
+            overflow-y: auto; /* Abilita lo scroll verticale */
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
-            background-color: #f8f9fa;
+            background-color: white;
             font-size: 16px;
-            color: #333;
+            font-family: Arial, sans-serif;
+            color: #34637D;
             min-height: 50px;
         }
     </style>
