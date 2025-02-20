@@ -4,7 +4,40 @@ def get_audio_recorder_html():
     salvare il file come WAV e permettere il download.
     """
     return """
-    <canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
+    <!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione Audio</title>
+    <style>
+        .custom-button {
+            background-color: white;
+            color: #007bff;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .custom-button:hover {
+            background-color: #f8f9fa;
+        }
+
+        .custom-button:disabled {
+            color: #adb5bd;
+            border-color: #dee2e6;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
     <div style="margin-bottom: 20px;">
       <button id="startBtn">Start Recording</button>
       <button id="pauseBtn" disabled>Pause</button>
@@ -132,4 +165,6 @@ def get_audio_recorder_html():
         }
       });
     </script>
+</body>
+</html>
     """
