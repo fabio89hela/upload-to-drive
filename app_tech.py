@@ -215,20 +215,11 @@ elif mode == "Registra un nuovo audio":
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         st.components.v1.html(get_audio_recorder_html(), height=300,scrolling=True)
-        transcription_text = st_javascript("""
-    new Promise((resolve) => {
-        window.addEventListener('message', (event) => {
-            if (event.data.transcription) {
-                resolve(event.data.transcription);
-            }
-        });
-    });
-""", key="transcription_listener")
-        
-        st.write(transcription_text)
-        if transcription_text and transcription_text != st.session_state["transcription_text"]:
-            st.session_state["transcription_text"] = transcription_text
-        st.text_area("Testo trascritto", st.session_state["transcription_text"], height=200)
+        if st.button("📥 Carica Trascrizione in Streamlit"):
+            transcription_text = st_javascript("""
+            document.getElementById("transcription").value;
+            """)
+
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
