@@ -3,7 +3,7 @@ import io
 import json
 import streamlit as st
 from upload_handler import authenticate_drive, upload_to_drive,get_gsheet_connection
-from audio_recorder2_old import get_audio_recorder_html
+from audio_recorder2 import get_audio_recorder_html
 from settings_folder import settings_folder
 import requests
 import ffmpeg 
