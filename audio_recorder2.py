@@ -81,6 +81,7 @@ def get_audio_recorder_html():
     let dataArray;
     let animationId;
     let recognition;
+    let finalTranscript = ""; // Buffer per il testo definitivo
 
     function drawWaveform() {
         analyser.getByteTimeDomainData(dataArray);
@@ -113,6 +114,41 @@ def get_audio_recorder_html():
     }
 
     function startTranscription() {
+        if (!('webkitSpeechRecognition' in window)) {
+            transcriptionDiv.textContent = "Il riconoscimento vocale non è supportato su questo browser.";
+            return;
+        }
+
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'it-IT';
+
+        recognition.onresult = (event) => {
+            let interimTranscript = "";
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                if (event.results[i].isFinal) {
+                    // Se la trascrizione è definitiva, la aggiungiamo al buffer
+                    finalTranscript += event.results[i][0].transcript + " ";
+                } else {
+                    // Se la trascrizione è provvisoria, la mostriamo senza cancellare il buffer
+                    interimTranscript += event.results[i][0].transcript + " ";
+                }
+            }
+
+            // Aggiorniamo la trascrizione visualizzata
+            transcriptionDiv.textContent = finalTranscript + interimTranscript;
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Errore nel riconoscimento vocale: ", event.error);
+        };
+
+        recognition.start();
+    }
+
+    function startTranscription2() {
         if (!('webkitSpeechRecognition' in window)) {
             transcriptionDiv.textContent = "Il riconoscimento vocale non è supportato su questo browser.";
             return;
