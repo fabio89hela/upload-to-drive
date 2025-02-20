@@ -63,7 +63,7 @@ def get_audio_recorder_html():
 <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
 
 <!-- Trascrizione in tempo reale -->
-<div id="transcription">La trascrizione apparirà qui...</div>
+<textarea id="transcription">La trascrizione apparirà qui...</textarea>
 
 <script>
     const startBtn = document.getElementById('startBtn');
@@ -139,9 +139,9 @@ def get_audio_recorder_html():
                     interimTranscript += event.results[i][0].transcript + " ";
                 }
             }
-
-            // Aggiorniamo la trascrizione visualizzata
-            transcriptionDiv.textContent = finalTranscript + interimTranscript;
+            let textArea = document.getElementById('transcription');
+            textArea.value = finalTranscript + interimTranscript;
+            localStorage.setItem("transcription", textArea.value);
         };
 
         recognition.onerror = (event) => {
