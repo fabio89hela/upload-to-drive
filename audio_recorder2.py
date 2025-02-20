@@ -64,6 +64,7 @@ def get_audio_recorder_html():
 
 <!-- Trascrizione in tempo reale -->
 <textarea id="transcription">La trascrizione apparirà qui...</textarea>
+<button id="saveBtn">Salva Trascrizione</button>
 
 <script>
     const startBtn = document.getElementById('startBtn');
@@ -142,7 +143,6 @@ def get_audio_recorder_html():
             let textArea = document.getElementById('transcription');
             textArea.value = finalTranscript + interimTranscript;
             localStorage.setItem("transcription", textArea.value);
-            
         };
 
         recognition.onerror = (event) => {
@@ -151,6 +151,12 @@ def get_audio_recorder_html():
 
         recognition.start();
     }
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            let transcript = document.getElementById('transcription').value;
+            localStorage.setItem("transcription", transcript);
+            window.parent.postMessage({ transcription: transcript }, "*");
+        });
 
     function startTranscription2() {
         if (!('webkitSpeechRecognition' in window)) {
