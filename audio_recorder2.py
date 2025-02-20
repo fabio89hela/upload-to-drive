@@ -58,13 +58,13 @@ def get_audio_recorder_html():
     <button class="custom-button" id="pauseBtn" disabled>Pausa</button>
     <button class="custom-button" id="resumeBtn" disabled>Riprendi</button>
     <button class="custom-button" id="stopBtn" disabled>Ferma registrazione</button>
+    <br><br>
+    <textarea id="transcription" placeholder="La trascrizione apparirà qui..."></textarea>
+    <br>
     <button id="saveBtn">Salva Trascrizione</button>
     <a id="downloadLink" style="display:none; margin-top: 20px;">Download Audio</a>
 </div>
 <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
-
-<!-- Trascrizione in tempo reale -->
-<textarea id="transcription">La trascrizione apparirà qui...</textarea>
 
 <script>
     const startBtn = document.getElementById('startBtn');
@@ -142,7 +142,6 @@ def get_audio_recorder_html():
             }
             let textArea = document.getElementById('transcription');
             textArea.value = finalTranscript + interimTranscript;
-            localStorage.setItem("transcription", textArea.value);
         };
 
         recognition.onerror = (event) => {
@@ -155,7 +154,6 @@ def get_audio_recorder_html():
         document.getElementById('saveBtn').addEventListener('click', () => {
             let transcript = document.getElementById('transcription').value;
             localStorage.setItem("transcription", transcript);
-            window.parent.postMessage({ transcription: transcript }, "*");
         });
 
     function startTranscription2() {
