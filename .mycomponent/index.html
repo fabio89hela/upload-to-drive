@@ -79,6 +79,23 @@
     function sendDataToPython(data){
         sendMessageToStreamlitClient("streamlit:setComponentValue",data);
     }
+
+    var myInput=document.getElementById("myinput");
+
+    function onDataFromPython(event){
+        if (event.data.type!=="streamlit:render") return;
+        myinput.value=event.data.args.my_input_value;
+    }
+
+    myInput.addEventListener("change",function(){
+        sendDataToPython({
+            value:myInput.value,
+            dataType:"json",
+        })
+    })
+
+    window.addEventListener("message",onDataFromPython);
+    init()
     
     const startBtn = document.getElementById('startBtn');
     const pauseBtn = document.getElementById('pauseBtn');
