@@ -151,9 +151,9 @@ def get_audio_recorder_html():
         recognition.start();
     }
 
-        document.getElementById('saveBtn').addEventListener('click', () => {
+    document.getElementById('saveBtn').addEventListener('click', () => {
             let transcript = document.getElementById('transcription').value;
-            localStorage.setItem("transcription", transcript);
+            window.parent.postMessage({ transcription: transcript }, "*");
         });
 
     function startTranscription2() {
