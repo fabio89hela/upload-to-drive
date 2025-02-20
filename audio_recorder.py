@@ -20,7 +20,7 @@ def get_audio_recorder_html():
             font-size: 14px;
             font-family: Arial, sans-serif;
             cursor: pointer;
-            transition: all 0.3s ease-in-out;
+            transition: all 0.1s ease-in-out;
             display: inline-block;
             text-decoration: none;
         }
