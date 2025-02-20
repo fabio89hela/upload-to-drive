@@ -13,8 +13,8 @@ def get_audio_recorder_html():
     <style>
         .custom-button {
             background-color: white;
-            color: #007bff;
-            border: 1px solid #ced4da;
+            color: #34637D;
+            border: 1px solid #34637D;
             border-radius: 8px;
             padding: 8px 16px;
             font-size: 14px;
@@ -26,7 +26,8 @@ def get_audio_recorder_html():
         }
 
         .custom-button:hover {
-            background-color: #f8f9fa;
+            border-color: #FBB614;
+            color:#FBB614;
         }
 
         .custom-button:disabled {
