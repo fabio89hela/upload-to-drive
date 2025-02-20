@@ -45,8 +45,6 @@ def convert_mp3_to_wav(input_path, output_path):
 def authenticate_and_upload(file_name, file_path):
     service = authenticate_drive()
     # Carica il file su Google Drive
-    st.write(file_name)
-    st.write(file_path)
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
     return file_id
 
@@ -105,7 +103,8 @@ with col2:
         st.session_state["selezione2"]=2
     else:
         st.session_state["selezione2"]=0
-    c,FOLDER_ID,regional,nome,domanda1,domanda2=settings_folder(cartella)
+    c,FOLDER_ID,domanda1,domanda2=settings_folder(cartella)
+    domande=[domanda1,domanda2]
 with col1:
     gc = get_gsheet_connection()
     SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
@@ -208,12 +207,17 @@ elif mode == "Registra un nuovo audio":
         st.session_state["uploaded_file"]=None
         st.session_state["avvio"]=True
         st.rerun()
-    with st.expander("Sezione 1"):
-        st.markdown(domanda1)
-        st.components.v1.html(get_audio_recorder_html(), height=500)
-    with st.expander("Sezione 2"):
-        st.markdown(domanda2)
-        st.components.v1.html(get_audio_recorder_html(), height=500)
+    i=1
+    for  domanda in domande:
+        with st.expander("Sezione "+str(i)):
+            st.markdown(domanda)
+            st.components.v1.html(get_audio_recorder_html(), height=500)
+    #with st.expander("Sezione 1"):
+    #    st.markdown(domanda1)
+    #    st.components.v1.html(get_audio_recorder_html(), height=500)
+    #with st.expander("Sezione 2"):
+    #    st.markdown(domanda2)
+    #    st.components.v1.html(get_audio_recorder_html(), height=500)
 
 elif mode=="Trascrivi": 
     # Elenca i file nella cartella
