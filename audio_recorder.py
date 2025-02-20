@@ -17,7 +17,7 @@ def get_audio_recorder_html():
             border: 1px solid #ced4da;
             border-radius: 8px;
             padding: 8px 16px;
-            font-size: 14px;
+            font-size: 40px;
             font-family: Arial, sans-serif;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
