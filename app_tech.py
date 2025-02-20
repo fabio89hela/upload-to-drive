@@ -12,6 +12,12 @@ from datetime import datetime
 import time
 import pandas as pd
 from streamlit_javascript import st_javascript
+import streamlit.components.v1 as components
+
+mycomponent=components.declare_component(
+    "mycomponent",
+    path="./mycomponent"
+)
 
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=True
@@ -214,12 +220,8 @@ elif mode == "Registra un nuovo audio":
 
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
-        st.components.v1.html(get_audio_recorder_html(), height=300,scrolling=True)
-        if st.button("📥 Carica Trascrizione in Streamlit"):
-            transcription_text = transcription_text = st_javascript("""
-        document.getElementById("transcription").value;
-    """)
-            st.write(transcription_text)
+        transcription_text=mycomponent(key="transcription_text")
+        st.write(transcription_text)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
