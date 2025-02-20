@@ -212,7 +212,7 @@ elif mode == "Registra un nuovo audio":
     for  domanda in domande:
         with st.expander("Sezione "+str(i)):
             st.markdown(domanda)
-            st.components.v1.html(get_audio_recorder_html(), height=500)
+            st.components.v1.html(get_audio_recorder_html(), height=500,scrolling=True)
     #with st.expander("Sezione 1"):
     #    st.markdown(domanda1)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
