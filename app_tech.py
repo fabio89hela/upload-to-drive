@@ -3,7 +3,7 @@ import io
 import json
 import streamlit as st
 from upload_handler import authenticate_drive, upload_to_drive,get_gsheet_connection
-#from audio_recorder2 import get_audio_recorder_html
+from audio_recorder2_old import get_audio_recorder_html
 from settings_folder import settings_folder
 import requests
 import ffmpeg 
@@ -11,13 +11,8 @@ import tempfile
 from datetime import datetime
 import time
 import pandas as pd
-from streamlit_javascript import st_javascript
 import streamlit.components.v1 as components
-
-mycomponent=components.declare_component(
-    "mycomponent",
-    path="./.mycomponent"
-)
+from streamlit_javascript import st_javascript
 
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=True
@@ -220,7 +215,12 @@ elif mode == "Registra un nuovo audio":
 
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
-        transcription_text=mycomponent(my_input_value="hello",key="transcription_text")
+        components.html(get_audio_recorder_html(), height=500)
+        transcription_text = st_javascript("""
+    (async function() {
+        return document.getElementById("transcription") ? document.getElementById("transcription").value : "";
+    })();
+""")
         st.write(transcription_text)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
