@@ -58,13 +58,13 @@ def get_audio_recorder_html():
     <button class="custom-button" id="pauseBtn" disabled>Pausa</button>
     <button class="custom-button" id="resumeBtn" disabled>Riprendi</button>
     <button class="custom-button" id="stopBtn" disabled>Ferma registrazione</button>
+    <button id="saveBtn">Salva Trascrizione</button>
     <a id="downloadLink" style="display:none; margin-top: 20px;">Download Audio</a>
 </div>
 <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
 
 <!-- Trascrizione in tempo reale -->
 <textarea id="transcription">La trascrizione apparirà qui...</textarea>
-<button id="saveBtn">Salva Trascrizione</button>
 
 <script>
     const startBtn = document.getElementById('startBtn');
