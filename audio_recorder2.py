@@ -140,8 +140,7 @@ def get_audio_recorder_html():
                     interimTranscript += event.results[i][0].transcript + " ";
                 }
             }
-            let textArea = document.getElementById('transcription');
-            textArea.value = finalTranscript + interimTranscript;
+            document.getElementById('transcription').value = finalTranscript + interimTranscript;
         };
 
         recognition.onerror = (event) => {
@@ -150,11 +149,6 @@ def get_audio_recorder_html():
 
         recognition.start();
     }
-
-    document.getElementById('saveBtn').addEventListener('click', () => {
-            let transcript = document.getElementById('transcription').value;
-            window.parent.postMessage({ transcription: transcript }, "*");
-        });
 
     function startTranscription2() {
         if (!('webkitSpeechRecognition' in window)) {
