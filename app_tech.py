@@ -215,7 +215,12 @@ elif mode == "Registra un nuovo audio":
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         st.components.v1.html(get_audio_recorder_html(), height=300,scrolling=True)
-        transcription_text = st_javascript("window.addEventListener('message', (event) => event.data.text);", key="transcription_listener")
+        transcription_text = st_javascript("""
+    setInterval(() => {
+        const transcript = localStorage.getItem("transcription") || "";
+        parent.postMessage({ type: "transcription", text: transcript }, "*");
+    }, 2000);
+""", key="transcription_listener")
         st.write(transcription_text)
         if transcription_text and transcription_text != st.session_state["transcription_text"]:
             st.session_state["transcription_text"] = transcription_text
