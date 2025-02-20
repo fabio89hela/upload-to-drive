@@ -142,6 +142,7 @@ def get_audio_recorder_html():
             let textArea = document.getElementById('transcription');
             textArea.value = finalTranscript + interimTranscript;
             localStorage.setItem("transcription", textArea.value);
+            window.parent.postMessage({ type: "transcription", text: textArea.value }, "*");
         };
 
         recognition.onerror = (event) => {
