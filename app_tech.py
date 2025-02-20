@@ -216,12 +216,13 @@ elif mode == "Registra un nuovo audio":
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         components.html(get_audio_recorder_html(), height=500)
-        transcription_text = st_javascript("""
+        if st.button("prova"):
+            transcription_text = st_javascript("""
     (async function() {
         return document.getElementById("transcription") ? document.getElementById("transcription").value : "";
     })();
 """)
-        st.write(transcription_text)
+            st.write(transcription_text)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
