@@ -11,6 +11,7 @@ import tempfile
 from datetime import datetime
 import time
 import pandas as pd
+from streamlit_javascript import st_javascript
 
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=True
@@ -213,6 +214,9 @@ elif mode == "Registra un nuovo audio":
         with st.expander("Sezione "+str(i)):
             st.markdown(domanda)
             st.components.v1.html(get_audio_recorder_html(), height=500,scrolling=True)
+            transcription_text = st_javascript("window.addEventListener('message', (event) => event.data.transcription);")
+            if transcription_text:
+                st.text_area("Testo trascritto", transcription_text, height=200)
     #with st.expander("Sezione 1"):
     #    st.markdown(domanda1)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
