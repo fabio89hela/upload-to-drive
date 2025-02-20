@@ -217,7 +217,7 @@ elif mode == "Registra un nuovo audio":
         st.components.v1.html(get_audio_recorder_html(), height=300,scrolling=True)
         if st.button("📥 Carica Trascrizione in Streamlit"):
             transcription_text = transcription_text = st_javascript("""
-        document.getElementById("text_area").value;
+        document.getElementById("transcription").value;
     """)
             st.write(transcription_text)
     #with st.expander("Sezione 2"):
