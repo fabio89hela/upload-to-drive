@@ -475,7 +475,7 @@ elif mode == "Registra un nuovo audio":
 
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
-        st.components.v1.html({js_code}, height=300,scrolling=True)
+        st.components.v1.html(js_code, height=300,scrolling=True)
         transcription_text = st_javascript(js_code)
         
         st.write(transcription_text)
