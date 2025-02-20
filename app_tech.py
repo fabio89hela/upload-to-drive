@@ -219,7 +219,7 @@ elif mode == "Registra un nuovo audio":
             transcription_text = st_javascript("""
             document.getElementById("transcription").value;
             """)
-
+            st.write("transcription_text")
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
