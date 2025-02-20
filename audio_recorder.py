@@ -26,12 +26,12 @@ def get_audio_recorder_html():
         }
 
         .custom-button:hover {
-            background-color: #f8f9fa;
+            background-color: red;
         }
 
         .custom-button:disabled {
-            color: #adb5bd;
-            border-color: #dee2e6;
+            color: blue;
+            border-color: red;
             cursor: not-allowed;
         }
     </style>
