@@ -220,7 +220,7 @@ elif mode == "Registra un nuovo audio":
 
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
-        transcription_text=mycomponent(key="transcription_text")
+        transcription_text=mycomponent(my_input_value="hello",key="transcription_text")
         st.write(transcription_text)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
