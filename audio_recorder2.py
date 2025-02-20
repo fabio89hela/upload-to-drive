@@ -140,7 +140,11 @@ def get_audio_recorder_html():
                     interimTranscript += event.results[i][0].transcript + " ";
                 }
             }
-            document.getElementById('transcription').value = finalTranscript + interimTranscript;
+            let textArea = document.getElementById('transcription');
+            textArea.value = finalTranscript + interimTranscript;
+
+                // Salva il testo in localStorage in automatico
+            localStorage.setItem("transcription", textArea.value);
         };
 
         recognition.onerror = (event) => {
@@ -149,6 +153,12 @@ def get_audio_recorder_html():
 
         recognition.start();
     }
+
+            // Quando l'utente preme "Salva Trascrizione", aggiorna `localStorage`
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            let transcript = document.getElementById('transcription').value;
+            localStorage.setItem("transcription", transcript);
+        });
 
     function startTranscription2() {
         if (!('webkitSpeechRecognition' in window)) {
