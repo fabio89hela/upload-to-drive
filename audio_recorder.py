@@ -17,7 +17,7 @@ def get_audio_recorder_html():
             border: 1px solid #ced4da;
             border-radius: 8px;
             padding: 8px 16px;
-            font-size: 40px;
+            font-size: 14px;
             font-family: Arial, sans-serif;
             cursor: pointer;
             transition: all 0.3s ease-in-out;
@@ -26,12 +26,12 @@ def get_audio_recorder_html():
         }
 
         .custom-button:hover {
-            background-color: red;
+            background-color: #f8f9fa;
         }
 
         .custom-button:disabled {
-            color: blue;
-            border-color: red;
+            color: #adb5bd;
+            border-color: #dee2e6;
             cursor: not-allowed;
         }
     </style>
