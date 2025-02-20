@@ -26,7 +26,7 @@ def get_audio_recorder_html():
         }
 
         .custom-button:hover {
-            border-color: #FBB614;
+            border:1px solid #FBB614;
             color:#FBB614;
         }
 
@@ -40,10 +40,10 @@ def get_audio_recorder_html():
 <body>
 <canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
     <div style="margin-bottom: 20px;">
-      <button class="custom-button" id="startBtn">Start Recording</button>
-      <button class="custom-button" id="pauseBtn" disabled>Pause</button>
-      <button class="custom-button" id="resumeBtn" disabled>Resume</button>
-      <button class="custom-button" id="stopBtn" disabled>Stop</button>
+      <button class="custom-button" id="startBtn">Avvia registrazione</button>
+      <button class="custom-button" id="pauseBtn" disabled>Pausa</button>
+      <button class="custom-button" id="resumeBtn" disabled>Riprendi</button>
+      <button class="custom-button" id="stopBtn" disabled>Ferma registrazione</button>
       <a id="downloadLink" style="display:none; margin-top: 20px;">Download Audio</a>
     </div>
     <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
