@@ -140,7 +140,7 @@ def get_audio_recorder_html(n):
                 return;
             }
 
-            recognition = new webkitSpeechRecognition();
+            //recognition = new webkitSpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
             recognition.lang = 'it-IT';
@@ -170,7 +170,8 @@ def get_audio_recorder_html(n):
         }
 
         startBtn.addEventListener("click", async () => {
-            transcriptionText += `\n===== INIZIO REGISTRAZIONE ${index + 1} =====\n`;
+            transcriptionText = `\n===== INIZIO REGISTRAZIONE ${index + 1} =====\n` + transcriptionText;
+            document.getElementById("transcription").value = transcriptionText;
             audioChunks = [];
             stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             audioContext = new AudioContext();
@@ -196,6 +197,7 @@ def get_audio_recorder_html(n):
 
                 // Aggiungi un marcatore alla trascrizione globale
                 transcriptionText += `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
+                document.getElementById("transcription").value = transcriptionText;
             };
 
             mediaRecorder.start();
