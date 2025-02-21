@@ -93,33 +93,32 @@ def get_audio_recorder_html(n):
             let stream;
             let recognition;
             let finalTranscript = "";
+            let animationId;
 
+            let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            let analyser = audioContext.createAnalyser();
+            analyser.fftSize = 2048;
+            let dataArray = new Uint8Array(analyser.fftSize);
+            
             function drawWaveform() {
-                let analyser = new (window.AudioContext || window.webkitAudioContext)().createAnalyser();
-                let dataArray = new Uint8Array(analyser.fftSize);
-                let animationId;
+                analyser.getByteTimeDomainData(dataArray);
+                canvasCtx.fillStyle = "white";
+                canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+                canvasCtx.lineWidth = 2;
+                canvasCtx.strokeStyle = "blue";
+                canvasCtx.beginPath();
+                let sliceWidth = waveCanvas.width / analyser.fftSize;
+                let x = 0;
 
-                function animate() {
-                    analyser.getByteTimeDomainData(dataArray);
-                    canvasCtx.fillStyle = "white";
-                    canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
-                    canvasCtx.lineWidth = 2;
-                    canvasCtx.strokeStyle = "blue";
-                    canvasCtx.beginPath();
-                    let sliceWidth = waveCanvas.width / analyser.fftSize;
-                    let x = 0;
-
-                    for (let i = 0; i < analyser.fftSize; i++) {
-                        let v = dataArray[i] / 128.0;
-                        let y = (v * waveCanvas.height) / 2;
-                        if (i === 0) canvasCtx.moveTo(x, y);
-                        else canvasCtx.lineTo(x, y);
-                        x += sliceWidth;
-                    }
-                    canvasCtx.stroke();
-                    animationId = requestAnimationFrame(animate);
+                for (let i = 0; i < analyser.fftSize; i++) {
+                    let v = dataArray[i] / 128.0;
+                    let y = (v * waveCanvas.height) / 2;
+                    if (i === 0) canvasCtx.moveTo(x, y);
+                    else canvasCtx.lineTo(x, y);
+                    x += sliceWidth;
                 }
-                animate();
+                canvasCtx.stroke();
+                animationId = requestAnimationFrame(drawWaveform);
             }
 
             function startTranscription() {
