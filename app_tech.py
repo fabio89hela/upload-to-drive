@@ -225,8 +225,7 @@ elif mode == "Registra un nuovo audio":
         st.markdown(transcription_text)
         submitted=submitted = st.form_submit_button("Submit")
         if submitted:
-            st.session_state["ricomincia"]=False
-            st.session_state["avvio"]=True
+            st.session_state["ricomincia"]=True
             st.rerun()
             
     #with st.expander("Sezione 2"):
