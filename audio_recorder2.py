@@ -1,4 +1,3 @@
-
 def get_audio_recorder_html(n):
     html_content = """
     <!DOCTYPE html>
@@ -54,7 +53,7 @@ def get_audio_recorder_html(n):
     <body>
     """
 
-    # Generazione dinamica dei canvas e registratori
+    # Generazione dinamica dei registratori
     for i in range(n):
         html_content += f"""
         <div class="container">
@@ -62,8 +61,6 @@ def get_audio_recorder_html(n):
             <canvas id="waveCanvas-{i}" width="600" height="100" style="border:1px solid #ccc; margin-bottom: 10px;"></canvas>
             <div>
                 <button class="custom-button" id="startBtn-{i}">Avvia</button>
-                <button class="custom-button" id="pauseBtn-{i}" disabled>Pausa</button>
-                <button class="custom-button" id="resumeBtn-{i}" disabled>Riprendi</button>
                 <button class="custom-button" id="stopBtn-{i}" disabled>Ferma</button>
             </div>
             <textarea class="transcription" id="transcription-{i}" placeholder="La trascrizione apparirà qui..."></textarea>
@@ -72,15 +69,13 @@ def get_audio_recorder_html(n):
         </div>
         """
 
-    # Aggiunta dello script JavaScript per gestire i registratori in modo indipendente
+    # JavaScript per gestire più registratori con waveform
     html_content += """
     <script>
         let recorders = [];
 
         function setupRecorder(index) {
             let startBtn = document.getElementById(`startBtn-${index}`);
-            let pauseBtn = document.getElementById(`pauseBtn-${index}`);
-            let resumeBtn = document.getElementById(`resumeBtn-${index}`);
             let stopBtn = document.getElementById(`stopBtn-${index}`);
             let audioPlayback = document.getElementById(`audioPlayback-${index}`);
             let downloadLink = document.getElementById(`downloadLink-${index}`);
@@ -95,12 +90,14 @@ def get_audio_recorder_html(n):
             let finalTranscript = "";
             let animationId;
 
-            let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            let analyser = audioContext.createAnalyser();
-            analyser.fftSize = 2048;
-            let dataArray = new Uint8Array(analyser.fftSize);
-            
+            let audioContext;
+            let analyser;
+            let dataArray;
+            let source;
+
             function drawWaveform() {
+                if (!analyser) return;
+
                 analyser.getByteTimeDomainData(dataArray);
                 canvasCtx.fillStyle = "white";
                 canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
@@ -145,7 +142,15 @@ def get_audio_recorder_html(n):
             startBtn.addEventListener("click", async () => {
                 audioChunks = [];
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                let source = audioContext.createMediaStreamSource(stream);
+                
+                // Creazione AudioContext e Analyser
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                dataArray = new Uint8Array(analyser.fftSize);
+                
+                // Collegamento dell'analizzatore allo stream audio
+                source = audioContext.createMediaStreamSource(stream);
                 source.connect(analyser);
                 
                 mediaRecorder = new MediaRecorder(stream);
@@ -162,6 +167,7 @@ def get_audio_recorder_html(n):
                     downloadLink.download = `recording-${index}.wav`;
                     downloadLink.style.display = "block";
                     downloadLink.textContent = "Download Audio";
+                    cancelAnimationFrame(animationId);
                 };
 
                 mediaRecorder.start();
@@ -169,7 +175,6 @@ def get_audio_recorder_html(n):
                 startTranscription();
 
                 startBtn.disabled = true;
-                pauseBtn.disabled = false;
                 stopBtn.disabled = false;
             });
 
@@ -179,22 +184,19 @@ def get_audio_recorder_html(n):
                     stream.getTracks().forEach((track) => track.stop());
                     recognition.stop();
                     startBtn.disabled = false;
-                    pauseBtn.disabled = true;
-                    resumeBtn.disabled = true;
                     stopBtn.disabled = true;
+                    cancelAnimationFrame(animationId);
                 }
             });
 
-            recorders.push({ startBtn, pauseBtn, resumeBtn, stopBtn, mediaRecorder });
+            recorders.push({ startBtn, stopBtn, mediaRecorder });
         }
 
         for (let i = 0; i < """ + str(n) + """; i++) {
             setupRecorder(i);
         }
     </script>
-
     </body>
     </html>
     """
-
     return html_content
