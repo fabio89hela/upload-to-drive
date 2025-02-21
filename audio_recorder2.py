@@ -101,7 +101,7 @@ def get_audio_recorder_html(n):
         let audioContext;
         let analyser;
         let dataArray;
-        let recognition;
+        let recognition=new webkitSpeechRecognition();
         let finalTranscript = "";
 
         function drawWaveform() {
