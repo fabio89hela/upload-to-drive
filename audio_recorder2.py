@@ -157,7 +157,7 @@ def get_audio_recorder_html(n):
                 }
 
                 // Aggiunge la trascrizione alla textarea globale con separatore
-                transcriptionText += `\n===== INIZIO REGISTRAZIONE ${index + 1} =====\n` + finalTranscript + interimTranscript;
+                transcriptionText += finalTranscript + interimTranscript;
                 document.getElementById("transcription").value = transcriptionText;
             };
 
@@ -179,7 +179,7 @@ def get_audio_recorder_html(n):
             dataArray = new Uint8Array(analyser.fftSize);
 
             mediaRecorder = new MediaRecorder(stream);
-
+            transcriptionText += `\n===== INIZIO REGISTRAZIONE ${index + 1} =====\n`;
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) audioChunks.push(event.data);
             };
