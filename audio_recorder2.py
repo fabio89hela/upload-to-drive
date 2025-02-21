@@ -65,7 +65,7 @@ def get_audio_recorder_html(n):
                 <button class="custom-button" id="resumeBtn-{i}" disabled>Riprendi</button>
                 <button class="custom-button" id="stopBtn-{i}" disabled>Ferma</button>
             </div>
-            <textarea class="transcription" id="transcription-{i}" placeholder="La trascrizione {i} apparirà qui..."></textarea>
+            <textarea class="transcription" id="transcription-{i}" placeholder="La trascrizione apparirà qui..."></textarea>
             <audio id="audioPlayback-{i}" controls style="display: none;"></audio>
             <a id="downloadLink-{i}" style="display:none;">Download Audio</a>
         </div>
