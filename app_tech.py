@@ -211,24 +211,21 @@ if mode == "Carica un file audio":
                         except Exception as e:
                             st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
-elif mode == "Registra un nuovo audio" or st.session_state["selezione1"]==1:
+elif mode == "Registra un nuovo audio":
     if st.session_state["ricomincia"]==False:
         st.session_state["ricomincia"]=True
         st.session_state["uploaded_file"]=None
         st.session_state["avvio"]=True
         st.rerun()
 
-    with st.expander("Sezione 1"):
+    with st.form("Sezione 1"):
         st.markdown(domanda1)
         components.html(get_audio_recorder_html(), height=500)
+#        return_value = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
+#        st.markdown(f"Return value was: {return_value}")
+    if st.form_submit_button("Salva risposta"):
         return_value = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(f"Return value was: {return_value}")
-    if st.button("Salva risposta"):
-        st.session_state["ricomincia"]=False
-        st.session_state["uploaded_file"]=None
-        st.session_state["avvio"]=True
-        st.session_state["selezione1"]=1
-        st.rerun()
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
