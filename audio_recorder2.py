@@ -191,7 +191,7 @@ def get_audio_recorder_html(n):
                 audioPlayback.src = audioURL;
                 audioPlayback.style.display = "block";
 
-                recognition.stop();
+                //recognition.pause();
 
                 // Aggiungi un marcatore alla trascrizione globale
                 transcriptionText += `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
@@ -209,7 +209,7 @@ def get_audio_recorder_html(n):
             if (mediaRecorder) {
                 mediaRecorder.stop();
                 stream.getTracks().forEach((track) => track.stop());
-                recognition.stop();
+                //recognition.stop();
 
                 startBtn.disabled = false;
                 stopBtn.disabled = true;
