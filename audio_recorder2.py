@@ -169,6 +169,7 @@ def get_audio_recorder_html(n):
         }
 
         startBtn.addEventListener("click", async () => {
+            transcriptionText += `\n===== INIZIO REGISTRAZIONE ${index + 1} =====\n`;
             audioChunks = [];
             stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             audioContext = new AudioContext();
@@ -179,7 +180,6 @@ def get_audio_recorder_html(n):
             dataArray = new Uint8Array(analyser.fftSize);
 
             mediaRecorder = new MediaRecorder(stream);
-            transcriptionText += `\n===== INIZIO REGISTRAZIONE ${index + 1} =====\n`;
             mediaRecorder.ondataavailable = (event) => {
                 if (event.data.size > 0) audioChunks.push(event.data);
             };
