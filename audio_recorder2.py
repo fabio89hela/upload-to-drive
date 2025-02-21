@@ -60,7 +60,6 @@ def get_audio_recorder_html():
     <button class="custom-button" id="stopBtn" disabled>Ferma registrazione</button>
     <br><br>
     <textarea id="transcription" placeholder="La trascrizione apparirà qui..."></textarea>
-    <textarea id="transcription2" placeholder="Cosa è salvato"></textarea>
     <a id="downloadLink" style="display:none; margin-top: 20px;">Download Audio</a>
 </div>
 <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
@@ -141,7 +140,6 @@ def get_audio_recorder_html():
             }
             let textArea = document.getElementById('transcription');
             textArea.value = finalTranscript + interimTranscript;
-            localStorage.setItem("transcription", textArea.value);
         };
 
         recognition.onerror = (event) => {
