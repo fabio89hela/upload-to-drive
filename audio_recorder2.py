@@ -138,7 +138,7 @@ def get_audio_recorder_html(n):
                         }
                     }
                     transcriptionDiv.value = finalTranscript + interimTranscript;
-                    localStorage.setItem("transcription-${index}", transcriptionDiv.value);
+                    localStorage.setItem(`transcription-${index}`, transcriptionDiv.value);
                     parent.window.token = transcriptionDiv.value;
                 };
 
@@ -146,7 +146,7 @@ def get_audio_recorder_html(n):
             }
 
             document.getElementById('transcription-${index}').addEventListener('input', function() {
-                localStorage.setItem("transcription-${index}", this.value);
+                localStorage.setItem(`transcription-${index}`, this.value);
                 parent.window.token = this.value;
                 });
                 
