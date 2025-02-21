@@ -84,7 +84,7 @@ def riavvia():
     st.session_state["transcription"]=""
     st.session_state["uploaded_file"]=None
     st.session_state["avvio"]=True
-    st.session_state["selezione1"]=1
+    st.session_state["selezione1"]=0
     st.rerun()
     return True
 
