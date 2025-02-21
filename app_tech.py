@@ -79,12 +79,12 @@ def get_transcriptions_from_n8n(file_id,nome,cartella):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-def riavvia():
+def riavvia(selezione1):
     st.session_state["ricomincia"]=False
     st.session_state["transcription"]=""
     st.session_state["uploaded_file"]=None
     st.session_state["avvio"]=True
-    st.session_state["selezione1"]=0
+    st.session_state["selezione1"]=selezione1
     st.rerun()
     return True
 
@@ -100,9 +100,6 @@ st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width
 
 # Titolo dell'app Streamlit
 st.title("Carica un file già registrato")
-
-if st.session_state["selezione1"]==1:
-    mode = "Registra un nuovo audio"
 
 col1,col2,col3=st.columns(3)
 
@@ -133,7 +130,7 @@ with col1:
     regional=df.loc[df["Specializzazione"] == c, "Label"].tolist()
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
-        a=riavvia()
+        a=riavvia(0)
 
 if mode == "Carica un file audio":
     file_ids=[]
@@ -227,11 +224,8 @@ elif mode == "Registra un nuovo audio":
         returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(returned)
         if st.button("Salva"):
-            st.session_state["ricomincia"]=True
-            st.session_state["selezione1"]=1
-            st.rerun()
-            
-            
+            a=riavvia(0)
+            a=riavvia(1)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
