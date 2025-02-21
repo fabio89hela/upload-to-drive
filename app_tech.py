@@ -232,7 +232,12 @@ elif mode == "Registra un nuovo audio":
             }
             return JSON.stringify(transcriptions);
         """
-        transcription_data = st_javascript(js_code, key="get_transcriptions")
+        while True:
+            transcription_data = st_javascript(js_code)
+            if transcription_data:
+                break
+            time.sleep(1)
+        #transcription_data = st_javascript(js_code, key="get_transcriptions")
         #returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(transcription_data)
         if st.button("Salva"):
