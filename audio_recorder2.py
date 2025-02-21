@@ -73,8 +73,49 @@ def get_audio_recorder_html(n):
 
     # JavaScript per gestire più registratori con waveform
     html_content += """
+    <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica Trascrizioni</button>
+
     <script>
         let recorders = [];
+
+        function downloadAllTranscriptions() {
+            let allTranscriptions = "";
+            let allAudioLinks = [];
+            
+            for (let i = 0; i < """ + str(n) + """; i++) {
+                let transcriptionText = document.getElementById(`transcription-${i}`).value;
+                let audioLink = document.getElementById(`downloadLink-${i}`).href;
+
+                allTranscriptions += `Registrazione ${i+1}:\\n` + transcriptionText + "\\n\\n";
+                if (audioLink) {
+                    allAudioLinks.push(audioLink);
+                }
+            }
+
+            // **Salva il testo delle trascrizioni in localStorage per Streamlit**
+            localStorage.setItem("combined_transcriptions", allTranscriptions);
+
+            // **Creare un file di testo con le trascrizioni**
+            let blob = new Blob([allTranscriptions], { type: "text/plain" });
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "trascrizioni.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // **Scaricare tutti gli audio registrati**
+            allAudioLinks.forEach(link => {
+                let audioA = document.createElement("a");
+                audioA.href = link;
+                audioA.download = link.split('/').pop();
+                document.body.appendChild(audioA);
+                audioA.click();
+                document.body.removeChild(audioA);
+            });
+
+            parent.window.token = allTranscriptions;  // Passa il testo a Streamlit
+        }
 
         function setupRecorder(index) {
             let startBtn = document.getElementById(`startBtn-${index}`);
@@ -98,7 +139,7 @@ def get_audio_recorder_html(n):
             let analyser;
             let dataArray;
             let source;
-
+            
             function drawWaveform() {
                 if (!analyser) return;
 
