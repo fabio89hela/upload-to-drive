@@ -79,15 +79,14 @@ def get_transcriptions_from_n8n(file_id,nome,cartella):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-def riavvia(selezione1):
+def riavvia():
     st.session_state["ricomincia"]=False
     st.session_state["transcription"]=""
     st.session_state["uploaded_file"]=None
     st.session_state["avvio"]=True
-    st.session_state["selezione1"]=selezione1
+    st.session_state["selezione1"]=0
     st.rerun()
     return True
-
 
 # Configura la pagina
 st.set_page_config(
@@ -224,8 +223,7 @@ elif mode == "Registra un nuovo audio":
         returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(returned)
         if st.button("Salva"):
-            a=riavvia(0)
-            a=riavvia(1)
+            a=riavvia()
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
