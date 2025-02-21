@@ -79,6 +79,16 @@ def get_transcriptions_from_n8n(file_id,nome,cartella):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
+def riavvia():
+    st.session_state["ricomincia"]=False
+    st.session_state["transcription"]=""
+    st.session_state["uploaded_file"]=None
+    st.session_state["avvio"]=True
+    st.session_state["selezione1"]=1
+    st.rerun()
+    return True
+
+
 # Configura la pagina
 st.set_page_config(
     page_title="T-EMA App",
@@ -120,12 +130,7 @@ with col1:
     regional=df.loc[df["Specializzazione"] == c, "Label"].tolist()
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
-        st.session_state["ricomincia"]=False
-        st.session_state["transcription"]=""
-        st.session_state["uploaded_file"]=None
-        st.session_state["avvio"]=True
-        st.session_state["selezione1"]=0
-        st.rerun()
+        a=riavvia()
 
 if mode == "Carica un file audio":
     file_ids=[]
