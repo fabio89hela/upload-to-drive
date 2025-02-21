@@ -216,11 +216,9 @@ elif mode == "Registra un nuovo audio":
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
         components.html(get_audio_recorder_html(), height=500)
-        while True:
-            return_value = st_javascript("parent.window.token",key="transcription_listener")
-            if return_value:
-                break
-                time.sleep(1)
+        if st.button("Prova"):
+            return_value = st_javascript("parent.window.token")
+            st.write(return_value)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
