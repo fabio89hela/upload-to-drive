@@ -61,6 +61,8 @@ def get_audio_recorder_html(n):
             <canvas id="waveCanvas-{i}" width="600" height="100" style="border:1px solid #ccc; margin-bottom: 10px;"></canvas>
             <div>
                 <button class="custom-button" id="startBtn-{i}">Avvia</button>
+                <button class="custom-button" id="pauseBtn-{i}" disabled>Pausa</button>
+                <button class="custom-button" id="resumeBtn-{i}" disabled>Riprendi</button>
                 <button class="custom-button" id="stopBtn-{i}" disabled>Ferma</button>
             </div>
             <textarea class="transcription" id="transcription-{i}" placeholder="La trascrizione apparirà qui..."></textarea>
@@ -76,6 +78,8 @@ def get_audio_recorder_html(n):
 
         function setupRecorder(index) {
             let startBtn = document.getElementById(`startBtn-${index}`);
+            let pauseBtn = document.getElementById(`pauseBtn-${index}`);
+            let resumeBtn = document.getElementById(`resumeBtn-${index}`);
             let stopBtn = document.getElementById(`stopBtn-${index}`);
             let audioPlayback = document.getElementById(`audioPlayback-${index}`);
             let downloadLink = document.getElementById(`downloadLink-${index}`);
@@ -143,13 +147,11 @@ def get_audio_recorder_html(n):
                 audioChunks = [];
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 
-                // Creazione AudioContext e Analyser
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
                 analyser.fftSize = 2048;
                 dataArray = new Uint8Array(analyser.fftSize);
                 
-                // Collegamento dell'analizzatore allo stream audio
                 source = audioContext.createMediaStreamSource(stream);
                 source.connect(analyser);
                 
@@ -175,7 +177,28 @@ def get_audio_recorder_html(n):
                 startTranscription();
 
                 startBtn.disabled = true;
+                pauseBtn.disabled = false;
                 stopBtn.disabled = false;
+            });
+
+            pauseBtn.addEventListener("click", () => {
+                if (mediaRecorder.state === "recording") {
+                    mediaRecorder.pause();
+                    recognition.stop();
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = false;
+                    cancelAnimationFrame(animationId);
+                }
+            });
+
+            resumeBtn.addEventListener("click", () => {
+                if (mediaRecorder.state === "paused") {
+                    mediaRecorder.resume();
+                    startTranscription();
+                    resumeBtn.disabled = true;
+                    pauseBtn.disabled = false;
+                    drawWaveform();
+                }
             });
 
             stopBtn.addEventListener("click", () => {
@@ -184,12 +207,14 @@ def get_audio_recorder_html(n):
                     stream.getTracks().forEach((track) => track.stop());
                     recognition.stop();
                     startBtn.disabled = false;
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = true;
                     stopBtn.disabled = true;
                     cancelAnimationFrame(animationId);
                 }
             });
 
-            recorders.push({ startBtn, stopBtn, mediaRecorder });
+            recorders.push({ startBtn, pauseBtn, resumeBtn, stopBtn, mediaRecorder });
         }
 
         for (let i = 0; i < """ + str(n) + """; i++) {
