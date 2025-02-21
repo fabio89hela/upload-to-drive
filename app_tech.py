@@ -219,7 +219,12 @@ elif mode == "Registra un nuovo audio":
         return_value = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(f"Return value was: {return_value}")
         if st.button("Salva risposta"):
-            st.markdown(f"Return value was: {return_value}")
+            st.session_state["ricomincia"]=False
+            st.session_state["transcription"]=""
+            st.session_state["uploaded_file"]=None
+            st.session_state["avvio"]=True
+            st.session_state["selezione1"]=1
+            st.rerun()
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
