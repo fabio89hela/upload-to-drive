@@ -71,7 +71,7 @@ def get_audio_recorder_html(n):
         </div>
         """
 
-    # JavaScript per gestire più registratori con waveform
+    # JavaScript per gestire più registratori con waveform e salvataggio delle trascrizioni
     html_content += """
     <script>
         let recorders = [];
@@ -138,38 +138,36 @@ def get_audio_recorder_html(n):
                         }
                     }
                     transcriptionDiv.value = finalTranscript + interimTranscript;
+                    saveTranscription(index);
                 };
 
                 recognition.start();
             }
 
+            function saveTranscription(index) {
+                localStorage.setItem(`transcription-${index}`, transcriptionDiv.value);
+                parent.window.token = JSON.stringify(localStorage);
+            }
+
+            transcriptionDiv.addEventListener('input', function() {
+                saveTranscription(index);
+            });
+
             startBtn.addEventListener("click", async () => {
                 audioChunks = [];
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                
+
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 analyser = audioContext.createAnalyser();
                 analyser.fftSize = 2048;
                 dataArray = new Uint8Array(analyser.fftSize);
-                
+
                 source = audioContext.createMediaStreamSource(stream);
                 source.connect(analyser);
-                
+
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) audioChunks.push(event.data);
-                };
-
-                mediaRecorder.onstop = () => {
-                    let audioBlob = new Blob(audioChunks, { type: "audio/wav" });
-                    let audioURL = URL.createObjectURL(audioBlob);
-                    audioPlayback.src = audioURL;
-                    audioPlayback.style.display = "block";
-                    downloadLink.href = audioURL;
-                    downloadLink.download = `recording-${index}.wav`;
-                    downloadLink.style.display = "block";
-                    downloadLink.textContent = "Download Audio";
-                    cancelAnimationFrame(animationId);
                 };
 
                 mediaRecorder.start();
