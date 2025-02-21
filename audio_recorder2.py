@@ -254,7 +254,8 @@ def get_audio_recorder_html():
             mediaRecorder.stop();
             stream.getTracks().forEach((track) => track.stop());
             recognition.stop();
-
+            let textArea = document.getElementById('transcription');
+            localStorage.setItem("transcription", textArea.value);
             startBtn.disabled = false;
             pauseBtn.disabled = true;
             resumeBtn.disabled = true;
