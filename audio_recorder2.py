@@ -182,6 +182,7 @@ def get_audio_recorder_html():
 
     document.getElementById('transcription').addEventListener('input', function() {
         localStorage.setItem("transcription", this.value);
+        parent.window.token = this.value;
     });
 
     startBtn.addEventListener('click', async () => {
