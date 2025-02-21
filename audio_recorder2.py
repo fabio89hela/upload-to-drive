@@ -145,8 +145,10 @@ def get_audio_recorder_html(n):
             startBtn.addEventListener("click", async () => {
                 audioChunks = [];
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                let source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+                
                 mediaRecorder = new MediaRecorder(stream);
-
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) audioChunks.push(event.data);
                 };
