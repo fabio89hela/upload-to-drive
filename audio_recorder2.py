@@ -157,8 +157,9 @@ def get_audio_recorder_html(n):
                 }
 
                 // Aggiunge la trascrizione alla textarea globale con separatore
-                transcriptionText =  finalTranscript +interimTranscript;
-                document.getElementById("transcription").value = transcriptionText;
+                //transcriptionText =  finalTranscript +interimTranscript;
+                document.getElementById("transcription").value = transcriptionText + finalTranscript + interimTranscript;
+                //document.getElementById("transcription").value = transcriptionText;
             };
 
             recognition.onerror = (event) => {
@@ -191,7 +192,7 @@ def get_audio_recorder_html(n):
                 audioPlayback.src = audioURL;
                 audioPlayback.style.display = "block";
 
-                recognition.pause();
+                recognition.stop();
 
                 // Aggiungi un marcatore alla trascrizione globale
                 transcriptionText += `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
