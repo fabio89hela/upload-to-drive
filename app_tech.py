@@ -221,7 +221,7 @@ elif mode == "Registra un nuovo audio":
     with st.form("Sezione 1"):
         st.markdown(domanda1)
         components.html(get_audio_recorder_html(), height=500)
-#        return_value = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
+        return_value = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
 #        st.markdown(f"Return value was: {return_value}")
         submitted=submitted = st.form_submit_button("Submit")
         if submitted:
