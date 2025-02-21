@@ -157,7 +157,7 @@ def get_audio_recorder_html(n):
                 }
 
                 // Aggiunge la trascrizione alla textarea globale con separatore
-                transcriptionText += finalTranscript + interimTranscript;
+                transcriptionText +=  interimTranscript;
                 document.getElementById("transcription").value = transcriptionText;
             };
 
