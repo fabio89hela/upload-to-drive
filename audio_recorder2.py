@@ -145,7 +145,7 @@ def get_audio_recorder_html(n):
                 recognition.start();
             }
 
-            document.getElementById('transcription').addEventListener('input', function() {
+            document.getElementById('transcription-{i}').addEventListener('input', function() {
                 localStorage.setItem("transcription-{i}", this.value);
                 parent.window.token = this.value;
                 });
