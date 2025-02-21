@@ -129,7 +129,7 @@ with col1:
     regional=df.loc[df["Specializzazione"] == c, "Label"].tolist()
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
-        a=riavvia(0)
+        a=riavvia()
 
 if mode == "Carica un file audio":
     file_ids=[]
