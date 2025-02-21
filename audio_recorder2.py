@@ -192,11 +192,9 @@ def get_audio_recorder_html(n):
 
                 audioPlayback.src = audioURL;
                 audioPlayback.style.display = "block";
+                transcriptionText =transcriptionText+ `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
 
                 recognition.stop();
-
-                // Aggiungi un marcatore alla trascrizione globale
-                transcriptionText =transcriptionText+ `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
                 document.getElementById("transcription").value = transcriptionText;
             };
 
