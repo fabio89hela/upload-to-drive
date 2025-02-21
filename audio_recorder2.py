@@ -139,11 +139,17 @@ def get_audio_recorder_html(n):
                     }
                     transcriptionDiv.value = finalTranscript + interimTranscript;
                     localStorage.setItem("transcription-{i}", transcriptionDiv.value.value);
+                    parent.window.token = transcriptionDiv.value;
                 };
 
                 recognition.start();
             }
 
+            document.getElementById('transcription').addEventListener('input', function() {
+                localStorage.setItem("transcription-{i}", this.value);
+                parent.window.token = this.value;
+                });
+                
             startBtn.addEventListener("click", async () => {
                 audioChunks = [];
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
