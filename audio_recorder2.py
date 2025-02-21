@@ -60,6 +60,8 @@ def get_audio_recorder_html():
     <button class="custom-button" id="stopBtn" disabled>Ferma registrazione</button>
     <br><br>
     <textarea id="transcription" placeholder="La trascrizione apparirà qui..."></textarea>
+    <br>
+    <button id="saveBtn">Salva Trascrizione</button>
     <a id="downloadLink" style="display:none; margin-top: 20px;">Download Audio</a>
 </div>
 <audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
@@ -140,6 +142,9 @@ def get_audio_recorder_html():
             }
             let textArea = document.getElementById('transcription');
             textArea.value = finalTranscript + interimTranscript;
+
+                // Salva il testo in localStorage in automatico
+            localStorage.setItem("transcription", textArea.value);
         };
 
         recognition.onerror = (event) => {
@@ -149,7 +154,12 @@ def get_audio_recorder_html():
         recognition.start();
     }
 
-//-------------------------------------old--------------------------
+            // Quando l'utente preme "Salva Trascrizione", aggiorna `localStorage`
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            let transcript = document.getElementById('transcription').value;
+            localStorage.setItem("transcription", transcript);
+        });
+
     function startTranscription2() {
         if (!('webkitSpeechRecognition' in window)) {
             transcriptionDiv.textContent = "Il riconoscimento vocale non è supportato su questo browser.";
@@ -175,7 +185,7 @@ def get_audio_recorder_html():
 
         recognition.start();
     }
-//-----------------fine old -----------------------
+
     startBtn.addEventListener('click', async () => {
         audioChunks = [];
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -244,8 +254,7 @@ def get_audio_recorder_html():
             mediaRecorder.stop();
             stream.getTracks().forEach((track) => track.stop());
             recognition.stop();
-            let textArea = document.getElementById('transcription');
-            parent.window.token=document.getElementById('transcription')value;
+
             startBtn.disabled = false;
             pauseBtn.disabled = true;
             resumeBtn.disabled = true;
