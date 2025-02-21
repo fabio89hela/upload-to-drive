@@ -101,6 +101,9 @@ st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width
 # Titolo dell'app Streamlit
 st.title("Carica un file già registrato")
 
+if st.session_state["selezione1"]==1:
+    mode = "Registra un nuovo audio"
+
 col1,col2,col3=st.columns(3)
 
 with col3:
@@ -223,6 +226,10 @@ elif mode == "Registra un nuovo audio":
         components.html(get_audio_recorder_html(), height=500)
         returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(returned)
+        if st.button("Salva"):
+            st.session_state["ricomincia"]=True
+            st.session_state["selezione1"]=1
+            st.rerun()
             
             
     #with st.expander("Sezione 2"):
