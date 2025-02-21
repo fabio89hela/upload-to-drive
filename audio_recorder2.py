@@ -71,7 +71,8 @@ def get_audio_recorder_html(n):
 <script>
     let numRecorders = 3;  // Numero di registratori audio
     let transcriptionText = "";  // Memorizza la trascrizione completa
-
+    let recognition=new webkitSpeechRecognition();
+    
     function createRecorder(index) {
         // Creare il contenitore del registratore
         const container = document.createElement("div");
@@ -101,7 +102,6 @@ def get_audio_recorder_html(n):
         let audioContext;
         let analyser;
         let dataArray;
-        let recognition=new webkitSpeechRecognition();
         let finalTranscript = "";
 
         function drawWaveform() {
@@ -196,7 +196,7 @@ def get_audio_recorder_html(n):
                 recognition.stop();
 
                 // Aggiungi un marcatore alla trascrizione globale
-                transcriptionText += `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
+                transcriptionText =transcriptionText+ `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
                 document.getElementById("transcription").value = transcriptionText;
             };
 
@@ -212,7 +212,7 @@ def get_audio_recorder_html(n):
             if (mediaRecorder) {
                 mediaRecorder.stop();
                 stream.getTracks().forEach((track) => track.stop());
-                //recognition.stop();
+                recognition.stop();
 
                 startBtn.disabled = false;
                 stopBtn.disabled = true;
