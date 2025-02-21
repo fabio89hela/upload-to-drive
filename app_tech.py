@@ -219,7 +219,8 @@ elif mode == "Registra un nuovo audio":
 
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
-        components.html(get_audio_recorder_html(3), height=500,scrolling=True)
+        n_canvas=3
+        components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
         js_code = """
             let transcriptions = {};
             for (let i = 0; i < """ + str(n_canvas) + """; i++) {
