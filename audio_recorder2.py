@@ -65,7 +65,7 @@ def get_audio_recorder_html(n):
 <h3>Trascrizione Completa</h3>
 <textarea id="transcription" placeholder="Le trascrizioni appariranno qui..."></textarea>
 
-<!-- Contenitore per i canvas -->
+<!-- Contenitore per i registratori -->
 <div id="recordingsContainer"></div>
 
 <script>
@@ -156,8 +156,9 @@ def get_audio_recorder_html(n):
                     }
                 }
 
-                // Aggiunge la trascrizione alla textarea globale
-                document.getElementById("transcription").value = transcriptionText + "\n" + finalTranscript + interimTranscript;
+                // Aggiunge la trascrizione alla textarea globale con separatore
+                transcriptionText += `\n===== INIZIO REGISTRAZIONE ${index + 1} =====\n` + finalTranscript + interimTranscript;
+                document.getElementById("transcription").value = transcriptionText;
             };
 
             recognition.onerror = (event) => {
@@ -193,7 +194,7 @@ def get_audio_recorder_html(n):
                 recognition.stop();
 
                 // Aggiungi un marcatore alla trascrizione globale
-                transcriptionText += "\n===== INIZIO REGISTRAZIONE " + (index + 1) + " =====\n";
+                transcriptionText += `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
             };
 
             mediaRecorder.start();
