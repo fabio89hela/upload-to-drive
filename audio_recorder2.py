@@ -138,18 +138,11 @@ def get_audio_recorder_html(n):
                         }
                     }
                     transcriptionDiv.value = finalTranscript + interimTranscript;
-                    localStorage.setItem(`transcription-${index}`, transcriptionDiv.value);
-                    parent.window.token = transcriptionDiv.value;
                 };
 
                 recognition.start();
             }
 
-            document.getElementById('transcription-${index}').addEventListener('input', function() {
-                localStorage.setItem(`transcription-${index}`, this.value);
-                parent.window.token = this.value;
-                });
-                
             startBtn.addEventListener("click", async () => {
                 audioChunks = [];
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
