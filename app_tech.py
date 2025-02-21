@@ -217,7 +217,9 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         components.html(get_audio_recorder_html(), height=500)
         if st.button("Prova"):
-            return_value = st_javascript("parent.window.token")
+            return_value = st_javascript("""await fetch("https://reqres.in/api/products/3").then(function(response) {
+    return response.json();
+}) """)
             st.write(return_value)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
