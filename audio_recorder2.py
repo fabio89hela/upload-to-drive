@@ -210,8 +210,9 @@ def get_audio_recorder_html(n):
             if (mediaRecorder) {
                 mediaRecorder.stop();
                 stream.getTracks().forEach((track) => track.stop());
+                transcriptionText =transcriptionText+ `\n===== FINE REGISTRAZIONE ${index + 1} =====\n`;
                 recognition.stop();
-
+                document.getElementById("transcription").value = transcriptionText;
                 startBtn.disabled = false;
                 stopBtn.disabled = true;
             }
