@@ -212,7 +212,6 @@ if mode == "Carica un file audio":
                             st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
 elif mode == "Registra un nuovo audio":
-    st.rerun()
     if st.session_state["ricomincia"]==False:
         st.session_state["ricomincia"]=True
         st.session_state["uploaded_file"]=None
@@ -225,7 +224,7 @@ elif mode == "Registra un nuovo audio":
         return_value = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(f"Return value was: {return_value}")
     if st.button("Salva risposta"):
-        st.session_state["ricomincia"]=True
+        st.session_state["ricomincia"]=False
         st.session_state["uploaded_file"]=None
         st.session_state["avvio"]=True
         st.session_state["selezione1"]=1
