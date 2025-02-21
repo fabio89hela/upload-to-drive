@@ -221,19 +221,8 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         n_canvas=3
         components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
-        js_code = """
-            let transcriptions = {};
-            for (let i = 0; i < """ + str(n_canvas) + """; i++) {
-                let key = `transcription-${i}`;
-                let value = localStorage.getItem(key);
-                if (value) {
-                    transcriptions[key] = value;
-                }
-            }
-            return JSON.stringify(transcriptions);
-        """
         #transcription_data = st_javascript(js_code, key="get_transcriptions")
-        returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
+        #returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(transcription_data)
         if st.button("Salva"):
             a=riavvia()
