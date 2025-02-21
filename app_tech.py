@@ -219,7 +219,7 @@ elif mode == "Registra un nuovo audio":
 
     with st.expander("Sezione 1"):
         st.markdown(domanda1)
-        components.html(get_audio_recorder_html(3), height=500,scrollable=True)
+        components.html(get_audio_recorder_html(3), height=500,scrolling=True)
         returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         st.markdown(returned)
         if st.button("Salva"):
