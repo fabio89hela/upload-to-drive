@@ -211,7 +211,7 @@ if mode == "Carica un file audio":
                         except Exception as e:
                             st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
-elif mode == "Registra un nuovo audio" or st.session_state["selezione1"]=1:
+elif mode == "Registra un nuovo audio" or st.session_state["selezione1"]==1:
     if st.session_state["ricomincia"]==False:
         st.session_state["ricomincia"]=True
         st.session_state["uploaded_file"]=None
