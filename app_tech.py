@@ -28,8 +28,6 @@ if "file_upload_ids" not in st.session_state:
     st.session_state["file_upload_ids"] = []
 if "transcription" not in st.session_state:
     st.session_state["transcription"]=""
-if "transcription_prova" not in st.session_state:
-    st.session_state["transcription_prova"]=""
 if "transcription_saved" not in st.session_state:
     st.session_state["transcription_saved"] = False
 if "transcription_text" not in st.session_state:
@@ -226,9 +224,9 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         components.html(get_audio_recorder_html(), height=500)
         if st.button("Salva"):
-            st.session_state["transcription_prova"] = st_javascript("localStorage.getItem('transcription');", key="transcription_listener2")
+            returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener2")
             st.session_state["exp_collapse1"]=False
-    st.markdown(st.session_state["transcription_prova"])
+            st.markdown(returned)
             
             
     #with st.expander("Sezione 2"):
