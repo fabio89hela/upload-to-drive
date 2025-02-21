@@ -154,12 +154,6 @@ def get_audio_recorder_html():
         recognition.start();
     }
 
-            // Quando l'utente preme "Salva Trascrizione", aggiorna `localStorage`
-        document.getElementById('saveBtn').addEventListener('click', () => {
-            let transcript = document.getElementById('transcription').value;
-            localStorage.setItem("transcription", transcript);
-        });
-
     function startTranscription2() {
         if (!('webkitSpeechRecognition' in window)) {
             transcriptionDiv.textContent = "Il riconoscimento vocale non è supportato su questo browser.";
@@ -185,6 +179,11 @@ def get_audio_recorder_html():
 
         recognition.start();
     }
+
+    document.getElementById('transcription').addEventListener('input', function() {
+        localStorage.setItem("transcription", this.value);
+        parent.window.token = this.value;
+    });
 
     startBtn.addEventListener('click', async () => {
         audioChunks = [];
@@ -254,9 +253,6 @@ def get_audio_recorder_html():
             mediaRecorder.stop();
             stream.getTracks().forEach((track) => track.stop());
             recognition.stop();
-            let textArea = document.getElementById('transcription');
-            localStorage.setItem("transcription", textArea.value);
-            alert("Trascrizione salvata: " + localStorage.getItem("transcription"));
             startBtn.disabled = false;
             pauseBtn.disabled = true;
             resumeBtn.disabled = true;
