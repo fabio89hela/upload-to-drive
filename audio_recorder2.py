@@ -138,6 +138,7 @@ def get_audio_recorder_html(n):
                         }
                     }
                     transcriptionDiv.value = finalTranscript + interimTranscript;
+                    localStorage.setItem("transcription-{i}", transcriptionDiv.value.value);
                 };
 
                 recognition.start();
