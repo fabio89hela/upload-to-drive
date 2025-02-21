@@ -222,10 +222,10 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         components.html(get_audio_recorder_html(), height=500)
         transcription_text = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
-        st.markdown({transcription_text})
+        st.markdown(transcription_text)
         submitted=submitted = st.form_submit_button("Submit")
         if submitted:
-            st.session_state["ricomincia"]=True
+            st.session_state["ricomincia"]=False
             st.session_state["avvio"]=True
             st.rerun()
             
