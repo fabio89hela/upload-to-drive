@@ -256,6 +256,7 @@ def get_audio_recorder_html():
             recognition.stop();
             let textArea = document.getElementById('transcription');
             localStorage.setItem("transcription", textArea.value);
+            alert("Trascrizione salvata: " + localStorage.getItem("transcription"));
             startBtn.disabled = false;
             pauseBtn.disabled = true;
             resumeBtn.disabled = true;
