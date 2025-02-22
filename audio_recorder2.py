@@ -87,7 +87,8 @@ def get_audio_recorder_html(n):
             }
 
             localStorage.setItem("combined_transcriptions", allTranscriptions);
-
+            localStorage.setItem("update_time", new Date().getTime());
+            
             let blob = new Blob([allTranscriptions], { type: "text/plain" });
             let a = document.createElement("a");
             let fileURL= URL.createObjectURL(blob);
