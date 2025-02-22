@@ -229,19 +229,18 @@ elif mode == "Registra un nuovo audio":
     i=0
     #if st.button("Salva"):
     #    a=riavvia(1,True,False)
-    if st.button("Salva"):
-        while True:
-            i=i+1
-            transcription_text = st_javascript("localStorage.getItem('combined_transcriptions');",key="local_storage_retriever"+str(i))
-            st.write(transcription_text)
-            st.write(st.session_state["transcription_text"])
-            if transcription_text:
-                if transcription_text!=st.session_state["transcription_text"]:
-                    st.session_state["transcription_text"] = transcription_text
-                    st.markdown(st.session_state["transcription_text"])
-            else:
-                break
-            time.sleep(5)
+    while True:
+        i=i+1
+        transcription_text = st_javascript("localStorage.getItem('combined_transcriptions');",key="local_storage_retriever"+str(i))
+        st.write(transcription_text)
+        st.write(st.session_state["transcription_text"])
+        if transcription:
+            if transcription_text!=st.session_state["transcription_text"]:
+                st.session_state["transcription_text"] = transcription_text
+                st.markdown(st.session_state["transcription_text"])
+        else:
+            break
+        time.sleep(2)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
