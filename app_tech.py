@@ -233,14 +233,9 @@ elif mode == "Registra un nuovo audio":
         st.write("iterando "+str(i))
         if transcription_text!=st.session_state["transcription_text"]:
             st.write("nel ciclo di break")
-            break
+            st.session_state["transcription_text"] = transcription_text
+            st.markdown(st.session_state["transcription_text"])
         time.sleep(1)
-    if transcription_text:
-        st.session_state["transcription_text"] = transcription_text
-        #transcription_text = st_javascript("parent.window.token")
-        st.markdown(st.session_state["transcription_text"])
-        #transcription_data = st_javascript(js_code, key="get_transcriptions")
-        #returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
     if st.button("Salva"):
         a=riavvia(1,True,False)
     #with st.expander("Sezione 2"):
