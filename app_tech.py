@@ -227,17 +227,18 @@ elif mode == "Registra un nuovo audio":
         n_canvas=3
         components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
     i=0
-    while True:
-        i=i+1
-        transcription_text = st_javascript("localStorage.getItem('combined_transcriptions');",key="local_storage_retriever"+str(i))
-        st.write("iterando "+str(i))
-        if transcription_text!=st.session_state["transcription_text"]:
-            st.write("nel ciclo di break")
-            st.session_state["transcription_text"] = transcription_text
-            st.markdown(st.session_state["transcription_text"])
-        time.sleep(1)
+    #if st.button("Salva"):
+    #    a=riavvia(1,True,False)
     if st.button("Salva"):
-        a=riavvia(1,True,False)
+        while True:
+            i=i+1
+            transcription_text = st_javascript("localStorage.getItem('combined_transcriptions');",key="local_storage_retriever"+str(i))
+            if transcription_text!=st.session_state["transcription_text"] and not transcription:
+                st.session_state["transcription_text"] = transcription_text
+                st.markdown(st.session_state["transcription_text"])
+            else:
+                break
+            time.sleep(5)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
