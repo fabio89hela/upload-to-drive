@@ -81,12 +81,12 @@ def get_transcriptions_from_n8n(file_id,nome,cartella):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-def riavvia():
-    st.session_state["ricomincia"]=False
+def riavvia(selection,restart):
+    st.session_state["ricomincia"]=restart
     st.session_state["transcription"]=""
     st.session_state["uploaded_file"]=None
     st.session_state["avvio"]=True
-    st.session_state["selezione1"]=0
+    st.session_state["selezione1"]=selection
     st.rerun()
     return True
 
@@ -131,7 +131,7 @@ with col1:
     regional=df.loc[df["Specializzazione"] == c, "Label"].tolist()
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
-        a=riavvia()
+        a=riavvia(0,False)
 
 if mode == "Carica un file audio":
     file_ids=[]
@@ -235,9 +235,7 @@ elif mode == "Registra un nuovo audio":
         #transcription_data = st_javascript(js_code, key="get_transcriptions")
         #returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         if st.button("Salva"):
-            st.session_state["selezione1"]=1
-            st.session_state["ricomincia"]=True
-            a=riavvia()
+            a=riavvia(1,True)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
