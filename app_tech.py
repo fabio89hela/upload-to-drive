@@ -226,21 +226,20 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         n_canvas=3
         components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
-    i=0
-    #if st.button("Salva"):
-    #    a=riavvia(1,True,False)
-    while True:
-        i=i+1
-        transcription_text = st_javascript("localStorage.getItem('combined_transcriptions');",key="local_storage_retriever"+str(i))
-        st.write(transcription_text)
-        st.write(st.session_state["transcription_text"])
-        if transcription:
-            if transcription_text!=st.session_state["transcription_text"]:
-                st.session_state["transcription_text"] = transcription_text
-                st.markdown(st.session_state["transcription_text"])
-        else:
-            break
-        time.sleep(2)
+    if st.button("Salva"):
+        prev_timestamp = str(int(time.time() * 1000))
+        i=0
+        transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
+        st.write("transcription_text")
+        while False:
+            i=i+1
+            transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
+            timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i))
+            if timestamp and timestamp != prev_timestamp:
+                st.write("qui")
+                prev_timestamp = timestamp
+                break
+            time.sleep(1)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
