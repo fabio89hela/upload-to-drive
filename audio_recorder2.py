@@ -123,7 +123,7 @@ def get_audio_recorder_html(n):
             document.getElementById("downloadAllBtn").addEventListener("click", downloadAllTranscriptions);
         });
 
-                function setupRecorder(index) {
+        function setupRecorder(index) {
             let startBtn = document.getElementById(startBtn-${index});
             let pauseBtn = document.getElementById(pauseBtn-${index});
             let resumeBtn = document.getElementById(resumeBtn-${index});
@@ -146,7 +146,7 @@ def get_audio_recorder_html(n):
             let dataArray;
             let source;
             
-            function drawWaveform() {
+        function drawWaveform() {
                 if (!analyser) return;
 
                 analyser.getByteTimeDomainData(dataArray);
@@ -169,7 +169,7 @@ def get_audio_recorder_html(n):
                 animationId = requestAnimationFrame(drawWaveform);
             }
 
-            function startTranscription() {
+        function startTranscription() {
                 recognition = new webkitSpeechRecognition();
                 recognition.continuous = true;
                 recognition.interimResults = true;
@@ -190,7 +190,7 @@ def get_audio_recorder_html(n):
                 recognition.start();
             }
 
-            startBtn.addEventListener("click", async () => {
+        startBtn.addEventListener("click", async () => {
                 audioChunks = [];
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 
@@ -228,7 +228,7 @@ def get_audio_recorder_html(n):
                 stopBtn.disabled = false;
             });
 
-            pauseBtn.addEventListener("click", () => {
+        pauseBtn.addEventListener("click", () => {
                 if (mediaRecorder.state === "recording") {
                     mediaRecorder.pause();
                     recognition.stop();
@@ -238,7 +238,7 @@ def get_audio_recorder_html(n):
                 }
             });
 
-            resumeBtn.addEventListener("click", () => {
+        resumeBtn.addEventListener("click", () => {
                 if (mediaRecorder.state === "paused") {
                     mediaRecorder.resume();
                     startTranscription();
@@ -248,7 +248,7 @@ def get_audio_recorder_html(n):
                 }
             });
 
-            stopBtn.addEventListener("click", () => {
+        stopBtn.addEventListener("click", () => {
                 if (mediaRecorder) {
                     mediaRecorder.stop();
                     stream.getTracks().forEach((track) => track.stop());
