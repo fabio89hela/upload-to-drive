@@ -234,8 +234,9 @@ elif mode == "Registra un nuovo audio":
             timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i))
             st.write(timestamp)
             st.write(prev_timestamp)
-            if timestamp and timestamp != prev_timestamp:
+            if timestamp and timestamp > prev_timestamp:
                 st.write("qui")
+                st.session_state["transcription_text"]=transcription_text
                 prev_timestamp = timestamp
                 break
             time.sleep(1)
