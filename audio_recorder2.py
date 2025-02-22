@@ -67,7 +67,7 @@ def get_audio_recorder_html(n):
         """
 
     html_content += """
-    <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica Tutte le Trascrizioni</button>
+    <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica tutti gli audio</button>
 
     <script>
         let recorders=[];
