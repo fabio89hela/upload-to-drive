@@ -235,7 +235,7 @@ elif mode == "Registra un nuovo audio":
             if timestamp and timestamp > prev_timestamp:
                 st.session_state["transcription_text"]=transcription_text
                 break
-            time.sleep(3)
+            time.sleep(0.2)
         st.markdown(st.session_state["transcription_text"])
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
