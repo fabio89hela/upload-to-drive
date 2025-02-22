@@ -35,7 +35,7 @@ if "transcription_text" not in st.session_state:
 if "sezione_da_vedere" not in st.session_state:
     st.session_state["sezione_da_vedere"]=""
 if "expanded1" not in st.session_state:
-    st.session_state["expanded1"]=False
+    st.session_state["expanded1"]=True
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -83,12 +83,13 @@ def get_transcriptions_from_n8n(file_id,nome,cartella):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-def riavvia(selection,restart):
+def riavvia(selection,restart,espanso1):
     st.session_state["ricomincia"]=restart
     st.session_state["transcription"]=""
     st.session_state["uploaded_file"]=None
     st.session_state["avvio"]=True
     st.session_state["selezione1"]=selection
+    st.session_state["expanded1"]=espanso1
     st.rerun()
     return True
 
@@ -133,7 +134,7 @@ with col1:
     regional=df.loc[df["Specializzazione"] == c, "Label"].tolist()
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
-        a=riavvia(0,False)
+        a=riavvia(0,False,True)
 
 if mode == "Carica un file audio":
     file_ids=[]
