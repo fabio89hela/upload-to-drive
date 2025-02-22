@@ -34,6 +34,8 @@ if "transcription_text" not in st.session_state:
     st.session_state["transcription_text"]=""
 if "sezione_da_vedere" not in st.session_state:
     st.session_state["sezione_da_vedere"]=""
+if "expanded1" not in st.session_state:
+    st.session_state["expanded1"]=False
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -219,7 +221,7 @@ elif mode == "Registra un nuovo audio":
         st.session_state["avvio"]=True
         st.rerun()
 
-    with st.expander("Sezione 1"):
+    with st.expander("Sezione 1",expanded=st.session_state["expanded1"]):
         st.markdown(domanda1)
         n_canvas=3
         components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
@@ -240,7 +242,7 @@ elif mode == "Registra un nuovo audio":
         #transcription_data = st_javascript(js_code, key="get_transcriptions")
         #returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         if st.button("Salva"):
-            a=riavvia(1,True)
+            a=riavvia(1,True,False)
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
