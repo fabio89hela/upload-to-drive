@@ -226,7 +226,7 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         n_canvas=3
         prev_timestamp = str(int(time.time() * 1000))
-        components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
+        components.html(get_audio_recorder_html(n_canvas), height=800,scrolling=True)
         i=0
         while True:
             i=i+1
@@ -236,7 +236,7 @@ elif mode == "Registra un nuovo audio":
                 st.session_state["transcription_text"]=transcription_text
                 break
             time.sleep(1)
-        st.markdown(st.session_state["transcription_text"])
+    st.markdown(st.session_state["transcription_text"])
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
