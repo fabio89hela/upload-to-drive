@@ -232,6 +232,7 @@ elif mode == "Registra un nuovo audio":
             if transcription_text:
                  break
             time.sleep(1)
+            st.rerun()
         if transcription_text:
             st.session_state["transcription_text"] = transcription_text
         #transcription_text = st_javascript("parent.window.token")
