@@ -70,6 +70,8 @@ def get_audio_recorder_html(n):
     <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica Tutte le Trascrizioni</button>
 
     <script>
+        let recorders=[];
+        
         function downloadAllTranscriptions() {
             let allTranscriptions = "";
             let allAudioLinks = [];
@@ -95,6 +97,18 @@ def get_audio_recorder_html(n):
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+
+            // **Scaricare tutti gli audio registrati**
+            allAudioLinks.forEach(link => {
+                let audioA = document.createElement("a");
+                audioA.href = link;
+                audioA.download = link.split('/').pop();
+                document.body.appendChild(audioA);
+                audioA.click();
+                document.body.removeChild(audioA);
+            });
+
+            parent.window.token = allTranscriptions;  // Passa il testo a Streamlit 
         }
 
         function setupRecorder(index) {
@@ -114,6 +128,34 @@ def get_audio_recorder_html(n):
             let recognition;
             let finalTranscript = "";
             let animationId;
+
+            let audioContext;
+            let analyser;
+            let dataArray;
+            let source;
+
+            function drawWaveform() {
+                if (!analyser) return;
+
+                analyser.getByteTimeDomainData(dataArray);
+                canvasCtx.fillStyle = "white";
+                canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+                canvasCtx.lineWidth = 2;
+                canvasCtx.strokeStyle = "blue";
+                canvasCtx.beginPath();
+                let sliceWidth = waveCanvas.width / analyser.fftSize;
+                let x = 0;
+
+                for (let i = 0; i < analyser.fftSize; i++) {
+                    let v = dataArray[i] / 128.0;
+                    let y = (v * waveCanvas.height) / 2;
+                    if (i === 0) canvasCtx.moveTo(x, y);
+                    else canvasCtx.lineTo(x, y);
+                    x += sliceWidth;
+                }
+                canvasCtx.stroke();
+                animationId = requestAnimationFrame(drawWaveform);
+            }
 
             function startTranscription() {
                 recognition = new webkitSpeechRecognition();
@@ -157,6 +199,7 @@ def get_audio_recorder_html(n):
                 };
 
                 mediaRecorder.start();
+                drawWaveform();
                 startTranscription();
 
                 startBtn.disabled = true;
@@ -164,6 +207,26 @@ def get_audio_recorder_html(n):
                 stopBtn.disabled = false;
             });
 
+            pauseBtn.addEventListener("click", () => {
+                if (mediaRecorder.state === "recording") {
+                    mediaRecorder.pause();
+                    recognition.stop();
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = false;
+                    cancelAnimationFrame(animationId);
+                }
+            });
+
+            resumeBtn.addEventListener("click", () => {
+                if (mediaRecorder.state === "paused") {
+                    mediaRecorder.resume();
+                    startTranscription();
+                    resumeBtn.disabled = true;
+                    pauseBtn.disabled = false;
+                    drawWaveform();
+                }
+            });
+            
             stopBtn.addEventListener("click", () => {
                 mediaRecorder.stop();
                 stream.getTracks().forEach((track) => track.stop());
@@ -173,6 +236,8 @@ def get_audio_recorder_html(n):
                 resumeBtn.disabled = true;
                 stopBtn.disabled = true;
             });
+
+            recorders.push({ startBtn, pauseBtn, resumeBtn, stopBtn, mediaRecorder });
         }
 
         for (let i = 0; i < """ + str(n) + """; i++) {
