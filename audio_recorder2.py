@@ -96,7 +96,7 @@ def get_audio_recorder_html(n):
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            alert("Contenuto del file:\\n" + allTranscriptions+fileURL);
+            alert("Contenuto del file:\\n" + allTranscriptions);
 
 
             // **Scaricare tutti gli audio registrati**
