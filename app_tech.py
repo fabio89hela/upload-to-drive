@@ -235,6 +235,8 @@ elif mode == "Registra un nuovo audio":
         #transcription_data = st_javascript(js_code, key="get_transcriptions")
         #returned = st_javascript("localStorage.getItem('transcription');", key="transcription_listener")
         if st.button("Salva"):
+            st.session_state["selezione1"]=1
+            st.session_state["ricomincia"]=True
             a=riavvia()
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
