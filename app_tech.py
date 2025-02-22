@@ -230,7 +230,7 @@ elif mode == "Registra un nuovo audio":
         prev_timestamp = str(int(time.time() * 1000))
         i=0
         transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
-        st.write("transcription_text")
+        st.markdown(transcription_text)
         while False:
             i=i+1
             transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
