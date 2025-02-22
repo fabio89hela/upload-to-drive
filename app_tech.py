@@ -223,7 +223,13 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         n_canvas=3
         components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
-        transcription_text = st_javascript("localStorage.getItem('combined_transcriptions');",key="local_storage_retriever")
+        i=0
+        while True:
+            i=i+1
+            transcription_text = st_javascript("localStorage.getItem('combined_transcriptions');",key="local_storage_retriever"+str(i))
+            if transcription_text:
+                 break()
+            time.sleep(1)
         if transcription_text:
             st.session_state["transcription_text"] = transcription_text
         #transcription_text = st_javascript("parent.window.token")
