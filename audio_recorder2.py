@@ -86,17 +86,18 @@ def get_audio_recorder_html(n):
                 }
             }
 
-            alert("Contenuto del file:\\n" + allTranscriptions);
-
             localStorage.setItem("combined_transcriptions", allTranscriptions);
 
             let blob = new Blob([allTranscriptions], { type: "text/plain" });
             let a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
+            let fileurl= URL.createObjectURL(blob);
+            a.href = fileURL;
             a.download = "trascrizioni.txt";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+            alert("Contenuto del file:\\n" + allTranscriptions+fileURL);
+
 
             // **Scaricare tutti gli audio registrati**
             allAudioLinks.forEach(link => {
@@ -181,12 +182,20 @@ def get_audio_recorder_html(n):
             startBtn.addEventListener("click", async () => {
                 audioChunks = [];
                 stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                dataArray = new Uint8Array(analyser.fftSize);
+                
+                source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+                
                 mediaRecorder = new MediaRecorder(stream);
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) audioChunks.push(event.data);
                 };
-
+                
                 mediaRecorder.onstop = () => {
                     let audioBlob = new Blob(audioChunks, { type: "audio/wav" });
                     let audioURL = URL.createObjectURL(audioBlob);
@@ -196,6 +205,7 @@ def get_audio_recorder_html(n):
                     downloadLink.download = `recording-${index}.wav`;
                     downloadLink.style.display = "block";
                     downloadLink.textContent = "Download Audio";
+                    cancelAnimationFrame(animationId);
                 };
 
                 mediaRecorder.start();
@@ -226,7 +236,7 @@ def get_audio_recorder_html(n):
                     drawWaveform();
                 }
             });
-            
+
             stopBtn.addEventListener("click", () => {
                 mediaRecorder.stop();
                 stream.getTracks().forEach((track) => track.stop());
@@ -235,6 +245,7 @@ def get_audio_recorder_html(n):
                 pauseBtn.disabled = true;
                 resumeBtn.disabled = true;
                 stopBtn.disabled = true;
+                cancelAnimationFrame(animationId);
             });
 
             recorders.push({ startBtn, pauseBtn, resumeBtn, stopBtn, mediaRecorder });
