@@ -233,7 +233,7 @@ elif mode == "Registra un nuovo audio":
         while True:
             i=i+1
             transcription_text = st_javascript("localStorage.getItem('combined_transcriptions');",key="local_storage_retriever"+str(i))
-            if not transcription:
+            if transcription:
                 if transcription_text!=st.session_state["transcription_text"]:
                     st.session_state["transcription_text"] = transcription_text
                     st.markdown(st.session_state["transcription_text"])
