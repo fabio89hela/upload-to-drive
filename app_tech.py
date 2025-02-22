@@ -226,12 +226,9 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         n_canvas=3
         components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
-    if st.button("Salva"):
-        prev_timestamp = str(int(time.time() * 1000))
+        prev_timestamp = None
         i=0
-        transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
-        st.markdown(transcription_text)
-        while False:
+        while True:
             i=i+1
             transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
             timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i))
