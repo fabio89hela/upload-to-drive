@@ -32,10 +32,8 @@ if "transcription_saved" not in st.session_state:
     st.session_state["transcription_saved"] = False
 if "transcription_text" not in st.session_state:
     st.session_state["transcription_text"]=""
-if "sezione_da_vedere" not in st.session_state:
-    st.session_state["sezione_da_vedere"]=""
-if "expanded1" not in st.session_state:
-    st.session_state["expanded1"]=True
+if "salvato" not in st.session_state:
+    st.session_state["salvato"]=False
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -83,13 +81,13 @@ def get_transcriptions_from_n8n(file_id,nome,cartella):
         transcription=(f"Errore: {response.status_code} - {response.text}")
     return transcription
 
-def riavvia(selection,restart,espanso1):
+def riavvia(selection,restart):
     st.session_state["ricomincia"]=restart
     st.session_state["transcription"]=""
     st.session_state["uploaded_file"]=None
     st.session_state["avvio"]=True
     st.session_state["selezione1"]=selection
-    st.session_state["expanded1"]=espanso1
+    st.session_state["salvato"]
     st.rerun()
     return True
 
@@ -134,7 +132,7 @@ with col1:
     regional=df.loc[df["Specializzazione"] == c, "Label"].tolist()
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
-        a=riavvia(0,False,True)
+        a=riavvia(0,False)
 
 if mode == "Carica un file audio":
     file_ids=[]
@@ -222,7 +220,7 @@ elif mode == "Registra un nuovo audio":
         st.session_state["avvio"]=True
         st.rerun()
 
-    with st.expander("Sezione 1",expanded=st.session_state["expanded1"]):
+    with st.expander("Sezione 1"):
         st.markdown(domanda1)
         n_canvas=3
         prev_timestamp = str(int(time.time() * 1000))
@@ -233,10 +231,14 @@ elif mode == "Registra un nuovo audio":
             transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
             timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i))
             if timestamp and timestamp > prev_timestamp:
+                with st.spinner("Salvando...")
                 st.session_state["transcription_text"]=transcription_text
+                st.session_state["salvato"]=True
                 break
             time.sleep(1)
-    st.markdown(st.session_state["transcription_text"])
+    if st.session_state["salvato"]==True:
+        st.markdown(st.session_state["transcription_text"])
+        st.success("fatto")
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
