@@ -90,7 +90,7 @@ def get_audio_recorder_html(n):
 
             let blob = new Blob([allTranscriptions], { type: "text/plain" });
             let a = document.createElement("a");
-            let fileurl= URL.createObjectURL(blob);
+            let fileURL= URL.createObjectURL(blob);
             a.href = fileURL;
             a.download = "trascrizioni.txt";
             document.body.appendChild(a);
