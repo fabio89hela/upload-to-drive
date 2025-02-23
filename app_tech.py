@@ -103,7 +103,9 @@ def salva_testo_drive(transcription_content,temp_name_personalised):
     with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
         temp_text_file.write(transcription_content.encode('utf-8'))
         temp_text_file_path = temp_text_file.name
+        st.write("temp_text_file_path"+temp_text_file_path)
         file_name = f"Trascrizione_{temp_name_personalised}.txt"
+        st.write("file_name"+file_name)
         try:
             file_id = authenticate_and_upload(file_name, temp_text_file_path)
             st.success(f"Salvataggio completato")
