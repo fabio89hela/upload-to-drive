@@ -104,7 +104,7 @@ st.set_page_config(
 col_sn,col_cnt,col_dx=st.columns([2,3,1])
 with col_cnt:
     st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=300)
-
+    st.markdown('##')
 col1,col2,col3,col4,col5=st.columns(5)
 
 with col4:
