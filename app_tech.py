@@ -174,9 +174,7 @@ with col_center:
         else:
             st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
             st.session_state["selezione1"]=0
-
-        st.write(st.session_state["completa_survey"])
-        st.write(st.session_state["vettore_opzioni"])
+        st.rerun()
         data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
         now = datetime.now()
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
