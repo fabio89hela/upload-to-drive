@@ -283,7 +283,7 @@ with col_center:
             if st.session_state["salvato1"]==True:
                 testo_da_salvare=st.session_state["transcription_text1"]
                 temp_name_personalised1=c+"_"+data+"_"+fo
-                if st.button("Invia a Drive"):
+                if 1>0:
                     if testo_da_salvare.strip():
                         with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
                             st.write(testo_da_salvare)
