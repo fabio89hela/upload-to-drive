@@ -284,16 +284,18 @@ with col_center:
                 testo_da_salvare=st.session_state["transcription_text1"]
                 temp_name_personalised1=c+"_"+data+"_"+fo
                 if st.button("Invia a Drive"):
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
-                        st.write(testo_da_salvare)
-                        temp_text_file.write(testo_da_salvare.encode('utf-8'))
-                        temp_text_file_path = temp_text_file.name
-                        file_name = f"Fase2_Domanda1_{temp_name_personalised1}.txt"
-                        try:
-                            file_id = authenticate_and_upload(file_name, temp_text_file_path)
-                            st.success(f"Salvataggio completato")
-                        except Exception as e:
-                            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+                    if testo_da_salvare.strip():
+                        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
+                            st.write(testo_da_salvare)
+                            temp_text_file.write(testo_da_salvare)
+                            temp_text_file.flush()
+                            temp_text_file_path = temp_text_file.name
+                            file_name = f"Fase2_Domanda1_{temp_name_personalised1}.txt"
+                            try:
+                                file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                                st.success(f"Salvataggio completato")
+                            except Exception as e:
+                                st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
     
     elif mode=="Completa intervista": 
