@@ -220,21 +220,22 @@ elif mode == "Registra un nuovo audio":
         st.session_state["avvio"]=True
         st.rerun()
 
-    st.markdown(domanda1)
-    n_canvas=3
-    prev_timestamp = str(int(time.time() * 1000))
-    components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
-    i=0
-    while True:
-        i=i+1
+    with st.expander("Sezione 1",expanded=not st.session_state["salvato"]):
+        st.markdown(domanda1)
+        n_canvas=3
+        prev_timestamp = str(int(time.time() * 1000))
+        components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
+        i=0
         with st.empty():
-            timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
-            if timestamp and timestamp > prev_timestamp:
-                transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
-                st.session_state["transcription_text"]=transcription_text
-                st.session_state["salvato"]=True
-                break
-            time.sleep(1)
+            while True:
+                i=i+1
+                timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
+                if timestamp and timestamp > prev_timestamp:
+                    transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
+                    st.session_state["transcription_text"]=transcription_text
+                    st.session_state["salvato"]=True
+                    break
+                time.sleep(1)
     if st.session_state["salvato"]==True:
         st.text_area("prova",st.session_state["transcription_text"])
         st.success("Salvato")
