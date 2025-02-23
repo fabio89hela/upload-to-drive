@@ -12,7 +12,7 @@ def get_audio_recorder_html(n):
                 padding: 10px;
                 border: 1px solid #ccc;
                 border-radius: 8px;
-                background-color: #f8f9fa;
+                background-color: #d5e4e7;
             }
             .custom-button {
                 background-color: white;
@@ -97,8 +97,6 @@ def get_audio_recorder_html(n):
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-            alert("Contenuto del file:\\n" + allTranscriptions);
-
 
             // **Scaricare tutti gli audio registrati**
             allAudioLinks.forEach(link => {
