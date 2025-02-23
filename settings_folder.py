@@ -65,4 +65,4 @@ def settings_folder(cartella):
               - E’ in grado di fornirci un esempio di efficientamento di processo che potrebbe essere implementato per migliorare la gestione dei farmaci infusivi per le malattie rare? 
                 - Esistono collaborazioni con altre strutture per condividere e implementare queste misure di efficientamento? Quali?
               """    
-  return c,FOLDER_ID,domanda1,domanda2
+  return c,FOLDER_ID,domanda1,domanda2,domanda3
