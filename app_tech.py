@@ -220,7 +220,7 @@ with col_center:
                     if convert_to_ogg(input_path, output_path):
                         # Carica su Google Drive
                         temp_name_personalised=c+"_"+data+"_"+fo+".ogg"
-                        temp_name_personalised2=c+"_"+data+"_"+fo
+                        temp_name_personalised_noogg=c+"_"+data+"_"+fo
                         if st.button("Salva su Drive"):
                             file_ids = authenticate_and_upload(temp_name_personalised, output_path)
                             st.session_state["file_upload_ids"]=file_ids
@@ -247,11 +247,10 @@ with col_center:
                         if submit_button and not st.session_state["transcription_saved"]:
                             if transcription_content != st.session_state["transcription"]:
                                 st.session_state["transcription"]=transcription_content
-                            #file_id=salva_testo_drive(transcription_content, temp_name_personalised2)
                             with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
                                 temp_text_file.write(transcription_content.encode('utf-8'))
                                 temp_text_file_path = temp_text_file.name
-                            file_name = f"Trascrizione_{temp_name_personalised2}.txt"
+                            file_name = f"Trascrizione_{temp_name_personalised_noogg}.txt"
                             try:
                                 file_id = authenticate_and_upload(file_name, temp_text_file_path)
                                 st.success(f"Salvataggio completato")
@@ -283,8 +282,17 @@ with col_center:
                     time.sleep(1)
             if st.session_state["salvato1"]==True:
                 st.write(st.session_state["transcription_text1"])
-                temp_name_personalised1=c+"_"+data+"_"+fo+"fase2_domanda1"
-                file_id=salva_testo_drive(st.session_state["transcription_text1"], temp_name_personalised1)
+                temp_name_personalised1=c+"_"+data+"_"+fo+"_fase2_domanda1"
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
+                    temp_text_file.write(transcription_content.encode('utf-8'))
+                    temp_text_file_path = temp_text_file.name
+                    file_name = f"Trascrizione_{temp_name_personalised1}.txt"
+                        try:
+                            file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                            st.success(f"Salvataggio completato")
+                        except Exception as e:
+                            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+
     
     elif mode=="Completa intervista": 
         a=1
