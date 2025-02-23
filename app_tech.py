@@ -30,10 +30,10 @@ if "transcription" not in st.session_state:
     st.session_state["transcription"]=""
 if "transcription_saved" not in st.session_state:
     st.session_state["transcription_saved"] = False
-if "transcription_text" not in st.session_state:
-    st.session_state["transcription_text"]=""
-if "salvato" not in st.session_state:
-    st.session_state["salvato"]=False
+if "transcription_text1" not in st.session_state:
+    st.session_state["transcription_text1"]=""
+if "salvato1" not in st.session_state:
+    st.session_state["salvato1"]=False
 if "data_fo" not in st.session_state:
     st.session_state["data_fo"]=None
 if "completa_survey" not in st.session_state:
@@ -99,6 +99,18 @@ def get_javascript_value(js_code,testo_key):
     value = st_javascript(js_code,key=testo_key)
     return value if value is not None else ""
 
+def salva_testo_drive(transcription_content,file_name, temp_text_file_path,temp_name_personalised):
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
+        temp_text_file.write(transcription_content.encode('utf-8'))
+        temp_text_file_path = temp_text_file.name
+        file_name = f"Trascrizione_{temp_name_personalised}.txt"
+        try:
+            file_id = authenticate_and_upload(file_name, temp_text_file_path)
+            st.success(f"Salvataggio completato")
+        except Exception as e:
+            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+    return file_id
+            
 st.set_page_config(
     page_title="T-EMA App",
     page_icon="https://t-ema.it/favicon.ico",
@@ -132,8 +144,7 @@ with col3:
         st.session_state["selezione2"]=2
     else:
         st.session_state["selezione2"]=0
-    c,FOLDER_ID,domanda1,domanda2=settings_folder(cartella)
-    domande=[domanda1,domanda2]
+    c,FOLDER_ID,domanda1,domanda2,domanda3=settings_folder(cartella)
 with col4:
     if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
@@ -233,17 +244,16 @@ with col_center:
                         if submit_button and not st.session_state["transcription_saved"]:
                             if transcription_content != st.session_state["transcription"]:
                                 st.session_state["transcription"]=transcription_content
-                            # Salva il contenuto temporaneamente come file di testo
-                            with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
-                                temp_text_file.write(transcription_content.encode('utf-8'))
-                                temp_text_file_path = temp_text_file.name
-                            # Carica il file su Google Drive
-                            file_name = f"Trascrizione_{temp_name_personalised}.txt"
-                            try:
-                                file_id = authenticate_and_upload(file_name, temp_text_file_path)
-                                st.success(f"Salvataggio completato")
-                            except Exception as e:
-                                st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+                            file_id=salva_testo_drive(transcription_content,file_name, temp_text_file_path,temp_name_personalised)
+                            #with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
+                            #    temp_text_file.write(transcription_content.encode('utf-8'))
+                            #    temp_text_file_path = temp_text_file.name
+                            #file_name = f"Trascrizione_{temp_name_personalised}.txt"
+                            #try:
+                            #    file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                            #    st.success(f"Salvataggio completato")
+                            #except Exception as e:
+                            #    st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
     elif mode == "Registra un nuovo audio":
         if st.session_state["ricomincia"]==False:
@@ -252,11 +262,11 @@ with col_center:
             st.session_state["avvio"]=True
             st.rerun()
 
-        with st.expander("Sezione 1",expanded=not st.session_state["salvato"]):
+        with st.expander("Sezione 1",expanded=not st.session_state["salvato1"]):
             st.markdown(domanda1)
-            n_canvas=3
+            n_canvas=1
             prev_timestamp = str(int(time.time() * 1000))
-            components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
+            components.html(get_audio_recorder_html(n_canvas), height=600,scrolling=True)
             i=0
             with st.empty():
                 while True:
@@ -264,12 +274,12 @@ with col_center:
                     timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
                     if timestamp and timestamp > prev_timestamp:
                         transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
-                        st.session_state["transcription_text"]=transcription_text
-                        st.session_state["salvato"]=True
+                        st.session_state["transcription_text1"]=transcription_text
+                        st.session_state["salvato1"]=True
                         break
                     time.sleep(1)
-            if st.session_state["salvato"]==True:
-                st.text_area("prova",st.session_state["transcription_text"])
+            if st.session_state["salvato1"]==True:
+                
                 st.success("Salvato")
     
     elif mode=="Completa intervista": 
