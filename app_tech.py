@@ -101,11 +101,9 @@ st.set_page_config(
     layout="wide",
 )
 
-# Layout della pagina
-st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
-
-# Titolo dell'app Streamlit
-st.title("Carica un file già registrato")
+col_sn,col_cnt,col_dx=st.columns([0.5,4,0.5])
+with col_cnt:
+    st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=200)
 
 col1,col2,col3,col4,col5=st.columns(5)
 
@@ -140,7 +138,7 @@ with col2:
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
         a=riavvia(0,False)
         
-col_left,col_center,col_right=st.columns([1,3,1])
+col_left,col_center,col_right=st.columns([0.5,4,0.5])
 
 with col_center:
     if mode == "Carica un file audio":
