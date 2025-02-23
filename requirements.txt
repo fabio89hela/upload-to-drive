@@ -14,3 +14,4 @@ matplotlib
 scipy
 pandas
 streamlit-javascript
+streamlit-js
