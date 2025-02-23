@@ -167,6 +167,7 @@ with col_center:
         completa_survey=df.loc[df["Label"]==fo_lungo,"Surveymonkey"].tolist()
         st.session_state["completa_survey"]=completa_survey[0]
         st.write(st.session_state["completa_survey"])
+        st.write(st.session_state["vettore_opzioni"])
         data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
         now = datetime.now()
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
