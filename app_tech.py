@@ -284,7 +284,7 @@ with col_center:
                 testo_da_salvare=st.session_state["transcription_text1"]
                 temp_name_personalised1=c+"_"+data+"_"+fo
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
-                    temp_text_file.write(testo_da_salvare)
+                    temp_text_file.write(testo_da_salvare.encode('utf-8'))
                     temp_text_file_path = temp_text_file.name
                     file_name = f"Fase2_Domanda1_{temp_name_personalised1}.txt"
                     try:
