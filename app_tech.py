@@ -90,6 +90,7 @@ def riavvia(selection,restart):
 
 def get_javascript_value(js_code,testo_key):
     value = st_javascript(js_code,key=testo_key)
+    st.write(value)
     return value if len(str(value))>1 else None
 
 st.set_page_config(
