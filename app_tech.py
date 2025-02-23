@@ -231,25 +231,23 @@ elif mode == "Registra un nuovo audio":
         st.session_state["transcription_text"] = transcription_text
     st.text_area("Testo trascritto", st.session_state["transcription_text"], height=300)
     
-    """    
-        i=0
-    while True:
-        i=i+1
-        transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
-        timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i))
-        if timestamp and timestamp > prev_timestamp:
-            st.session_state["transcription_text"]=transcription_text
-            st.session_state["salvato"]=True
-            break
-        time.sleep(1)
-    if st.session_state["salvato"]==True:
-        st.markdown(st.session_state["transcription_text"])
-        st.success("Risposte salvate")
+    #i=0
+    #while True:
+    #    i=i+1
+    #    transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i))
+    #    timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i))
+    #    if timestamp and timestamp > prev_timestamp:
+    #        st.session_state["transcription_text"]=transcription_text
+    #        st.session_state["salvato"]=True
+    #        break
+    #    time.sleep(1)
+    #if st.session_state["salvato"]==True:
+    #    st.markdown(st.session_state["transcription_text"])
+    #    st.success("Risposte salvate")
     #with st.expander("Sezione 2"):
     #    st.markdown(domanda2)
     #    st.components.v1.html(get_audio_recorder_html(), height=500)
-    """
-
+    
 elif mode=="Trascrivi": 
     # Elenca i file nella cartella
     if os.path.exists("https://drive.google.com/drive/folders/"+FOLDER_ID):
