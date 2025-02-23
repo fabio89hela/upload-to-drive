@@ -13,7 +13,7 @@ def get_audio_recorder_html(n):
                 padding: 10px;
                 border: 1px solid #ccc;
                 border-radius: 8px;
-                background-color: #C5E5FB;
+                background-color: #d5e4e7;
             }
             .custom-button {
                 background-color: white;
