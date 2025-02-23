@@ -35,7 +35,7 @@ def get_audio_recorder_html(n):
                 color: #FBB614;
             }
             .transcription {
-                width: 90%;
+                width: 95%;
                 max-width:600px;
                 height: 150px;
                 border: 1px solid #ccc;
