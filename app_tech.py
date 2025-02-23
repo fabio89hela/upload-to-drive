@@ -125,11 +125,11 @@ with col2:
     c,FOLDER_ID,domanda1,domanda2=settings_folder(cartella)
     domande=[domanda1,domanda2]
 with col1:
-    gc = get_gsheet_connection()
-    SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
-    sh = gc.open_by_key(SHEET_ID)
-    worksheet = sh.sheet1
     if not st.session_state["data_fo"]:
+        gc = get_gsheet_connection()
+        SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
+        sh = gc.open_by_key(SHEET_ID)
+        worksheet = sh.sheet1
         st.session_state["data_fo"] = worksheet.get_all_values()
     data_fo=st.session_state["data_fo"]
     df = pd.DataFrame(data_fo[1:], columns=data_fo[0])
