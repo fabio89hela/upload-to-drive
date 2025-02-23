@@ -35,11 +35,6 @@ if "transcription_text" not in st.session_state:
 if "salvato" not in st.session_state:
     st.session_state["salvato"]=False
 
-def get_javascript_value(js_code,testo_key):
-    """Esegue JavaScript e impedisce la visualizzazione in Streamlit."""
-    value = st_javascript(js_code,key=testo_key)
-    return value if value is not None else ""
-
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 c,FOLDER_ID,domanda1,domanda2=settings_folder("Ematologia")
@@ -53,14 +48,12 @@ def convert_mp3_to_wav(input_path, output_path):
         st.error(f"Errore durante la conversione MP3 -> WAV: {e.stderr.decode()}")
         return False
 
-# Autenticazione Google Drive
 def authenticate_and_upload(file_name, file_path):
     service = authenticate_drive()
     # Carica il file su Google Drive
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
     return file_id
 
-# Funzione per convertire il file audio in formato .ogg
 def convert_to_ogg(input_path, output_path):
     try:
         ffmpeg.input(input_path).output(
@@ -74,7 +67,6 @@ def convert_to_ogg(input_path, output_path):
         st.error(f"Errore durante la conversione in OGG: {e.stderr.decode()}")
         return False
 
-# Funzione per inviare una lista di file a n8n e ricevere le trascrizioni
 def get_transcriptions_from_n8n(file_id,nome,cartella):
     payload = {"file_id": file_id}
     payload["file_name"]=nome
@@ -96,7 +88,10 @@ def riavvia(selection,restart):
     st.rerun()
     return True
 
-# Configura la pagina
+def get_javascript_value(js_code,testo_key):
+    value = st_javascript(js_code,key=testo_key)
+    return value if len(value)>2 else None
+
 st.set_page_config(
     page_title="T-EMA App",
     page_icon="https://t-ema.it/favicon.ico",
