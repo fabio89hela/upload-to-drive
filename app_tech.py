@@ -34,6 +34,8 @@ if "transcription_text" not in st.session_state:
     st.session_state["transcription_text"]=""
 if "salvato" not in st.session_state:
     st.session_state["salvato"]=False
+if "data_fo" not in st.session_state:
+    st.session_state["data_fo"]=None
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -127,7 +129,9 @@ with col1:
     SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
     sh = gc.open_by_key(SHEET_ID)
     worksheet = sh.sheet1
-    data_fo = worksheet.get_all_values()
+    if not st.session_state["data_fo"]:
+        st.session_state["data_fo"] = worksheet.get_all_values()
+    data_fo=st.session_state["data_fo"]
     df = pd.DataFrame(data_fo[1:], columns=data_fo[0])
     regional=df.loc[df["Specializzazione"] == c, "Label"].tolist()
     nome=df["Abbreviazione"].tolist()
