@@ -229,7 +229,6 @@ elif mode == "Registra un nuovo audio":
         i=i+1
         with st.empty():
             timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
-        st.write(timestamp+ " - "+prev_timestamp)
         if timestamp and timestamp > prev_timestamp:
             transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
             st.session_state["transcription_text"]=transcription_text
