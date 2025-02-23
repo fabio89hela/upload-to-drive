@@ -84,7 +84,7 @@ def riavvia(selection,restart):
     st.session_state["uploaded_file"]=None
     st.session_state["avvio"]=True
     st.session_state["selezione1"]=selection
-    st.session_state["salvato"]
+    st.session_state["salvato"]=False
     st.rerun()
     return True
 
