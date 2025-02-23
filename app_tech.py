@@ -237,7 +237,7 @@ elif mode == "Registra un nuovo audio":
                 break
             time.sleep(1)
         if st.session_state["salvato"]==True:
-            st.markdown(st.session_state["transcription_text"])
+            st.text_area(st.session_state["transcription_text"])
             st.success("Risposte salvate")
     with st.expander("Sezione 2"):
         st.markdown(domanda2)
