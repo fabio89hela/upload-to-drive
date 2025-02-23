@@ -36,6 +36,10 @@ if "salvato" not in st.session_state:
     st.session_state["salvato"]=False
 if "data_fo" not in st.session_state:
     st.session_state["data_fo"]=None
+if "completa_survey" not in st.session_state:
+    st.session_state["completa_survey"]=False
+if "vettore_opzioni" not in st.session_state:
+    st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -107,23 +111,6 @@ with col_cnt:
     st.markdown('#')
 col1,col2,col3,col4,col5=st.columns(5)
 
-with col4:
-    # Scelta modalità: Caricamento o Registrazione
-    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
-    if mode=="Registra un nuovo audio":
-        st.session_state["selezione1"]=1
-    else:
-        st.session_state["selezione1"]=0
-with col3:
-    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"],disabled=st.session_state["ricomincia"])
-    if cartella=="Emofilia":
-        st.session_state["selezione2"]=1
-    elif cartella=="Oncoematologia":
-        st.session_state["selezione2"]=2
-    else:
-        st.session_state["selezione2"]=0
-    c,FOLDER_ID,domanda1,domanda2=settings_folder(cartella)
-    domande=[domanda1,domanda2]
 with col2:
     if not st.session_state["data_fo"]:
         gc = get_gsheet_connection()
@@ -137,11 +124,55 @@ with col2:
     nome=df["Abbreviazione"].tolist()
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
         a=riavvia(0,False)
+with col3:
+    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"],disabled=st.session_state["ricomincia"])
+    if cartella=="Emofilia":
+        st.session_state["selezione2"]=1
+    elif cartella=="Oncoematologia":
+        st.session_state["selezione2"]=2
+    else:
+        st.session_state["selezione2"]=0
+    c,FOLDER_ID,domanda1,domanda2=settings_folder(cartella)
+    domande=[domanda1,domanda2]
+with col4:
+    if st.session_state["completa_survey"]==True:
+        st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
+    else:
+        st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
+    mode = st.radio("Scegli un'opzione:", st.session_state["vettore_opzioni"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
+    if mode=="Registra un nuovo audio":
+        st.session_state["selezione1"]=1
+    elif mode=="Carica un file audio":
+        st.session_state["selezione1"]=0
+    else:
+        st.session_state["selezione1"]=2
 
-st.markdown('##')
 col_left,col_center,col_right=st.columns([0.5,4,0.5])
 
 with col_center:
+    regional_list=regional+["Altro"]
+    fo_lungo=st.selectbox("Nome del farmacista intervistato",regional_list,index=len(regional_list)-2)
+    if fo_lungo=="Altro":
+        fo_lungo=st.text_input("Specificare")
+        ruolo=st.text_input("Ruolo")
+        if st.button("Aggiungi farmacista"):
+            if fo_lungo and ruolo:
+                worksheet.append_row([fo_lungo, ruolo,c])  
+                st.rerun()
+            else:
+                st.error("Inserisci tutti i campi!")
+    else:
+        fo=df.loc[df["Label"] == fo_lungo, "Abbreviazione"].tolist()
+        fo=fo[0]
+        completa_survey=df.loc[df["Label"]==fo_lungo,"Surveymonkey"].tolist()
+        st.session_state["completa_survey"]=completa_survey[0]
+        data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
+        now = datetime.now()
+        data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
+        if st.session_state["completa_survey"]==True:
+            st.warning("Completa prima la fase 1 dell'intervista")
+            st.session_state["selezione1"]=2
+
     if mode == "Carica un file audio":
         file_ids=[]
         # Scelta farmacista e data
