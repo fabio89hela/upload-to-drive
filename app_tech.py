@@ -90,8 +90,7 @@ def riavvia(selection,restart):
 
 def get_javascript_value(js_code,testo_key):
     value = st_javascript(js_code,key=testo_key)
-    st.write(value)
-    return value if len(str(value))>1 else None
+    return value if value in not None else ""
 
 st.set_page_config(
     page_title="T-EMA App",
@@ -228,10 +227,11 @@ elif mode == "Registra un nuovo audio":
     i=0
     while True:
         i=i+1
-        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
-        timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
-        #timestamp = get_javascript_value("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i)) 
+        with st.empty():
+            timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
+        st.write(timestamp+ " - "+prev_timestamp)
         if timestamp and timestamp > prev_timestamp:
+            transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
             st.session_state["transcription_text"]=transcription_text
             st.session_state["salvato"]=True
             break
