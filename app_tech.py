@@ -281,10 +281,11 @@ with col_center:
                         break
                     time.sleep(1)
             if st.session_state["salvato1"]==True:
-                st.write(st.session_state["transcription_text1"])
+                testo_da_salvare=st.session_state["transcription_text1"]
                 temp_name_personalised1=c+"_"+data+"_"+fo+"_fase2_domanda1"
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
-                    temp_text_file.write(st.session_state["transcription_text1"].encode('utf-8'))
+                    temp_text_file.write(testo_da_salvare.encode('utf-8'))
+                    st.write(testo_da_salvare)
                     temp_text_file_path = temp_text_file.name
                     file_name = f"Trascrizione_{temp_name_personalised1}.txt"
                     try:
