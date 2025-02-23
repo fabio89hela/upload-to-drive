@@ -137,8 +137,10 @@ with col3:
 with col4:
     if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
+        st.session_state["selezione1"]=2
     else:
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
+        st.session_state["selezione1"]=0
     mode = st.radio("Scegli un'opzione:", st.session_state["vettore_opzioni"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
     if mode=="Registra un nuovo audio":
         st.session_state["selezione1"]=1
@@ -168,8 +170,10 @@ with col_center:
         st.session_state["completa_survey"]=completa_survey[0]
         if st.session_state["completa_survey"]=="TRUE":
             st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
+            st.session_state["selezione1"]=2
         else:
             st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
+            st.session_state["selezione1"]=0
 
         st.write(st.session_state["completa_survey"])
         st.write(st.session_state["vettore_opzioni"])
