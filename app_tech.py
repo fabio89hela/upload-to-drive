@@ -99,7 +99,7 @@ def get_javascript_value(js_code,testo_key):
     value = st_javascript(js_code,key=testo_key)
     return value if value is not None else ""
 
-def salva_testo_drive(transcription_content,temp_text_file_path,temp_name_personalised):
+def salva_testo_drive(transcription_content,temp_name_personalised):
     with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
         temp_text_file.write(transcription_content.encode('utf-8'))
         temp_text_file_path = temp_text_file.name
@@ -244,7 +244,7 @@ with col_center:
                         if submit_button and not st.session_state["transcription_saved"]:
                             if transcription_content != st.session_state["transcription"]:
                                 st.session_state["transcription"]=transcription_content
-                            file_id=salva_testo_drive(transcription_content, temp_text_file_path,temp_name_personalised)
+                            file_id=salva_testo_drive(transcription_content, temp_name_personalised)
                             #with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_text_file:
                             #    temp_text_file.write(transcription_content.encode('utf-8'))
                             #    temp_text_file_path = temp_text_file.name
