@@ -175,24 +175,7 @@ with col_center:
 
     if mode == "Carica un file audio":
         file_ids=[]
-        # Scelta farmacista e data
-        regional_list=regional+["Altro"]
-        fo_lungo=st.selectbox("Nome del farmacista intervistato",regional_list,index=len(regional_list)-2)
-        if fo_lungo=="Altro":
-            fo_lungo=st.text_input("Specificare")
-            ruolo=st.text_input("Ruolo")
-            if st.button("Aggiungi farmacista"):
-                if fo_lungo and ruolo:
-                    worksheet.append_row([fo_lungo, ruolo,c])  
-                    st.rerun()
-                else:
-                    st.error("Inserisci tutti i campi!")
-        else:
-            fo=df.loc[df["Label"] == fo_lungo, "Abbreviazione"].tolist()
-            fo=fo[0]
-            data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
-            now = datetime.now()
-            data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
+        if True:
             # Caricamento di un file audio locale
             st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV o MP3)", type=["wav","mp3"])
             if st.session_state["uploaded_file"]:
