@@ -274,14 +274,14 @@ with col_center:
                     timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
                     if timestamp and timestamp > prev_timestamp:
                         transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
-                        st.session_state["transcription_text1"]=transcription_text
+                        st.session_state["transcription_text1"]=str(transcription_text)
                         st.session_state["salvato1"]=True
                         break
                     time.sleep(1)
             if st.session_state["salvato1"]==True:
+                st.write(st.session_state["transcription_text1"])
                 temp_name_personalised1=c+"_"+data+"_"+fo+"fase2_domanda1"
                 file_id=salva_testo_drive(st.session_state["transcription_text1"], temp_name_personalised1)
-                st.success("Salvato")
     
     elif mode=="Completa intervista": 
         a=1
