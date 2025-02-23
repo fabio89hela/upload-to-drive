@@ -87,6 +87,7 @@ def riavvia(selection,restart):
     st.session_state["avvio"]=True
     st.session_state["selezione1"]=selection
     st.session_state["salvato"]=False
+    st.session_state["data_fo"]=None
     st.rerun()
     return True
 
