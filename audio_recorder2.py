@@ -8,11 +8,12 @@ def get_audio_recorder_html(n):
         <title>Registrazione Audio con Trascrizione</title>
         <style>
             .container {
-                margin-bottom: 30px;
+                font-family:Arial, sans-self;
+                margin-bottom: 20px;
                 padding: 10px;
                 border: 1px solid #ccc;
                 border-radius: 8px;
-                background-color: #d5e4e7;
+                background-color: #C5E5FB;
             }
             .custom-button {
                 background-color: white;
