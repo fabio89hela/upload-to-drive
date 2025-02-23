@@ -287,11 +287,11 @@ with col_center:
                     temp_text_file.write(transcription_content.encode('utf-8'))
                     temp_text_file_path = temp_text_file.name
                     file_name = f"Trascrizione_{temp_name_personalised1}.txt"
-                        try:
-                            file_id = authenticate_and_upload(file_name, temp_text_file_path)
-                            st.success(f"Salvataggio completato")
-                        except Exception as e:
-                            st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+                    try:
+                        file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                        st.success(f"Salvataggio completato")
+                    except Exception as e:
+                        st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
     
     elif mode=="Completa intervista": 
