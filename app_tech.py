@@ -138,7 +138,7 @@ with col2:
     if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
         a=riavvia(0,False)
 
-st.markdown('#')
+st.markdown('##')
 col_left,col_center,col_right=st.columns([0.5,4,0.5])
 
 with col_center:
