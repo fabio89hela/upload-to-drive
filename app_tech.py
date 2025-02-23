@@ -101,7 +101,7 @@ st.set_page_config(
     layout="wide",
 )
 
-col_sn,col_cnt,col_dx=st.columns([1,3,1])
+col_sn,col_cnt,col_dx=st.columns([2,3,1])
 with col_cnt:
     st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=300)
 
