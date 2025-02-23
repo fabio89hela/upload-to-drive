@@ -37,7 +37,7 @@ if "salvato" not in st.session_state:
 if "data_fo" not in st.session_state:
     st.session_state["data_fo"]=None
 if "completa_survey" not in st.session_state:
-    st.session_state["completa_survey"]=False
+    st.session_state["completa_survey"]="FALSE"
 if "vettore_opzioni" not in st.session_state:
     st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
 
@@ -135,7 +135,7 @@ with col3:
     c,FOLDER_ID,domanda1,domanda2=settings_folder(cartella)
     domande=[domanda1,domanda2]
 with col4:
-    if st.session_state["completa_survey"]==True:
+    if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
     else:
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
@@ -151,7 +151,6 @@ col_left,col_center,col_right=st.columns([0.5,4,0.5])
 
 with col_center:
     regional_list=regional+["Altro"]
-    st.write(df)
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional_list,index=len(regional_list)-2)
     if fo_lungo=="Altro":
         fo_lungo=st.text_input("Specificare")
@@ -167,6 +166,7 @@ with col_center:
         fo=fo[0]
         completa_survey=df.loc[df["Label"]==fo_lungo,"Surveymonkey"].tolist()
         st.session_state["completa_survey"]=completa_survey[0]
+        st.write(st.session_state["completa_survey"])
         data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
         now = datetime.now()
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
