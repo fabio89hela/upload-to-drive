@@ -151,6 +151,7 @@ col_left,col_center,col_right=st.columns([0.5,4,0.5])
 
 with col_center:
     regional_list=regional+["Altro"]
+    st.write(df)
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional_list,index=len(regional_list)-2)
     if fo_lungo=="Altro":
         fo_lungo=st.text_input("Specificare")
