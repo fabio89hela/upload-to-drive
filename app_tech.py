@@ -35,9 +35,9 @@ if "transcription_text" not in st.session_state:
 if "salvato" not in st.session_state:
     st.session_state["salvato"]=False
 
-def get_javascript_value(js_code):
+def get_javascript_value(js_code,testo_key):
     """Esegue JavaScript e impedisce la visualizzazione in Streamlit."""
-    value = st_javascript(js_code)
+    value = st_javascript(js_code,key=testo_key)
     return value if value is not None else ""
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
@@ -232,8 +232,8 @@ elif mode == "Registra un nuovo audio":
     i=0
     while True:
         i=i+1
-        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');") 
-        timestamp = get_javascript_value("localStorage.getItem('update_time');") 
+        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
+        timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
         #timestamp = get_javascript_value("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i)) 
         if timestamp and timestamp > prev_timestamp:
             st.session_state["transcription_text"]=transcription_text
