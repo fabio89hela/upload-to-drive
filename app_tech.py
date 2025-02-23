@@ -167,14 +167,15 @@ with col_center:
         fo=df.loc[df["Label"] == fo_lungo, "Abbreviazione"].tolist()
         fo=fo[0]
         completa_survey=df.loc[df["Label"]==fo_lungo,"Surveymonkey"].tolist()
-        st.session_state["completa_survey"]=completa_survey[0]
-        if st.session_state["completa_survey"]=="TRUE":
-            st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
-            st.session_state["selezione1"]=2
-        else:
-            st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
-            st.session_state["selezione1"]=0
-        st.rerun()
+        if completa_survey[0]!=st.session_state["completa_survey"]:
+            st.session_state["completa_survey"]=completa_survey[0]
+            if st.session_state["completa_survey"]=="TRUE":
+                st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
+                st.session_state["selezione1"]=2
+            else:
+                st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
+                st.session_state["selezione1"]=0
+            st.rerun()
         data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
         now = datetime.now()
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
