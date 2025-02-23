@@ -98,6 +98,7 @@ def get_javascript_value(js_code,testo_key):
 st.set_page_config(
     page_title="T-EMA App",
     page_icon="https://t-ema.it/favicon.ico",
+    layout="wide",
 )
 
 # Layout della pagina
