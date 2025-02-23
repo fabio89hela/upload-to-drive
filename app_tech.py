@@ -224,18 +224,18 @@ elif mode == "Registra un nuovo audio":
         st.markdown(domanda1)
         n_canvas=3
         prev_timestamp = str(int(time.time() * 1000))
-        components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
-    
-        i=0
-        while True:
-            i=i+1
-            transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i)) or None
-            timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i)) or None
-            if timestamp and timestamp > prev_timestamp:
-                st.session_state["transcription_text"]=transcription_text
-                st.session_state["salvato"]=True
-                break
-            time.sleep(1)
+        with st.empty():
+            components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
+            i=0
+            while True:
+                i=i+1
+                transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i)) or None
+                timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i)) or None
+                if timestamp and timestamp > prev_timestamp:
+                    st.session_state["transcription_text"]=transcription_text
+                    st.session_state["salvato"]=True
+                    break
+                time.sleep(1)
         if st.session_state["salvato"]==True:
             st.text_area("prova",st.session_state["transcription_text"])
             st.success("Risposte salvate")
