@@ -35,8 +35,9 @@ def get_audio_recorder_html(n):
                 color: #FBB614;
             }
             .transcription {
-                width: 100%;
-                height: 100px;
+                width: 90%;
+                max-width:600px;
+                height: 150px;
                 border: 1px solid #ccc;
                 border-radius: 8px;
                 padding: 10px;
@@ -56,7 +57,7 @@ def get_audio_recorder_html(n):
         <div class="container">
             <h3>Registratore {i+1}</h3>
             <canvas id="waveCanvas-{i}" width="600" height="100" style="border:1px solid #ccc; margin-bottom: 10px;"></canvas>
-            <div style="margin-bottom: 10px;">
+            <div style="margin-bottom: 15px;">
                 <button class="custom-button" id="startBtn-{i}">Avvia</button>
                 <button class="custom-button" id="pauseBtn-{i}" disabled>Pausa</button>
                 <button class="custom-button" id="resumeBtn-{i}" disabled>Riprendi</button>
