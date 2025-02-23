@@ -90,7 +90,7 @@ def riavvia(selection,restart):
 
 def get_javascript_value(js_code,testo_key):
     value = st_javascript(js_code,key=testo_key)
-    return value if value in not None else ""
+    return value if value is not None else ""
 
 st.set_page_config(
     page_title="T-EMA App",
