@@ -279,7 +279,8 @@ with col_center:
                         break
                     time.sleep(1)
             if st.session_state["salvato1"]==True:
-                
+                temp_name_personalised1=c+"_"+data+"_"+fo+"fase2_domanda1"
+                file_id=salva_testo_drive(st.session_state["transcription_text1"], temp_name_personalised1)
                 st.success("Salvato")
     
     elif mode=="Completa intervista": 
