@@ -35,6 +35,11 @@ if "transcription_text" not in st.session_state:
 if "salvato" not in st.session_state:
     st.session_state["salvato"]=False
 
+def get_javascript_value(js_code):
+    """Esegue JavaScript e impedisce la visualizzazione in Streamlit."""
+    value = st_javascript(js_code)
+    return value if value is not None else ""
+
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 c,FOLDER_ID,domanda1,domanda2=settings_folder("Ematologia")
@@ -226,15 +231,14 @@ elif mode == "Registra un nuovo audio":
     components.html(get_audio_recorder_html(n_canvas), height=500,scrolling=True)
     i=0
     while True:
-        with st.expander("",expanded=False):
-            i=i+1
-            transcription_text = st_javascript("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i)) 
-            timestamp = st_javascript("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i)) 
-            if timestamp and timestamp > prev_timestamp:
-                st.session_state["transcription_text"]=transcription_text
-                st.session_state["salvato"]=True
-                break
-            time.sleep(1)
+        i=i+1
+        transcription_text = get_javascript_value("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i)) 
+        timestamp = get_javascript_value("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i)) 
+        if timestamp and timestamp > prev_timestamp:
+            st.session_state["transcription_text"]=transcription_text
+            st.session_state["salvato"]=True
+            break
+        time.sleep(1)
     if st.session_state["salvato"]==True:
         st.text_area("prova",st.session_state["transcription_text"])
         st.success("Salvato")
