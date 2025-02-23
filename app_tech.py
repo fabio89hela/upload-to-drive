@@ -232,8 +232,9 @@ elif mode == "Registra un nuovo audio":
     i=0
     while True:
         i=i+1
-        transcription_text = get_javascript_value("""localStorage.getItem('combined_transcriptions');""",key="trascrizione_testo"+str(i)) 
-        timestamp = get_javascript_value("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i)) 
+        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');") 
+        timestamp = get_javascript_value("localStorage.getItem('update_time');") 
+        #timestamp = get_javascript_value("""localStorage.getItem('update_time');""",key="tempo_trascr"+str(i)) 
         if timestamp and timestamp > prev_timestamp:
             st.session_state["transcription_text"]=transcription_text
             st.session_state["salvato"]=True
