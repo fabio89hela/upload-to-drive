@@ -294,7 +294,6 @@ with col_center:
                         transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr1"+str(i)) 
                         st.session_state["transcription_text1"]=str(transcription_text)
                         st.session_state["salvato1"]=True
-                        prev_timestamp = timestamp
                         break
                     time.sleep(1)
             if st.session_state["salvato1"]==True:
@@ -316,8 +315,6 @@ with col_center:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
     elif mode == "Registra un nuovo audio" and st.session_state["passo2"] and not st.session_state["passo3"]:
-        st.write(mode)
-        st.write(st.session_state["selezione1"])
         if st.session_state["ricomincia"]==False:
             st.session_state["ricomincia"]=True
             st.session_state["uploaded_file"]=None
@@ -327,14 +324,14 @@ with col_center:
         with st.expander("Sezione 2",expanded=not st.session_state["salvato2"]):
             st.markdown(domanda2)
             n_canvas=1
-            prev_timestamp = str(int(time.time() * 1000))
+            prev_timestamp2 = str(int(time.time() * 1000))
             components.html(get_audio_recorder_html(n_canvas), height=600,scrolling=True)
             i=0
             with st.empty():
                 while True:
                     i=i+1
-                    timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr2"+str(i)) 
-                    if timestamp and timestamp > prev_timestamp:
+                    timestamp2 = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr2"+str(i)) 
+                    if timestamp2 and timestamp2 > prev_timestamp2:
                         transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr2"+str(i)) 
                         st.session_state["transcription_text2"]=str(transcription_text)
                         st.session_state["salvato2"]=True
