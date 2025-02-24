@@ -155,6 +155,7 @@ with col4:
         st.session_state["selezione1"]=0
     mode = st.radio("Scegli un'opzione:", st.session_state["vettore_opzioni"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
     st.write(mode)
+    st.write(st.session_state["selezione1"])
     if mode=="Registra un nuovo audio":
         st.session_state["selezione1"]=1
     elif mode=="Carica un file audio":
