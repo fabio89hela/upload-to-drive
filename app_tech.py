@@ -295,7 +295,7 @@ with col_center:
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
     
-    elif mode=="Completa intervista": 
+    elif mode=="Completa Fase 1": 
         if st.session_state["ricomincia"]==False:
             st.session_state["ricomincia"]=True
             st.session_state["uploaded_file"]=None
