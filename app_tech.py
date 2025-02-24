@@ -147,7 +147,7 @@ with col3:
 with col4:
     if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
-        st.session_state["selezione1"]=2
+        #st.session_state["selezione1"]=2
     else:
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
         #st.session_state["selezione1"]=0
