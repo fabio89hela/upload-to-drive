@@ -266,7 +266,8 @@ with col_center:
         with st.expander("Domande cui rispondere",expanded=not st.session_state["salvato1"]):
             if st.session_state["completa_survey"]=="TRUE":
                 domande=domande_intervista.extend([domanda1,domanda2,domanda3])
-                st.write(domande)
+                st.write(domande_intervista)
+                st.write(domande_intervista+[domanda1,domanda2,domanda3])
             else:
                 domande=[domanda1,domanda2,domanda3]
             n_canvas=len(domande)
