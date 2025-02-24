@@ -268,8 +268,6 @@ with col_center:
             st.markdown(domanda1)
             n_canvas=1
             prev_timestamp = str(int(time.time() * 1000))
-            intestazione_canvas=""
-            testo_pulsante="Scarica e salva su drive"
             components.html(get_audio_recorder_html(n_canvas), height=600,scrolling=True)
             i=0
             with st.empty():
@@ -288,7 +286,6 @@ with col_center:
                 if 1>0:
                     if testo_da_salvare.strip():
                         with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
-                            st.write(testo_da_salvare)
                             temp_text_file.write(testo_da_salvare)
                             temp_text_file.flush()
                             temp_text_file_path = temp_text_file.name
@@ -298,6 +295,40 @@ with col_center:
                                 st.success(f"Salvataggio completato")
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+
+        with st.expander("Sezione 2",expanded=not st.session_state["salvato2"]):
+            st.markdown(domanda2)
+            n_canvas=1
+            prev_timestamp = str(int(time.time() * 1000))
+            components.html(get_audio_recorder_html(n_canvas), height=600,scrolling=True)
+            i=0
+            with st.empty():
+                while True:
+                    i=i+1
+                    timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
+                    if timestamp and timestamp > prev_timestamp:
+                        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
+                        st.session_state["transcription_text2"]=str(transcription_text)
+                        st.session_state["salvato2"]=True
+                        break
+                    time.sleep(1)
+            if st.session_state["salvato2"]==True:
+                testo_da_salvare=st.session_state["transcription_text2"]
+                temp_name_personalised1=c+"_"+data+"_"+fo
+                if 1>0:
+                    if testo_da_salvare.strip():
+                        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
+                            temp_text_file.write(testo_da_salvare)
+                            temp_text_file.flush()
+                            temp_text_file_path = temp_text_file.name
+                            file_name = f"Fase2_Domanda2_{temp_name_personalised1}.txt"
+                            try:
+                                file_id = authenticate_and_upload(file_name, temp_text_file_path)
+                                st.success(f"Salvataggio completato")
+                            except Exception as e:
+                                st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+
+
 
     
     elif mode=="Completa intervista": 
