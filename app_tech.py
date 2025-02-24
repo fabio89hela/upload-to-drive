@@ -146,7 +146,8 @@ with col1:
     #if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
     #    a=riavvia(0,False)
 with col3:
-    if st.session_state["completa_survey"]=="TRUE":
+    if 1<0
+    #if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
         #st.session_state["selezione1"]=2
     else:
@@ -265,7 +266,10 @@ with col_center:
 
         with st.expander("Domande cui rispondere",expanded=not st.session_state["salvato1"]):
             n_canvas=3
-            domande=[domanda1,domanda2,domanda3]
+            if st.session_state["completa_survey"]=="TRUE":
+                domande=[domanda1,domanda2,domanda3]
+            else:
+                domande=[domande_intervista,domanda1,domanda2,domanda3]
             prev_timestamp = str(int(time.time() * 1000))
             components.html(get_audio_recorder_html(n_canvas,domande), height=600,scrolling=True)
             i=0
