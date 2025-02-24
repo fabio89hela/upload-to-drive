@@ -122,6 +122,16 @@ with col_cnt:
     st.markdown('#')
 col1,col2,col3,col4=st.columns(4)
 
+with col2:
+    #cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"],disabled=st.session_state["ricomincia"])
+    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"])
+    if cartella=="Emofilia":
+        st.session_state["selezione2"]=1
+    elif cartella=="Oncoematologia":
+        st.session_state["selezione2"]=2
+    else:
+        st.session_state["selezione2"]=0
+    c,FOLDER_ID,domanda1,domanda2,domanda3,domande_intervista=settings_folder(cartella)
 with col1:
     if not st.session_state["data_fo"]:
         gc = get_gsheet_connection()
@@ -135,16 +145,6 @@ with col1:
     nome=df["Abbreviazione"].tolist()
     #if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
     #    a=riavvia(0,False)
-with col2:
-    #cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"],disabled=st.session_state["ricomincia"])
-    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"])
-    if cartella=="Emofilia":
-        st.session_state["selezione2"]=1
-    elif cartella=="Oncoematologia":
-        st.session_state["selezione2"]=2
-    else:
-        st.session_state["selezione2"]=0
-    c,FOLDER_ID,domanda1,domanda2,domanda3,domande_intervista=settings_folder(cartella)
 with col3:
     if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
