@@ -266,11 +266,11 @@ with col_center:
         with st.expander("Domande cui rispondere",expanded=not st.session_state["salvato1"]):
             if st.session_state["completa_survey"]=="TRUE":
                 domande=domande_intervista.extend([domanda1,domanda2,domanda3])
+                st.write(domande)
             else:
                 domande=[domanda1,domanda2,domanda3]
             n_canvas=len(domande)
             prev_timestamp = str(int(time.time() * 1000))
-            st.write(domande)
             components.html(get_audio_recorder_html(n_canvas,domande), height=600,scrolling=True)
             i=0
             with st.empty():
