@@ -315,6 +315,8 @@ with col_center:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
     elif mode == "Registra un nuovo audio" and st.session_state["passo2"] and not st.session_state["passo3"]:
+        st.write(mode)
+        st.write(st.session_state["selezione1"])
         if st.session_state["ricomincia"]==False:
             st.session_state["ricomincia"]=True
             st.session_state["uploaded_file"]=None
