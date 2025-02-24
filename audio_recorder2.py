@@ -15,6 +15,7 @@ def get_audio_recorder_html(n):
                 border-radius: 8px;
                 background-color: #d5e4e7;
                 color: #34637D;
+                align-items:center;
             }
             .custom-button {
                 background-color: white;
@@ -56,7 +57,7 @@ def get_audio_recorder_html(n):
         html_content += f"""
         <div class="container">
             <h3>Registratore {i+1}</h3>
-            <canvas id="waveCanvas-{i}" width="850%" height="100" style="border:1px solid #ccc; margin-bottom: 10px;"></canvas>
+            <canvas id="waveCanvas-{i}" width="500" height="100" style="border:1px solid #ccc; margin-bottom: 10px"></canvas>
             <div style="margin-bottom: 15px;">
                 <button class="custom-button" id="startBtn-{i}">Avvia</button>
                 <button class="custom-button" id="pauseBtn-{i}" disabled>Pausa</button>
