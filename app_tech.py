@@ -310,6 +310,7 @@ with col_center:
                                 file_id = authenticate_and_upload(file_name, temp_text_file_path)
                                 st.success(f"Salvataggio completato")
                                 st.session_state["passo2"]=True
+                                st.rerun()
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
@@ -350,6 +351,7 @@ with col_center:
                                 file_id = authenticate_and_upload(file_name, temp_text_file_path)
                                 st.success(f"Salvataggio completato")
                                 st.session_state["passo3"]=True
+                                st.rerun()
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
     
