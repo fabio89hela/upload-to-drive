@@ -133,10 +133,11 @@ with col2:
     df = pd.DataFrame(data_fo[1:], columns=data_fo[0])
     regional=df.loc[df["Specializzazione"] == c, "Label"].tolist()
     nome=df["Abbreviazione"].tolist()
-    if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
-        a=riavvia(0,False)
+    #if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
+    #    a=riavvia(0,False)
 with col3:
-    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"],disabled=st.session_state["ricomincia"])
+    #cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"],disabled=st.session_state["ricomincia"])
+    cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"])
     if cartella=="Emofilia":
         st.session_state["selezione2"]=1
     elif cartella=="Oncoematologia":
@@ -151,7 +152,8 @@ with col4:
     else:
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
         #st.session_state["selezione1"]=0
-    mode = st.radio("Scegli un'opzione:", st.session_state["vettore_opzioni"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
+    #mode = st.radio("Scegli un'opzione:", st.session_state["vettore_opzioni"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
+    mode = st.radio("Scegli un'opzione:", st.session_state["vettore_opzioni"],index=st.session_state["selezione1"])
     if mode=="Registra un nuovo audio":
         st.session_state["selezione1"]=1
     elif mode=="Carica un file audio":
