@@ -146,7 +146,7 @@ with col1:
     #if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
     #    a=riavvia(0,False)
 with col3:
-    if 1<0
+    if 1<0:
     #if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
         #st.session_state["selezione1"]=2
