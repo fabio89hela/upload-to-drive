@@ -303,17 +303,17 @@ with col_center:
             st.rerun()
 
         with st.expander("Intervista Fase 1",expanded=not st.session_state["salvato1"]):
-            n_canvas=3
-            domande=[domanda1,domanda2,domanda3]
+            n_canvas=len(domande_intervista)
+            domande=domande_intervista
             prev_timestamp = str(int(time.time() * 1000))
             components.html(get_audio_recorder_html(n_canvas,domande), height=600,scrolling=True)
             i=0
             with st.empty():
                 while True:
                     i=i+1
-                    timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr1"+str(i)) 
+                    timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_inter"+str(i)) 
                     if timestamp and timestamp > prev_timestamp:
-                        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr1"+str(i)) 
+                        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_inter"+str(i)) 
                         st.session_state["transcription_text1"]=str(transcription_text)
                         st.session_state["salvato1"]=True
                         break
