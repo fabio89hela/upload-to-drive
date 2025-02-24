@@ -34,18 +34,6 @@ if "transcription_text1" not in st.session_state:
     st.session_state["transcription_text1"]=""
 if "salvato1" not in st.session_state:
     st.session_state["salvato1"]=False
-if "transcription_text2" not in st.session_state:
-    st.session_state["transcription_text2"]=""
-if "salvato2" not in st.session_state:
-    st.session_state["salvato2"]=False
-if "transcription_text3" not in st.session_state:
-    st.session_state["transcription_text3"]=""
-if "salvato3" not in st.session_state:
-    st.session_state["salvato3"]=False
-if "passo2" not in st.session_state:
-    st.session_state["passo2"]=False
-if "passo3" not in st.session_state:
-    st.session_state["passo3"]=False
 if "data_fo" not in st.session_state:
     st.session_state["data_fo"]=None
 if "completa_survey" not in st.session_state:
@@ -103,11 +91,7 @@ def riavvia(selection,restart):
     st.session_state["avvio"]=True
     st.session_state["selezione1"]=selection
     st.session_state["salvato1"]=False
-    st.session_state["salvato2"]=False
-    st.session_state["salvato3"]=False
     st.session_state["data_fo"]=None
-    st.session_state["passo2"]=False
-    st.session_state["passo3"]=False
     st.rerun()
     return True
 
@@ -273,18 +257,19 @@ with col_center:
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
-    elif mode == "Registra un nuovo audio" and not st.session_state["passo2"]:
+    elif mode == "Registra un nuovo audio":
         if st.session_state["ricomincia"]==False:
             st.session_state["ricomincia"]=True
             st.session_state["uploaded_file"]=None
             st.session_state["avvio"]=True
             st.rerun()
 
-        with st.expander("Sezione 1",expanded=not st.session_state["salvato1"]):
-            st.markdown(domanda1)
-            n_canvas=1
+        if 1>0:
+        #with st.expander("Domande cui rispondere",expanded=not st.session_state["salvato1"]):
+            n_canvas=3
+            domande=[domanda1,domanda2,domanda3]
             prev_timestamp = str(int(time.time() * 1000))
-            components.html(get_audio_recorder_html(n_canvas), height=600,scrolling=True)
+            components.html(get_audio_recorder_html(n_canvas,domande), height=600,scrolling=True)
             i=0
             with st.empty():
                 while True:
@@ -309,55 +294,6 @@ with col_center:
                             try:
                                 file_id = authenticate_and_upload(file_name, temp_text_file_path)
                                 st.success(f"Salvataggio completato")
-                                st.session_state["passo2"]=True
-                                st.session_state["salvato2"]=False
-                                st.session_state["transcription_text2"]=""
-                                st.rerun()
-                            except Exception as e:
-                                st.error(f"Errore durante il salvataggio su Google Drive: {e}")
-
-    elif mode == "Registra un nuovo audio" and st.session_state["passo2"] and not st.session_state["passo3"]:
-        if st.session_state["ricomincia"]==False:
-            st.session_state["ricomincia"]=True
-            st.session_state["uploaded_file"]=None
-            st.session_state["avvio"]=True
-            st.rerun()
-
-        with st.expander("Sezione 2",expanded=not st.session_state["salvato2"]):
-            st.markdown(domanda2)
-            n_canvas=1
-            prev_timestamp2 = str(int(time.time() * 1000))
-            components.html(get_audio_recorder_html(n_canvas), height=600,scrolling=True)
-            i=0
-            with st.empty():
-                while True:
-                    i=i+1
-                    timestamp2 = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr2"+str(i)) 
-                    if timestamp2 and timestamp2 > prev_timestamp2:
-                        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr2"+str(i)) 
-                        st.session_state["transcription_text2"]=str(transcription_text)
-                        st.session_state["salvato2"]=True
-                        break
-                    time.sleep(1)
-            if st.session_state["salvato2"]==True:
-                st.write(timestamp2)
-                st.write(prev_timestamp2)
-                st.write(st.session_state["selezione1"])
-                st.write(st.session_state["transcription_text2"])
-                testo_da_salvare=st.session_state["transcription_text2"]
-                temp_name_personalised1=c+"_"+data+"_"+fo
-                if 1>0:
-                    if testo_da_salvare.strip():
-                        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
-                            temp_text_file.write(testo_da_salvare)
-                            temp_text_file.flush()
-                            temp_text_file_path = temp_text_file.name
-                            file_name = f"Fase2_Domanda2_{temp_name_personalised1}.txt"
-                            try:
-                                file_id = authenticate_and_upload(file_name, temp_text_file_path)
-                                st.success(f"Salvataggio completato")
-                                st.session_state["passo3"]=True
-                                st.rerun()
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
     
