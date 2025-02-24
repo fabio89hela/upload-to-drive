@@ -34,6 +34,14 @@ if "transcription_text1" not in st.session_state:
     st.session_state["transcription_text1"]=""
 if "salvato1" not in st.session_state:
     st.session_state["salvato1"]=False
+if "transcription_text2" not in st.session_state:
+    st.session_state["transcription_text2"]=""
+if "salvato2" not in st.session_state:
+    st.session_state["salvato2"]=False
+if "transcription_text3" not in st.session_state:
+    st.session_state["transcription_text3"]=""
+if "salvato3" not in st.session_state:
+    st.session_state["salvato3"]=False
 if "data_fo" not in st.session_state:
     st.session_state["data_fo"]=None
 if "completa_survey" not in st.session_state:
