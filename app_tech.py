@@ -120,9 +120,9 @@ col_sn,col_cnt,col_dx=st.columns([2,3,1])
 with col_cnt:
     st.image("https://t-ema.it/wp-content/uploads/2022/08/LOGO-TEMA-MENU.png", width=400)
     st.markdown('#')
-col1,col2,col3,col4,col5=st.columns(5)
+col1,col2,col3,col4=st.columns(4)
 
-with col2:
+with col1:
     if not st.session_state["data_fo"]:
         gc = get_gsheet_connection()
         SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
@@ -135,7 +135,7 @@ with col2:
     nome=df["Abbreviazione"].tolist()
     #if st.button("Riavvia",disabled=not(st.session_state["ricomincia"])):
     #    a=riavvia(0,False)
-with col3:
+with col2:
     #cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"],disabled=st.session_state["ricomincia"])
     cartella=st.radio("Tema di riferimento:",["Ematologia","Emofilia","Oncoematologia"],index=st.session_state["selezione2"])
     if cartella=="Emofilia":
@@ -145,7 +145,7 @@ with col3:
     else:
         st.session_state["selezione2"]=0
     c,FOLDER_ID,domanda1,domanda2,domanda3,domande_intervista=settings_folder(cartella)
-with col4:
+with col3:
     if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
         #st.session_state["selezione1"]=2
