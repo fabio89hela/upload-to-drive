@@ -5,6 +5,7 @@ def settings_folder(cartella):
   FOLDER_ID=""
   domanda1=[]
   domanda2=[]
+  domande_intervista=[]
   if cartella=="Ematologia":
     c="Ematologia"
     FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
@@ -65,4 +66,4 @@ def settings_folder(cartella):
               - E’ in grado di fornirci un esempio di efficientamento di processo che potrebbe essere implementato per migliorare la gestione dei farmaci infusivi per le malattie rare? <br>
                 - Esistono collaborazioni con altre strutture per condividere e implementare queste misure di efficientamento? Quali?<br>
               """    
-  return c,FOLDER_ID,domanda1,domanda2,domanda3
+  return c,FOLDER_ID,domanda1,domanda2,domanda3,domande_intervista
