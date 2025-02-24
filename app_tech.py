@@ -294,6 +294,7 @@ with col_center:
                         transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr1"+str(i)) 
                         st.session_state["transcription_text1"]=str(transcription_text)
                         st.session_state["salvato1"]=True
+                        prev_timestamp = timestamp
                         break
                     time.sleep(1)
             if st.session_state["salvato1"]==True:
