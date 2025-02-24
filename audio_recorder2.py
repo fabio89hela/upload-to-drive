@@ -1,3 +1,5 @@
+import streamlit as st
+
 def get_audio_recorder_html(n,domande):
     html_content = """
     <!DOCTYPE html>
