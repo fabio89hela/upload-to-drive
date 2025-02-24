@@ -52,7 +52,7 @@ def get_audio_recorder_html(n,domande):
     </head>
     <body>
     """
-
+    #allTranscriptions += `Registrazione ${i+1}:\n` + transcriptionText + "\\n\\n";
     for i in range(n):
         html_content += f"""
         <div class="container">
@@ -84,7 +84,7 @@ def get_audio_recorder_html(n,domande):
                 let transcriptionText = document.getElementById(`transcription-${i}`).value;
                 let audioLink = document.getElementById(`downloadLink-${i}`).href;
 
-                allTranscriptions += `Registrazione ${i+1}:\n` + transcriptionText + "\\n\\n";
+                allTranscriptions += """+str(domande[i])+f""" + transcriptionText + "\\n\\n";
                 if (audioLink && audioLink !== "about:blank") {
                     allAudioLinks.push(audioLink);
                 }
