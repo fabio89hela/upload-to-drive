@@ -158,8 +158,8 @@ with col3:
         st.session_state["selezione1"]=1
     elif mode=="Carica un file audio":
         st.session_state["selezione1"]=0
-    else:
-        st.session_state["selezione1"]=2
+    #else:
+    #    st.session_state["selezione1"]=2
 
 col_left,col_center,col_right=st.columns([0.5,4,0.5])
 
@@ -193,7 +193,7 @@ with col_center:
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
         if st.session_state["completa_survey"]=="TRUE":
             st.warning("Completa prima la fase 1 dell'intervista")
-            st.session_state["selezione1"]=2
+            #st.session_state["selezione1"]=2
 
     if mode == "Carica un file audio":
         file_ids=[]
