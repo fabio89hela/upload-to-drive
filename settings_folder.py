@@ -9,10 +9,10 @@ def settings_folder(cartella):
     c="Ematologia"
     FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
     domanda1="""
-              **Impatto della presenza di Centri Hub/Spoke e modello erogativo/assistenziale**\n
-              - Come viene coordinata l'erogazione di farmaci per l’ematologia tra centro Hub e centro Spoke, nella sua attuale esperienza?
-              - Considerando il caso in cui la diagnosi viene fatta in un Centro Hub e il farmaco ad alto costo viene erogato da un Centro Spoke o da una farmacia territoriale, è prevista una procedura ben definita tra i due Centri per poter condividere fabbisogni e consentire al Centro che dovrà prendere in carico il paziente di ricevere il budget necessario per avviare la terapia?
-                - Se sì, puoi descrivere il processo? 
+              <b>Impatto della presenza di Centri Hub/Spoke e modello erogativo/assistenziale<b><br>
+              - Come viene coordinata l'erogazione di farmaci per l’ematologia tra centro Hub e centro Spoke, nella sua attuale esperienza?<br>
+              - Considerando il caso in cui la diagnosi viene fatta in un Centro Hub e il farmaco ad alto costo viene erogato da un Centro Spoke o da una farmacia territoriale, è prevista una procedura ben definita tra i due Centri per poter condividere fabbisogni e consentire al Centro che dovrà prendere in carico il paziente di ricevere il budget necessario per avviare la terapia?<br>
+                - Se sì, puoi descrivere il processo?<br>
               """
     domanda2="""
              **Gestione trasferimenti tra centri o tra regioni**\n
