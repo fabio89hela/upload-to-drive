@@ -43,8 +43,7 @@ if "vettore_opzioni" not in st.session_state:
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
-c,FOLDER_ID,domanda1,domanda2,domanda3=settings_folder("Ematologia")
-domande=[domanda1,domanda2]
+c,FOLDER_ID,domanda1,domanda2,domanda3,domande_intervista=settings_folder("Ematologia")
 
 def convert_mp3_to_wav(input_path, output_path):
     try:
@@ -146,7 +145,7 @@ with col3:
         st.session_state["selezione2"]=2
     else:
         st.session_state["selezione2"]=0
-    c,FOLDER_ID,domanda1,domanda2,domanda3=settings_folder(cartella)
+    c,FOLDER_ID,domanda1,domanda2,domanda3,domande_intervista=settings_folder(cartella)
 with col4:
     if st.session_state["completa_survey"]=="TRUE":
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
@@ -155,6 +154,7 @@ with col4:
         st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
         st.session_state["selezione1"]=0
     mode = st.radio("Scegli un'opzione:", st.session_state["vettore_opzioni"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
+    st.write(mode)
     if mode=="Registra un nuovo audio":
         st.session_state["selezione1"]=1
     elif mode=="Carica un file audio":
