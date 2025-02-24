@@ -310,6 +310,8 @@ with col_center:
                                 file_id = authenticate_and_upload(file_name, temp_text_file_path)
                                 st.success(f"Salvataggio completato")
                                 st.session_state["passo2"]=True
+                                st.session_state["salvato2"]=False
+                                st.session_state["transcription_text2"]=""
                                 st.rerun()
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
@@ -338,6 +340,10 @@ with col_center:
                         break
                     time.sleep(1)
             if st.session_state["salvato2"]==True:
+                st.write(timestamp2)
+                st.write(prev_timestamp2)
+                st.write(st.session_state["selezione1"])
+                st.write(st.session_state["transcription_text2"])
                 testo_da_salvare=st.session_state["transcription_text2"]
                 temp_name_personalised1=c+"_"+data+"_"+fo
                 if 1>0:
