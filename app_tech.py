@@ -268,7 +268,9 @@ with col_center:
             st.markdown(domanda1)
             n_canvas=1
             prev_timestamp = str(int(time.time() * 1000))
-            components.html(get_audio_recorder_html(n_canvas), height=600,scrolling=True)
+            intestazione_canvas=""
+            testo_pulsante="Scarica e salva su drive"
+            components.html(get_audio_recorder_html(n_canvas, intestazione_canvas,testo_pulsante), height=600,scrolling=True)
             i=0
             with st.empty():
                 while True:
