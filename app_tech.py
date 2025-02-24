@@ -336,8 +336,5 @@ with col_center:
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
-
-
-    
     elif mode=="Completa intervista": 
         a=1
