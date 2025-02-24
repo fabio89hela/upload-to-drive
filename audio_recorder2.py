@@ -84,7 +84,7 @@ def get_audio_recorder_html(n,domande):
                 let transcriptionText = document.getElementById(`transcription-${i}`).value;
                 let audioLink = document.getElementById(`downloadLink-${i}`).href;
 
-                #allTranscriptions += `"""+str(domande[i])+"""` + transcriptionText + "\\n\\n";
+                #allTranscriptions += `Domanda ${i+1}:\n` + transcriptionText + "\\n\\n";
                 if (audioLink && audioLink !== "about:blank") {
                     allAudioLinks.push(audioLink);
                 }
