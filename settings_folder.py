@@ -26,6 +26,19 @@ def settings_folder(cartella):
              - Ci sono iniziative in corso o pianificate per migliorare l'integrazione e la collaborazione tra i diversi centri? <br>
              - Quali sono le tecnologie o strumenti che facilitano la gestione dei pazienti e la comunicazione tra i centri? <br>
              """
+    domande_intervista=["""Nella sua regione/ASL di appartenenza è stato implementato un modello hub/spoke? Se si, prosegui con e le domande. Se no, riterrebbe utile implementare un modello hub/ spoke nella sua regione? <br>""",
+      """Se ha risposto sì alla precedente risposta, quali vantaggi vede nella organizzazione Hub/Spoke?<br>""","""Quali potrebbero essere le aree di miglioramento?<br>""",
+"""Quali sono le principali sfide associate alla gestione dei pazienti in un modello Hub/Spoke?<br>""","""Qual è il ruolo del farmacista ospedaliero nel modello Hub/Spoke e in particolare nel suo centro?<br>""",
+"""Qual è il ruolo del farmacista territoriale nel modello Hub/Spoke e in particolare nella sua ASL di appartenenza?<br>""",
+"""Relativamente alle patologie ematologiche, come ad esempio la trombocitopenia immune (ITP), il suo centro ha funzione di Hub o di Spoke?<br>""",
+"""Relativamente alle patologie ematologiche, come ad esempio la trombocitopenia immune (ITP), come giudica la comunicazione esistente tra la sua ASL e i centri Hub o tra la sua ASL e i centri Spoke?<br>""",
+"""Esistono dei Patient Support Program (PSP) attualmente attivi nel suo Centro? Se non sono attivi, ne indichi il motivo<br>""",
+"""Se i PSP sono attivi, quanti di questi sono strutturati per le persone con malattie ematologiche?<br>
+- Per quali patologie ematologiche sono stati implementati tali PSP? <br>
+- Quali sono i principali obiettivi di tali PSP? <br>
+- Come ne viene monitorata l'efficacia dal clinico e dal farmacista?<br>
+- Qual è il feedback dei pazienti riguardo ai PSP e quali i principali problemi riportati?<br>""" ]
+            
   elif cartella=="Emofilia":
     c="Emofilia"
     FOLDER_ID = "1CH9Pw0ZoWFFF2gSlOEo9UVa45akAgrz-"  
