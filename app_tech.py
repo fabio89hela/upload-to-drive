@@ -98,7 +98,9 @@ def riavvia(selection,restart):
     st.session_state["uploaded_file"]=None
     st.session_state["avvio"]=True
     st.session_state["selezione1"]=selection
-    st.session_state["salvato"]=False
+    st.session_state["salvato1"]=False
+    st.session_state["salvato2"]=False
+    st.session_state["salvato3"]=False
     st.session_state["data_fo"]=None
     st.rerun()
     return True
@@ -304,7 +306,7 @@ with col_center:
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
-        with st.expander("Sezione 2",expanded=not st.session_state["salvato2"]):
+        with st.expander("Sezione 2",expanded=not st.session_state["salvato2"]) and st.session_state["salvato1"]==True:
             st.markdown(domanda2)
             n_canvas=1
             prev_timestamp = str(int(time.time() * 1000))
