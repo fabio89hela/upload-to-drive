@@ -1,4 +1,4 @@
-def get_audio_recorder_html(n):
+def get_audio_recorder_html(n,domande):
     html_content = """
     <!DOCTYPE html>
     <html lang="it">
@@ -56,6 +56,7 @@ def get_audio_recorder_html(n):
     for i in range(n):
         html_content += f"""
         <div class="container">
+            <p>"""+st.markdown(domande(i))+"""</>
             <canvas id="waveCanvas-{i}" width="500" height="100" style="border:1px solid #ccc; margin-bottom: 10px"></canvas>
             <div style="margin-bottom: 15px;">
                 <button class="custom-button" id="startBtn-{i}">Avvia</button>
