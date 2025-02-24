@@ -265,7 +265,7 @@ with col_center:
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
 
-    elif mode == "Registra un nuovo audio":
+    elif mode == "Registra un nuovo audio" :
         if st.session_state["ricomincia"]==False:
             st.session_state["ricomincia"]=True
             st.session_state["uploaded_file"]=None
@@ -281,9 +281,9 @@ with col_center:
             with st.empty():
                 while True:
                     i=i+1
-                    timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
+                    timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr1"+str(i)) 
                     if timestamp and timestamp > prev_timestamp:
-                        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
+                        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr1"+str(i)) 
                         st.session_state["transcription_text1"]=str(transcription_text)
                         st.session_state["salvato1"]=True
                         break
@@ -313,9 +313,9 @@ with col_center:
             with st.empty():
                 while True:
                     i=i+1
-                    timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr"+str(i)) 
+                    timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr2"+str(i)) 
                     if timestamp and timestamp > prev_timestamp:
-                        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr"+str(i)) 
+                        transcription_text = get_javascript_value("localStorage.getItem('combined_transcriptions');","testo_trascr2"+str(i)) 
                         st.session_state["transcription_text2"]=str(transcription_text)
                         st.session_state["salvato2"]=True
                         break
