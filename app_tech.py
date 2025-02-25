@@ -167,7 +167,7 @@ with col_center:
     regional_list=regional+["Altro"]
     fo_lungo=st.selectbox("Nome del farmacista intervistato",regional_list,index=len(regional_list)-2)
     if fo_lungo=="Altro":
-        fo_lungo=st.text_input("Specificare")
+        fo_lungo=st.text_input("Farmacista",placeholder="Nome Cognome")
         ruolo=st.text_input("Ruolo")
         if st.button("Aggiungi farmacista"):
             try:
