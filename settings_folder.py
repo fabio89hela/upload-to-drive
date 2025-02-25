@@ -26,13 +26,12 @@ def settings_folder(cartella):
              - Ci sono iniziative in corso o pianificate per migliorare l'integrazione e la collaborazione tra i diversi centri? <br>
              - Quali sono le tecnologie o strumenti che facilitano la gestione dei pazienti e la comunicazione tra i centri? <br>
              """
-    domande_intervista=["""Nella sua regione/ASL di appartenenza è stato implementato un modello hub/spoke? Se si, prosegui con e le domande. Se no, riterrebbe utile implementare un modello hub/ spoke nella sua regione? <br>""",
-      """Se ha risposto sì alla precedente risposta, quali vantaggi vede nella organizzazione Hub/Spoke?<br>""","""Quali potrebbero essere le aree di miglioramento?<br>""",
+    domande_intervista=["""Nella sua regione/ASL di appartenenza è stato implementato un modello hub/spoke? Se no, riterrebbe utile implementare un modello hub/ spoke nella sua regione? <br>""",
+      """Solo se ha risposto sì alla precedente domanda, quali vantaggi vede nella organizzazione Hub/Spoke?<br>""","""Quali potrebbero essere le aree di miglioramento?<br>""",
 """Quali sono le principali sfide associate alla gestione dei pazienti in un modello Hub/Spoke?<br>""","""Qual è il ruolo del farmacista ospedaliero nel modello Hub/Spoke e in particolare nel suo centro?<br>""",
 """Qual è il ruolo del farmacista territoriale nel modello Hub/Spoke e in particolare nella sua ASL di appartenenza?<br>""",
-"""Relativamente alle patologie ematologiche, come ad esempio la trombocitopenia immune (ITP), il suo centro ha funzione di Hub o di Spoke?<br>""",
-"""Relativamente alle patologie ematologiche, come ad esempio la trombocitopenia immune (ITP), come giudica la comunicazione esistente tra la sua ASL e i centri Hub o tra la sua ASL e i centri Spoke?<br>""",
-"""Esistono dei Patient Support Program (PSP) attualmente attivi nel suo Centro? Se non sono attivi, ne indichi il motivo<br>""",
+"""Relativamente alle patologie ematologiche, come ad esempio la trombocitopenia immune (ITP), il suo centro ha funzione di Hub o di Spoke? Come giudica la comunicazione esistente tra la sua ASL e i centri Hub o tra la sua ASL e i centri Spoke?<br>""",
+"""Esistono dei Patient Support Program (PSP) attualmente attivi nel suo Centro? Se non sono attivi, perchè? (Non è necessario, non è possibile la dispensazione territoriale, il paziente ritira il farmaco direttamente nel Centro, non vi è la presenza di un centro Spoke, il centro ha specifiche caratteristiche che non ne permettono l'attivazione, ...)<br>""",
 """Se i PSP sono attivi, quanti di questi sono strutturati per le persone con malattie ematologiche?<br>
 - Per quali patologie ematologiche sono stati implementati tali PSP? <br>
 - Quali sono i principali obiettivi di tali PSP? <br>
@@ -59,6 +58,10 @@ def settings_folder(cartella):
               - Avete suggerimenti specifici per migliorare la procedura di prescrizione ed erogazione dei farmaci per le malattie rare? Se si, quali? <br>
               - Quali innovazioni o miglioramenti tecnologici potrebbero facilitare la gestione dei farmaci per le malattie rare? <br>
               """
+    domande_intervista=["""Qual è l'attuale procedura di erogazione e distribuzione dei farmaci per l’emofilia nella sua azienda ospedaliera o territoriale/locale? Esistono già pratiche standardizzate o modelli predefiniti da seguire per le malattie rare?<b>""", 
+    """Quali sono le principali difficoltà nella gestione dei farmaci per le malattie rare, in particolare per l'emofilia, e quali passi sarebbero prioritari per implementare un modello di armonizzazione delle procedure a livello regionale o nazionale?<b>""",
+    """Come viene utilizzato il Sistema Informativo Malattie Rare (SIMaRRP) e quale tipo di supporto offre? Quali sono i limiti di questo portale? <b>""",
+    """Quali criteri utilizzate attualmente per la prescrizione dei farmaci LEA ed extra-LEA per le malattie rare? Quali criteri utilizzate per i dispositivi medici? <br>"""]
   else:
     c="Oncoematologia"
     FOLDER_ID = "15FhRa5wa7zxNEN4GyGzJKtwc6q7jK2rR"  
@@ -79,4 +82,14 @@ def settings_folder(cartella):
               - E’ in grado di fornirci un esempio di efficientamento di processo che potrebbe essere implementato per migliorare la gestione dei farmaci infusivi per le malattie rare? <br>
                 - Esistono collaborazioni con altre strutture per condividere e implementare queste misure di efficientamento? Quali?<br>
               """    
+    domande_intervista=["""Quali sono le principali sfide che incontra nella gestione delle terapie infusionali per le malattie oncoematologiche rare?  In particolare:<br>
+- In che modo queste sfide influiscono sull'efficienza e sugli sprechi? <br> 
+- Quali sono gli sprechi indiretti principali che possono essere evitati nella gestione delle terapie infusionali (sprechi di tempo, risorse umane o ligistiche, sprechi economici o legati a ricoveri non necessari)? <br>
+- Esistono differenze nella gestione dei farmaci inclusi nei LEA rispetto a quelli extra-LEA?  <br>""",
+""" Attualmente, come viene organizzata la somministrazione dei farmaci che richiedono infusione per le malattie rare? Quali sono i vantaggi e gli svantaggi delle pratiche attuali? <br>""",
+"""Quali benefici, per il paziente e per il Centro, prevede dall'organizzazione di giornate dedicate all'infusione di specifici farmaci per le malattie rare?  <br>""",
+"""Quali sarebbero i tuoi principali ostacoli da superare per implementare delle giornate dedicate all’infusione del farmaco (pianificazione logistica, disponibilità del personale, gestione delle scorte del farmaco, sicurezza e monitoraggio dei pazienti, costi e sostenibilità, coordinamento multidisciplinare)? <br>""",
+""" Quali indicatori utilizzate per valutare l'efficacia delle procedure di erogazione dei farmaci per le malattie rare (tempo medio di erogazione, personale sanitario necessario per l’erogazione, numero medio di pazienti trattati nell’unità di tempo, numero medio di giornate dedicate all’infusione, ...)? <br>""",
+"""Come raccogliete e utilizzate il feedback dai pazienti e dal personale sanitario per migliorare continuamente le procedure?  <br>"""
+                      ]
   return c,FOLDER_ID,domanda1,domanda2,domanda3,domande_intervista
