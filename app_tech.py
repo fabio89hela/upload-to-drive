@@ -172,7 +172,7 @@ with col_center:
         if st.button("Aggiungi farmacista"):
             try:
                 if fo_lungo and ruolo:
-                    worksheet.append_row([fo_lungo, ruolo,c,"FALSE"])  
+                    worksheet.append_row([fo_lungo, ruolo,c,'FALSE'])  
                     st.session_state["data_fo"] = worksheet.get_all_values()
                     st.rerun()
                 else:
@@ -184,7 +184,7 @@ with col_center:
                 worksheet = sh.sheet1
                 st.session_state["data_fo"] = worksheet.get_all_values()    
                 if fo_lungo and ruolo:
-                    worksheet.append_row([fo_lungo, ruolo,c,"FALSE"])  
+                    worksheet.append_row([fo_lungo, ruolo,c,'FALSE'])  
                     st.session_state["data_fo"] = worksheet.get_all_values()
                     st.rerun()
                 else:
