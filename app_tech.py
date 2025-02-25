@@ -170,6 +170,12 @@ with col_center:
         fo_lungo=st.text_input("Specificare")
         ruolo=st.text_input("Ruolo")
         if st.button("Aggiungi farmacista"):
+            if not worksheet:
+                gc = get_gsheet_connection()
+                SHEET_ID = "1WmImKIOs20FjqSBUHgQkr5tltEWlxHJosCEOEZMI_HQ"  
+                sh = gc.open_by_key(SHEET_ID)
+                worksheet = sh.sheet1
+                st.session_state["data_fo"] = worksheet.get_all_values()    
             if fo_lungo and ruolo:
                 worksheet.append_row([fo_lungo, ruolo,c])  
                 st.rerun()
