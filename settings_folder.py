@@ -9,12 +9,12 @@ def settings_folder(cartella):
   if cartella=="Ematologia":
     c="Ematologia"
     FOLDER_ID = "1NjGZpL9XFdTdWcT-BbYit9fvOuTB6W7t"  
-    domanda1="""
+    domanda1=["""<b>Campo note: registra o scrivi eventuali note</b><br><br>""","""
               <b>Domande Fase 2</b><br><br><b>Impatto della presenza di Centri Hub/Spoke e modello erogativo/assistenziale</b><br><br>
               - Come viene coordinata l'erogazione di farmaci per l’ematologia tra centro Hub e centro Spoke, nella sua attuale esperienza?<br>
               - Considerando il caso in cui la diagnosi viene fatta in un Centro Hub e il farmaco ad alto costo viene erogato da un Centro Spoke o da una farmacia territoriale, è prevista una procedura ben definita tra i due Centri per poter condividere fabbisogni e consentire al Centro che dovrà prendere in carico il paziente di ricevere il budget necessario per avviare la terapia?<br>
                 - Se sì, puoi descrivere il processo?<br>
-              """
+              """]
     domanda2="""
              <b>Gestione trasferimenti tra centri o tra regioni</b><br><br>
              - Quali sono le procedure attuali per gestire i trasferimenti dei pazienti come indicato?<br>
@@ -36,15 +36,15 @@ def settings_folder(cartella):
 - Per quali patologie ematologiche sono stati implementati tali PSP? <br>
 - Quali sono i principali obiettivi di tali PSP? <br>
 - Come ne viene monitorata l'efficacia dal clinico e dal farmacista?<br>
-- Qual è il feedback dei pazienti riguardo ai PSP e quali i principali problemi riportati?<br>""" ]
+- Qual è il feedback dei pazienti riguardo ai PSP e quali i principali problemi riportati?<br>""","""<b>Campo note: registra o scrivi eventuali note</b><br><br>"""]
             
   elif cartella=="Emofilia":
     c="Emofilia"
     FOLDER_ID = "1CH9Pw0ZoWFFF2gSlOEo9UVa45akAgrz-"  
-    domanda1="""
+    domanda1=["""<b>Campo note: registra o scrivi eventuali note</b><br><br>""","""
               <b>Domande Fase 2</b><br><br><b>Prescrizione dei farmaci</b><br><br>
               - Come viene gestito e tracciato il flusso dell’erogazione dei farmaci off-label per le malattie rare nella vostra azienda ospedaliera o territoriale/locale per garantire l'appropriatezza delle prescrizioni? <br>
-              """
+              """,]
     domanda2="""
               <b>Erogazione e approvvigionamento</b><br><br>
               - Come gestite l'urgenza di erogazione dei farmaci per pazienti con malattie rare?<br>
@@ -61,17 +61,17 @@ def settings_folder(cartella):
     domande_intervista=["""<b>Domande Fase 1</b><br><br>Qual è l'attuale procedura di erogazione e distribuzione dei farmaci per l’emofilia nella sua azienda ospedaliera o territoriale/locale? Esistono già pratiche standardizzate o modelli predefiniti da seguire per le malattie rare?<b>""", 
     """Quali sono le principali difficoltà nella gestione dei farmaci per le malattie rare, in particolare per l'emofilia, e quali passi sarebbero prioritari per implementare un modello di armonizzazione delle procedure a livello regionale o nazionale?<b>""",
     """Come viene utilizzato il Sistema Informativo Malattie Rare (SIMaRRP) e quale tipo di supporto offre? Quali sono i limiti di questo portale? <b>""",
-    """Quali criteri utilizzate attualmente per la prescrizione dei farmaci LEA ed extra-LEA per le malattie rare? Quali criteri utilizzate per i dispositivi medici? <br>"""]
+    """Quali criteri utilizzate attualmente per la prescrizione dei farmaci LEA ed extra-LEA per le malattie rare? Quali criteri utilizzate per i dispositivi medici? <br>""","""<b>Campo note: registra o scrivi eventuali note</b><br><br>"""]
   else:
     c="Oncoematologia"
     FOLDER_ID = "15FhRa5wa7zxNEN4GyGzJKtwc6q7jK2rR"  
-    domanda1="""
+    domanda1=["""<b>Campo note: registra o scrivi eventuali note</b><br><br>""","""
               <b>Domande Fase 2</b><br><br><b>Creazione di mini-network (rete di Centri che trattano patologie analoghe in un’area geografica limitata)</b><br><br>
               - Quali sarebbero i vantaggi della creazione di mini-network di area dedicati alla gestione dei farmaci per le malattie rare? <br>
                 - Come dovrebbe essere strutturato un mini-network di area dedicato per ottimizzare l'erogazione dei farmaci?<br>
               - Quali sono le pratiche di formazione e sensibilizzazione del personale sanitario per evitare sprechi nella gestione dei farmaci per le malattie rare?<br>
                 - Avete ricevuto suggerimenti pratici dal personale sanitario che potrebbero essere implementati?<br>
-              """
+              """]
     domanda2="""
               <b>Mininetwork e ottimizzazione tecnologica e pratica</b><br><br>
               - Quali tecnologie vengono attualmente utilizzate per migliorare l'efficienza nella gestione dei farmaci per le malattie rare?<br>
@@ -90,6 +90,6 @@ def settings_folder(cartella):
 """Quali benefici, per il paziente e per il Centro, prevede dall'organizzazione di giornate dedicate all'infusione di specifici farmaci per le malattie rare?  <br>""",
 """Quali sarebbero i tuoi principali ostacoli da superare per implementare delle giornate dedicate all’infusione del farmaco (pianificazione logistica, disponibilità del personale, gestione delle scorte del farmaco, sicurezza e monitoraggio dei pazienti, costi e sostenibilità, coordinamento multidisciplinare)? <br>""",
 """ Quali indicatori utilizzate per valutare l'efficacia delle procedure di erogazione dei farmaci per le malattie rare (tempo medio di erogazione, personale sanitario necessario per l’erogazione, numero medio di pazienti trattati nell’unità di tempo, numero medio di giornate dedicate all’infusione, ...)? <br>""",
-"""Come raccogliete e utilizzate il feedback dai pazienti e dal personale sanitario per migliorare continuamente le procedure?  <br>"""
-                      ]
+"""Come raccogliete e utilizzate il feedback dai pazienti e dal personale sanitario per migliorare continuamente le procedure?  <br>""","""<b>Campo note: registra o scrivi eventuali note</b><br><br>"""]
+                      
   return c,FOLDER_ID,domanda1,domanda2,domanda3,domande_intervista
