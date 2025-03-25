@@ -294,7 +294,7 @@ with col_center:
                         st.session_state["transcription_text1"]=str(transcription_text)
                         st.session_state["salvato1"]=True
                         break
-                    st.write(:white[i])
+                    st.markdown(f'<p style="color:white;font-size:24px;">{i}</p>', unsafe_allow_html=True)
                     time.sleep(1)
             if st.session_state["salvato1"]==True:
                 testo_da_salvare=st.session_state["transcription_text1"]
