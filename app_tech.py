@@ -213,7 +213,7 @@ with col_center:
         file_ids=[]
         if True:
             # Caricamento di un file audio locale
-            st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV o MP3)", type=["wav","mp3"])
+            st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV, WEBM o MP3)", type=["wav","webm","mp3"])
             if st.session_state["uploaded_file"]:
                 if st.session_state["ricomincia"]==False:
                     st.session_state["ricomincia"]=True
