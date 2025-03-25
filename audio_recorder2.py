@@ -103,7 +103,6 @@ def get_audio_recorder_html(n,domande):
             a.click();
             document.body.removeChild(a);
 
-            // **Scaricare tutti gli audio registrati**
             if (audioBlobs.length > 0) {
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 let audioBuffers = [];
