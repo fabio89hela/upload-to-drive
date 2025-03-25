@@ -285,7 +285,7 @@ with col_center:
             prev_timestamp = str(int(time.time() * 1000))
             components.html(get_audio_recorder_html(n_canvas,domande), height=600,scrolling=True)
             i=0
-            with st.empty("ffffffff"):
+            with st.empty():
                 while True:
                     i=i+1
                     timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr1"+str(i)) 
@@ -294,6 +294,7 @@ with col_center:
                         st.session_state["transcription_text1"]=str(transcription_text)
                         st.session_state["salvato1"]=True
                         break
+                    st.write(i)
                     time.sleep(1)
             if st.session_state["salvato1"]==True:
                 testo_da_salvare=st.session_state["transcription_text1"]
