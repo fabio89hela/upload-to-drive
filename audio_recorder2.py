@@ -80,12 +80,12 @@ def get_audio_recorder_html(n,domande):
         function downloadAllTranscriptions() {
             let allTranscriptions = "";
             let allAudioLinks = [];
-            
+            let domande = """ + str(domande).replace("'", '"') + """;
             for (let i = 0; i < """ + str(n) + """; i++) {
                 let transcriptionText = document.getElementById(`transcription-${i}`).value;
                 let audioLink = document.getElementById(`downloadLink-${i}`).href;
 
-                allTranscriptions += `"""+str(domande[i])+"""` + transcriptionText + "\\n\\n";
+                allTranscriptions += domande[i] + ": " + transcriptionText + "\\n\\n";
                 if (audioLink && audioLink !== "about:blank") {
                     allAudioLinks.push(audioLink);
                 }
