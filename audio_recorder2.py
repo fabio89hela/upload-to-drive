@@ -70,7 +70,7 @@ def get_audio_recorder_html(n,domande):
         </div>
         """
 
-    html_content += f"""
+    html_content += """
     <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica e salva su Drive</button>
 
     <script>
