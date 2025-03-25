@@ -75,6 +75,7 @@ def get_audio_recorder_html(n,domande):
 
     <script>
         let recorders=[];
+        let audioBlobs = [];
         
         function downloadAllTranscriptions() {
             let allTranscriptions = "";
@@ -103,15 +104,17 @@ def get_audio_recorder_html(n,domande):
             document.body.removeChild(a);
 
             // **Scaricare tutti gli audio registrati**
-            allAudioLinks.forEach(link => {
-                let audioA = document.createElement("a");
-                audioA.href = link;
-                audioA.download = link.split('/').pop();
+            if (audioBlobs.length > 0) {
+                const combinedBlob = new Blob(audioBlobs, { type: "audio/webm" });
+                const combinedUrl = URL.createObjectURL(combinedBlob);
+                const audioA = document.createElement("a");
+                audioA.href = combinedUrl;
+                audioA.download = "audio_completo.webm";
                 document.body.appendChild(audioA);
                 audioA.click();
                 document.body.removeChild(audioA);
-            });
-
+            }
+            
             parent.window.token = allTranscriptions;  // Passa il testo a Streamlit 
         }
 
@@ -200,7 +203,8 @@ def get_audio_recorder_html(n,domande):
                 };
                 
                 mediaRecorder.onstop = () => {
-                    let audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+                    let audioBlob = new Blob(audioChunks, { type: "audio/webm" });  // usa webm per concatenazione semplice
+                    audioBlobs[index] = audioBlob;
                     let audioURL = URL.createObjectURL(audioBlob);
                     audioPlayback.src = audioURL;
                     audioPlayback.style.display = "block";
