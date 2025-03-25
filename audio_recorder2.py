@@ -1,3 +1,4 @@
+import json
 def get_audio_recorder_html(n,domande):
     html_content = """
     <!DOCTYPE html>
@@ -69,8 +70,9 @@ def get_audio_recorder_html(n,domande):
             <a id="downloadLink-{i}" style="display:none;">Download Audio</a>
         </div>
         """
-
-    html_content += """
+        
+    js_domande = json.dumps(domande)
+    html_content += f"""
     <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica e salva su Drive</button>
 
     <script>
@@ -80,7 +82,7 @@ def get_audio_recorder_html(n,domande):
         function downloadAllTranscriptions() {
             let allTranscriptions = "";
             let allAudioLinks = [];
-            let domande = """ + str(domande).replace("'", '"') + """;
+            let domande = {js_domande};
             for (let i = 0; i < """ + str(n) + """; i++) {
                 let transcriptionText = document.getElementById(`transcription-${i}`).value;
                 let audioLink = document.getElementById(`downloadLink-${i}`).href;
