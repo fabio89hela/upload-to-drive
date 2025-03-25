@@ -295,7 +295,7 @@ with col_center:
                         st.session_state["salvato1"]=True
                         break
                     st.markdown(f'<p style="color:white;font-size:24px;">{i}</p>', unsafe_allow_html=True)
-                    time.sleep(30)
+                    time.sleep(3)
             if st.session_state["salvato1"]==True:
                 testo_da_salvare=st.session_state["transcription_text1"]
                 temp_name_personalised1=c+"_"+data+"_"+fo
