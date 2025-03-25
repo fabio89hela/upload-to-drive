@@ -285,7 +285,7 @@ with col_center:
             prev_timestamp = str(int(time.time() * 1000))
             components.html(get_audio_recorder_html(n_canvas,domande), height=600,scrolling=True)
             i=0
-            with st.empty():
+            with st.empty("ffffffff"):
                 while True:
                     i=i+1
                     timestamp = get_javascript_value("localStorage.getItem('update_time');","tempo_trascr1"+str(i)) 
