@@ -72,7 +72,7 @@ def get_audio_recorder_html(n,domande):
         """
         
     js_domande = json.dumps(domande)
-    html_content += """
+    html_content += f"""
     <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica e salva su Drive</button>
     <script>
         let recorders=[];
