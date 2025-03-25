@@ -70,7 +70,7 @@ def get_audio_recorder_html(n,domande):
         </div>
         """
 
-    html_content += """
+    html_content += f"""
     <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica e salva su Drive</button>
 
     <script>
@@ -105,16 +105,30 @@ def get_audio_recorder_html(n,domande):
 
             // **Scaricare tutti gli audio registrati**
             if (audioBlobs.length > 0) {
-                const combinedBlob = new Blob(audioBlobs, { type: "audio/webm" });
-                const combinedUrl = URL.createObjectURL(combinedBlob);
-                const audioA = document.createElement("a");
-                audioA.href = combinedUrl;
-                audioA.download = "audio_completo.webm";
-                document.body.appendChild(audioA);
-                audioA.click();
-                document.body.removeChild(audioA);
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                let audioBuffers = [];
+                Promise.all(audioBlobs.map(blob => {
+                    return blob.arrayBuffer().then(buffer => audioContext.decodeAudioData(buffer));
+                    })).then(decodedBuffers => {
+                            let totalLength = decodedBuffers.reduce((sum, buffer) => sum + buffer.length, 0);
+                            let sampleRate = decodedBuffers[0].sampleRate;
+                            let outputBuffer = audioContext.createBuffer(1, totalLength, sampleRate);
+                            let offset = 0;
+                            decodedBuffers.forEach(buffer => {
+                                outputBuffer.getChannelData(0).set(buffer.getChannelData(0), offset);
+                                offset += buffer.length;
+                            });
+                    // Convert outputBuffer to WAV
+                    let wavBlob = bufferToWav(outputBuffer);
+                    let wavUrl = URL.createObjectURL(wavBlob);
+                    const audioA = document.createElement("a");
+                    audioA.href = wavUrl;
+                    audioA.download = "audio_completo.wav";
+                    document.body.appendChild(audioA);
+                    audioA.click();
+                    document.body.removeChild(audioA);
+                    });
             }
-            
             parent.window.token = allTranscriptions;  // Passa il testo a Streamlit 
         }
 
