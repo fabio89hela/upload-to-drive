@@ -206,7 +206,7 @@ with col_center:
         now = datetime.now()
         data=data_valore.strftime("%Y-%m-%d")+"_"+now.strftime("%H-%M-%S")
         if st.session_state["completa_survey"]=="TRUE":
-            st.warning("Completa prima la fase 1 dell'intervista")
+            st.warning("Attenzione: serve completare anche la fase 1, le cui domande sono riportate per ultime.")
             #st.session_state["selezione1"]=2
 
     if mode == "Carica un file audio":
