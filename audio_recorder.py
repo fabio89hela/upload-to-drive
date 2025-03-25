@@ -1,266 +1,268 @@
-def get_audio_recorder_html():
-    """
-    Genera il codice HTML e JavaScript per registrare l'audio, 
-    salvare il file come WAV e permettere il download.
-    """
-    return """
-  <!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrazione Audio con Trascrizione</title>
-    <style>
-        .custom-button {
-            background-color: white;
-            color: #34637D;
-            border: 1px solid #34637D;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-family: Arial, sans-serif;
-            cursor: pointer;
-            transition: all 0.1s ease-in-out;
-            display: inline-block;
-            text-decoration: none;
-        }
-
-        .custom-button:hover {
-            border:1px solid #FBB614;
-            color:#FBB614;
-        }
-
-        .custom-button:disabled {
-            color: #adb5bd;
-            border-color: #dee2e6;
-            cursor: not-allowed;
-        }
-
-        #transcription {
-            margin-top: 20px;
-            height: 150px; /* Imposta un'altezza fissa */
-            overflow-y: auto; /* Abilita lo scroll verticale */
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: white;
-            font-size: 16px;
-            font-family: Arial, sans-serif;
-            color: #34637D;
-            min-height: 50px;
-        }
-    </style>
-</head>
-<body>
-<canvas id="waveCanvas" width="600" height="200" style="border:1px solid #ccc; margin-bottom: 20px;"></canvas>
-<div style="margin-bottom: 20px;">
-    <button class="custom-button" id="startBtn">Avvia registrazione</button>
-    <button class="custom-button" id="pauseBtn" disabled>Pausa</button>
-    <button class="custom-button" id="resumeBtn" disabled>Riprendi</button>
-    <button class="custom-button" id="stopBtn" disabled>Ferma registrazione</button>
-    <br><br>
-    <textarea id="transcription" placeholder="La trascrizione apparirà qui..."></textarea>
-    <br>
-    <button id="saveBtn">Salva Trascrizione</button>
-    <a id="downloadLink" style="display:none; margin-top: 20px;">Download Audio</a>
-</div>
-<audio id="audioPlayback" controls style="display: none; margin-top: 20px;"></audio>
-
-<script>
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const resumeBtn = document.getElementById('resumeBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const audioPlayback = document.getElementById('audioPlayback');
-    const downloadLink = document.getElementById('downloadLink');
-    const waveCanvas = document.getElementById('waveCanvas');
-    const canvasCtx = waveCanvas.getContext('2d');
-    const transcriptionDiv = document.getElementById('transcription');
-
-    let mediaRecorder;
-    let audioChunks = [];
-    let stream;
-    let audioContext;
-    let analyser;
-    let dataArray;
-    let animationId;
-    let recognition;
-    let finalTranscript = ""; // Buffer per il testo definitivo
-
-    function drawWaveform() {
-        analyser.getByteTimeDomainData(dataArray);
-        canvasCtx.fillStyle = 'white';
-        canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
-        canvasCtx.lineWidth = 2;
-        canvasCtx.strokeStyle = 'blue';
-        canvasCtx.beginPath();
-
-        const sliceWidth = waveCanvas.width / analyser.fftSize;
-        let x = 0;
-
-        for (let i = 0; i < analyser.fftSize; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = (v * waveCanvas.height) / 2;
-
-            if (i === 0) {
-                canvasCtx.moveTo(x, y);
-            } else {
-                canvasCtx.lineTo(x, y);
+def get_audio_recorder_html(n,domande):
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Registrazione Audio con Trascrizione</title>
+        <style>
+            .container {
+                font-family:Arial, sans-self;
+                margin-bottom: 20px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                background-color: #d5e4e7;
+                color: #34637D;
+                align-items:center;
             }
+            .custom-button {
+                background-color: white;
+                color: #34637D;
+                border: 1px solid #34637D;
+                border-radius: 8px;
+                padding: 8px 16px;
+                font-size: 14px;
+                font-family: Arial, sans-serif;
+                cursor: pointer;
+                transition: all 0.1s ease-in-out;
+                display: inline-block;
+                text-decoration: none;
+                margin-top: 10px;
+            }
+            .custom-button:hover {
+                border: 1px solid #FBB614;
+                color: #FBB614;
+            }
+            .transcription {
+                width: 95%;
+                max-width:1200px;
+                height: 150px;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                padding: 10px;
+                font-size: 16px;
+                font-family: Arial, sans-serif;
+                background-color: white;
+                resize: vertical;
+                overflow-y: auto;
+            }
+        </style>
+    </head>
+    <body>
+    """
+        
+    for i in range(n):
+        html_content += f"""
+        <div class="container">
+            <p>"""+str(domande[i])+f"""</p>
+            <canvas id="waveCanvas-{i}" width="500" height="100" style="border:1px solid #ccc; margin-bottom: 10px"></canvas>
+            <div style="margin-bottom: 15px;">
+                <button class="custom-button" id="startBtn-{i}">Avvia</button>
+                <button class="custom-button" id="pauseBtn-{i}" disabled>Pausa</button>
+                <button class="custom-button" id="resumeBtn-{i}" disabled>Riprendi</button>
+                <button class="custom-button" id="stopBtn-{i}" disabled>Ferma</button>
+            </div>
+            <textarea class="transcription" id="transcription-{i}" placeholder="La trascrizione apparirà qui..." style="color: #34637D; border: 1px solid #34637D;border-radius: 8px;"></textarea>
+            <audio id="audioPlayback-{i}" controls style="display: none;"></audio>
+            <a id="downloadLink-{i}" style="display:none;">Download Audio</a>
+        </div>
+        """
 
-            x += sliceWidth;
-        }
+    html_content += """
+    <button class="custom-button" onclick="downloadAllTranscriptions()">Scarica e salva su Drive</button>
 
-        canvasCtx.lineTo(waveCanvas.width, waveCanvas.height / 2);
-        canvasCtx.stroke();
+    <script>
+        let recorders=[];
+        let audioBlobs = [];
+        
+        function downloadAllTranscriptions() {
+            let allTranscriptions = "";
+            let allAudioLinks = [];
+            
+            for (let i = 0; i < """ + str(n) + """; i++) {
+                let transcriptionText = document.getElementById(`transcription-${i}`).value;
+                let audioLink = document.getElementById(`downloadLink-${i}`).href;
 
-        animationId = requestAnimationFrame(drawWaveform);
-    }
-
-    function startTranscription() {
-        if (!('webkitSpeechRecognition' in window)) {
-            transcriptionDiv.textContent = "Il riconoscimento vocale non è supportato su questo browser.";
-            return;
-        }
-
-        recognition = new webkitSpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.lang = 'it-IT';
-
-        recognition.onresult = (event) => {
-            let interimTranscript = "";
-
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-                if (event.results[i].isFinal) {
-                    // Se la trascrizione è definitiva, la aggiungiamo al buffer
-                    finalTranscript += event.results[i][0].transcript + " ";
-                } else {
-                    // Se la trascrizione è provvisoria, la mostriamo senza cancellare il buffer
-                    interimTranscript += event.results[i][0].transcript + " ";
+                allTranscriptions += `"""+str(domande[i])+"""` + transcriptionText + "\\n\\n";
+                if (audioLink && audioLink !== "about:blank") {
+                    allAudioLinks.push(audioLink);
                 }
             }
-            let textArea = document.getElementById('transcription');
-            textArea.value = finalTranscript + interimTranscript;
 
-                // Salva il testo in localStorage in automatico
-            localStorage.setItem("transcription", textArea.value);
-        };
+            localStorage.setItem("combined_transcriptions", allTranscriptions);
+            localStorage.setItem("update_time", new Date().getTime());
+            
+            let blob = new Blob([allTranscriptions], { type: "text/plain" });
+            let a = document.createElement("a");
+            let fileURL= URL.createObjectURL(blob);
+            a.href = fileURL;
+            a.download = "trascrizioni.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
 
-        recognition.onerror = (event) => {
-            console.error("Errore nel riconoscimento vocale: ", event.error);
-        };
-
-        recognition.start();
-    }
-
-    function startTranscription2() {
-        if (!('webkitSpeechRecognition' in window)) {
-            transcriptionDiv.textContent = "Il riconoscimento vocale non è supportato su questo browser.";
-            return;
-        }
-
-        recognition = new webkitSpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.lang = 'it-IT';
-
-        recognition.onresult = (event) => {
-            let transcript = "";
-            for (let i = event.resultIndex; i < event.results.length; i++) {
-                transcript += event.results[i][0].transcript + " ";
+            // **Scaricare tutti gli audio registrati**
+            if (audioBlobs.length > 0) {
+                const combinedBlob = new Blob(audioBlobs, { type: "audio/webm" });
+                const combinedUrl = URL.createObjectURL(combinedBlob);
+                const audioA = document.createElement("a");
+                audioA.href = combinedUrl;
+                audioA.download = "audio_completo.webm";
+                document.body.appendChild(audioA);
+                audioA.click();
+                document.body.removeChild(audioA);
             }
-            transcriptionDiv.textContent = transcript;
-        };
-
-        recognition.onerror = (event) => {
-            console.error("Errore nel riconoscimento vocale: ", event.error);
-        };
-
-        recognition.start();
-    }
-
-    document.getElementById('transcription').addEventListener('input', function() {
-        localStorage.setItem("transcription", this.value);
-        parent.window.token = this.value;
-    });
-
-    startBtn.addEventListener('click', async () => {
-        audioChunks = [];
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        audioContext = new AudioContext();
-        analyser = audioContext.createAnalyser();
-        const source = audioContext.createMediaStreamSource(stream);
-        source.connect(analyser);
-        analyser.fftSize = 2048;
-        dataArray = new Uint8Array(analyser.fftSize);
-
-        mediaRecorder = new MediaRecorder(stream);
-
-        mediaRecorder.ondataavailable = (event) => {
-            if (event.data.size > 0) audioChunks.push(event.data);
-        };
-
-        mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-            const audioURL = URL.createObjectURL(audioBlob);
-
-            // Mostra l'audio nel player
-            audioPlayback.src = audioURL;
-            audioPlayback.style.display = 'block';
-
-            // Imposta il link per il download
-            downloadLink.href = audioURL;
-            downloadLink.download = "recording.wav";
-            downloadLink.style.display = 'block';
-            downloadLink.textContent = "Download Audio";
-
-            cancelAnimationFrame(animationId);
-            recognition.stop(); // Ferma la trascrizione alla fine della registrazione
-        };
-
-        mediaRecorder.start();
-        drawWaveform();
-        startTranscription(); // Avvia la trascrizione
-
-        startBtn.disabled = true;
-        pauseBtn.disabled = false;
-        stopBtn.disabled = false;
-    });
-
-    pauseBtn.addEventListener('click', () => {
-        if (mediaRecorder && mediaRecorder.state === 'recording') {
-            mediaRecorder.pause();
-            recognition.stop();
-            pauseBtn.disabled = true;
-            resumeBtn.disabled = false;
-            cancelAnimationFrame(animationId);
+            
+            parent.window.token = allTranscriptions;  // Passa il testo a Streamlit 
         }
-    });
 
-    resumeBtn.addEventListener('click', () => {
-        if (mediaRecorder && mediaRecorder.state === 'paused') {
-            mediaRecorder.resume();
-            startTranscription();
-            resumeBtn.disabled = true;
-            pauseBtn.disabled = false;
-            drawWaveform();
+        function setupRecorder(index) {
+            let startBtn = document.getElementById(`startBtn-${index}`);
+            let pauseBtn = document.getElementById(`pauseBtn-${index}`);
+            let resumeBtn = document.getElementById(`resumeBtn-${index}`);
+            let stopBtn = document.getElementById(`stopBtn-${index}`);
+            let audioPlayback = document.getElementById(`audioPlayback-${index}`);
+            let downloadLink = document.getElementById(`downloadLink-${index}`);
+            let transcriptionDiv = document.getElementById(`transcription-${index}`);
+            let waveCanvas = document.getElementById(`waveCanvas-${index}`);
+            let canvasCtx = waveCanvas.getContext("2d");
+
+            let mediaRecorder;
+            let audioChunks = [];
+            let stream;
+            let recognition;
+            let finalTranscript = "";
+            let animationId;
+
+            let audioContext;
+            let analyser;
+            let dataArray;
+            let source;
+
+            function drawWaveform() {
+                if (!analyser) return;
+
+                analyser.getByteTimeDomainData(dataArray);
+                canvasCtx.fillStyle = "white";
+                canvasCtx.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+                canvasCtx.lineWidth = 2;
+                canvasCtx.strokeStyle = "blue";
+                canvasCtx.beginPath();
+                let sliceWidth = waveCanvas.width / analyser.fftSize;
+                let x = 0;
+
+                for (let i = 0; i < analyser.fftSize; i++) {
+                    let v = dataArray[i] / 128.0;
+                    let y = (v * waveCanvas.height) / 2;
+                    if (i === 0) canvasCtx.moveTo(x, y);
+                    else canvasCtx.lineTo(x, y);
+                    x += sliceWidth;
+                }
+                canvasCtx.stroke();
+                animationId = requestAnimationFrame(drawWaveform);
+            }
+
+            function startTranscription() {
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                recognition.lang = "it-IT";
+
+                recognition.onresult = (event) => {
+                    let interimTranscript = "";
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript + " ";
+                        } else {
+                            interimTranscript += event.results[i][0].transcript + " ";
+                        }
+                    }
+                    transcriptionDiv.value = finalTranscript + interimTranscript;
+                };
+
+                recognition.start();
+            }
+
+            startBtn.addEventListener("click", async () => {
+                audioChunks = [];
+                stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+                dataArray = new Uint8Array(analyser.fftSize);
+                
+                source = audioContext.createMediaStreamSource(stream);
+                source.connect(analyser);
+                
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = () => {
+                    let audioBlob = new Blob(audioChunks, { type: "audio/webm" });  // usa webm per concatenazione semplice
+                    audioBlobs[index] = audioBlob;
+                    let audioURL = URL.createObjectURL(audioBlob);
+                    audioPlayback.src = audioURL;
+                    audioPlayback.style.display = "block";
+                    downloadLink.href = audioURL;
+                    downloadLink.download = `recording-${index}.wav`;
+                    downloadLink.style.display = "block";
+                    downloadLink.textContent = "Download Audio";
+                    cancelAnimationFrame(animationId);
+                };
+
+                mediaRecorder.start();
+                drawWaveform();
+                startTranscription();
+
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                stopBtn.disabled = false;
+            });
+
+            pauseBtn.addEventListener("click", () => {
+                if (mediaRecorder.state === "recording") {
+                    mediaRecorder.pause();
+                    recognition.stop();
+                    pauseBtn.disabled = true;
+                    resumeBtn.disabled = false;
+                    cancelAnimationFrame(animationId);
+                }
+            });
+
+            resumeBtn.addEventListener("click", () => {
+                if (mediaRecorder.state === "paused") {
+                    mediaRecorder.resume();
+                    startTranscription();
+                    resumeBtn.disabled = true;
+                    pauseBtn.disabled = false;
+                    drawWaveform();
+                }
+            });
+
+            stopBtn.addEventListener("click", () => {
+                mediaRecorder.stop();
+                stream.getTracks().forEach((track) => track.stop());
+                recognition.stop();
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
+                resumeBtn.disabled = true;
+                stopBtn.disabled = true;
+                cancelAnimationFrame(animationId);
+            });
+
+            recorders.push({ startBtn, pauseBtn, resumeBtn, stopBtn, mediaRecorder });
         }
-    });
 
-    stopBtn.addEventListener('click', () => {
-        if (mediaRecorder) {
-            mediaRecorder.stop();
-            stream.getTracks().forEach((track) => track.stop());
-            recognition.stop();
-            startBtn.disabled = false;
-            pauseBtn.disabled = true;
-            resumeBtn.disabled = true;
-            stopBtn.disabled = true;
+        for (let i = 0; i < """ + str(n) + """; i++) {
+            setupRecorder(i);
         }
-    });
-</script>
-</body>
-</html>
-
-  """
+    </script>
+    </body>
+    </html>
+    """
+    return html_content
