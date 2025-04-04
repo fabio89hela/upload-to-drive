@@ -13,6 +13,7 @@ import time
 import pandas as pd
 import streamlit.components.v1 as components
 from streamlit_javascript import st_javascript
+import base64
 
 if "avvio" not in st.session_state:
     st.session_state["avvio"]=True
