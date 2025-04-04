@@ -116,15 +116,6 @@ def get_audio_recorder_html(n,domande):
                 audioA.click();
                 document.body.removeChild(audioA);
             }
-            
-            // **Nuova aggiunta**
-            if (audioBlobs.length > 0) {
-                const combinedBlob = new Blob(audioBlobs, { type: "audio/webm" });
-                const reader = new FileReader();
-                reader.onloadend = function () {
-                localStorage.setItem("audio_blob_base64", reader.result);
-            };
-            reader.readAsDataURL(combinedBlob);
 }
             
             parent.window.token = allTranscriptions;  // Passa il testo a Streamlit 
