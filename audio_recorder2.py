@@ -215,6 +215,14 @@ def get_audio_recorder_html(n,domande):
                     downloadLink.download = `recording-${index}.wav`;
                     downloadLink.style.display = "block";
                     downloadLink.textContent = "Download Audio";
+
+                    // 🔥 Salva anche in base64 su localStorage per Streamlit
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                    localStorage.setItem("audio_blob_base64", reader.result);  // result = base64
+                    };
+                    reader.readAsDataURL(audioBlob);
+                    
                     cancelAnimationFrame(animationId);
                 };
 
