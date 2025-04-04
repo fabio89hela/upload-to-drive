@@ -47,14 +47,22 @@ c,FOLDER_ID,domanda_note,domanda1,domanda2,domanda3,domande_intervista=settings_
 
 def convert_webm_to_wav(input_path, wav_path):
     try:
-        st.write(input_path)
-        st.write(wav_path)
-        st.write(os.path.getsize(input_path))
-        ffmpeg.input(input_path, format='webm').output(wav_path, format='wav', acodec='pcm_s16le').run(overwrite_output=True)
+        # Prima verifica che ffmpeg riesca a leggere il file
+        if not is_valid_media(input_path):
+            return False
+
+        # Conversione con formato e codec forzato
+        ffmpeg.input(input_path, format='webm').output(
+            wav_path,
+            format='wav',
+            acodec='pcm_s16le'
+        ).run(overwrite_output=True)
         return True
+
     except ffmpeg.Error as e:
-        st.error(f"Errore nella conversione da WEBM a WAV: {e.stderr}")
+        st.error(f"Errore nella conversione da WEBM a WAV: {e.stderr.decode() if e.stderr else str(e)}")
         return False
+
 
 def convert_to_ogg(input_path, output_path):
     try:
