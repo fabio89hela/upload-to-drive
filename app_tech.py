@@ -49,6 +49,8 @@ def convert_webm_to_wav(input_path, wav_path):
     try:
         st.write(input_path)
         st.write(wav_path)
+        if os.path.getsize(input_path) == 0:
+            st.error("File audio vuoto o non valido.")
         ffmpeg.input(input_path, format='webm').output(wav_path, format='wav', acodec='pcm_s16le').run(overwrite_output=True)
         return True
     except ffmpeg.Error as e:
