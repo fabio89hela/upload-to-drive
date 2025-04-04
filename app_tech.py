@@ -221,7 +221,9 @@ with col_center:
                     st.session_state["avvio"]=True
                     st.rerun()
                 with st.spinner("Caricando..."):
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=f".{st.session_state["uploaded_file"].name.split('.')[-1]}") as temp_file:
+                    ext = st.session_state["uploaded_file"].name.split('.')[-1]
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as temp_file:
+                    #with tempfile.NamedTemporaryFile(delete=False, suffix=f".{st.session_state["uploaded_file"].name.split('.')[-1]}") as temp_file:
                         temp_file.write(st.session_state["uploaded_file"].getbuffer())
                         input_path = temp_file.name
 
