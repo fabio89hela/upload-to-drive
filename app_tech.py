@@ -45,6 +45,43 @@ if "vettore_opzioni" not in st.session_state:
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 c,FOLDER_ID,domanda_note,domanda1,domanda2,domanda3,domande_intervista=settings_folder("Ematologia")
 
+def convert_webm_to_wav(input_path, wav_path):
+    try:
+        ffmpeg.input(input_path).output(wav_path, format='wav').run(overwrite_output=True)
+        return True
+    except ffmpeg.Error as e:
+        st.error(f"Errore nella conversione da WEBM a WAV: {e.stderr.decode()}")
+        return False
+
+def convert_to_ogg(input_path, output_path):
+    try:
+        ext = os.path.splitext(input_path)[-1].lower()
+
+        # Se è un file webm, convertilo prima in wav
+        if ext == ".webm":
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_wav:
+                wav_path = temp_wav.name
+
+            if not convert_webm_to_wav(input_path, wav_path):
+                return False  # Fallita la conversione da webm a wav
+
+            input_path = wav_path  # Sovrascrivi l'input con il path WAV
+
+        # Ora esegui la conversione in OGG
+        ffmpeg.input(input_path).output(
+            output_path,
+            acodec="libopus",
+            audio_bitrate="192k",
+            format="ogg"
+        ).run(overwrite_output=True)
+
+        return True
+
+    except ffmpeg.Error as e:
+        st.error(f"Errore durante la conversione in OGG: {e.stderr.decode()}")
+        return False
+
+
 def convert_mp3_to_wav(input_path, output_path):
     try:
         ffmpeg.input(input_path).output(output_path, format="wav").run(overwrite_output=True)
@@ -59,18 +96,18 @@ def authenticate_and_upload(file_name, file_path):
     file_id = upload_to_drive(service, file_name, file_path, FOLDER_ID)
     return file_id
 
-def convert_to_ogg(input_path, output_path):
-    try:
-        ffmpeg.input(input_path).output(
-            output_path,
-            acodec="libopus",  # Codec per OGG
-            audio_bitrate="192k",
-            format="ogg"
-        ).run(overwrite_output=True)
-        return True
-    except ffmpeg.Error as e:
-        st.error(f"Errore durante la conversione in OGG: {e}")
-        return False
+#def convert_to_ogg(input_path, output_path):
+#    try:
+#        ffmpeg.input(input_path).output(
+#            output_path,
+#            acodec="libopus",  # Codec per OGG
+#            audio_bitrate="192k",
+#            format="ogg"
+#        ).run(overwrite_output=True)
+#        return True
+#    except ffmpeg.Error as e:
+#        st.error(f"Errore durante la conversione in OGG: {e}")
+#        return False
 
 def get_transcriptions_from_n8n(file_id,nome,cartella):
     payload = {"file_id": file_id}
