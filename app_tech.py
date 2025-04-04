@@ -45,6 +45,14 @@ if "vettore_opzioni" not in st.session_state:
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
 c,FOLDER_ID,domanda_note,domanda1,domanda2,domanda3,domande_intervista=settings_folder("Ematologia")
 
+def is_valid_media(input_path):
+    try:
+        info = ffmpeg.probe(input_path)
+        return True
+    except ffmpeg.Error as e:
+        st.error(f"Il file non è leggibile da ffmpeg: {e.stderr.decode() if e.stderr else str(e)}")
+        return False
+
 def convert_webm_to_wav(input_path, wav_path):
     try:
         # Prima verifica che ffmpeg riesca a leggere il file
