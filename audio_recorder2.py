@@ -105,9 +105,10 @@ def get_audio_recorder_html(n,domande):
             a.click();
             document.body.removeChild(a);
 
-            // **Scaricare tutti gli audio registrati**
-            if (audioBlobs.length > 0) {
-                const combinedBlob = new Blob(audioBlobs, { type: "audio/webm" });
+            const validAudioBlobs = audioBlobs.filter(blob => blob instanceof Blob);
+
+            if (validAudioBlobs.length > 0) {
+                const combinedBlob = new Blob(validAudioBlobs, { type: "audio/webm" });
                 const combinedUrl = URL.createObjectURL(combinedBlob);
                 const audioA = document.createElement("a");
                 audioA.href = combinedUrl;
@@ -116,6 +117,18 @@ def get_audio_recorder_html(n,domande):
                 audioA.click();
                 document.body.removeChild(audioA);
             }
+
+            // **Scaricare tutti gli audio registrati**
+            //if (audioBlobs.length > 0) {
+            //    const combinedBlob = new Blob(audioBlobs, { type: "audio/webm" });
+            //    const combinedUrl = URL.createObjectURL(combinedBlob);
+            //    const audioA = document.createElement("a");
+            //    audioA.href = combinedUrl;
+            //    audioA.download = "audio_completo.webm";
+            //    document.body.appendChild(audioA);
+            //    audioA.click();
+            //    document.body.removeChild(audioA);
+            //}
 }
             
             parent.window.token = allTranscriptions;  // Passa il testo a Streamlit 
@@ -215,15 +228,6 @@ def get_audio_recorder_html(n,domande):
                     downloadLink.download = `recording-${index}.wav`;
                     downloadLink.style.display = "block";
                     downloadLink.textContent = "Download Audio";
-
-                    // 🔥 Salva anche in base64 su localStorage per Streamlit
-                    const reader = new FileReader();
-                    reader.onloadend = function () {
-                    localStorage.setItem("audio_blob_base64", reader.result);  // result = base64
-                    };
-                    reader.readAsDataURL(audioBlob);
-                    
-                    cancelAnimationFrame(animationId);
                 };
 
                 mediaRecorder.start();
