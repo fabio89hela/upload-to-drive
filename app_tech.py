@@ -52,7 +52,7 @@ def convert_webm_to_wav(input_path, wav_path):
         ffmpeg.input(input_path, format='webm').output(wav_path, format='wav', acodec='pcm_s16le').run(overwrite_output=True)
         return True
     except ffmpeg.Error as e:
-        st.error(f"Errore nella conversione da WEBM a WAV: {e.stderr.decode() if e.stderr else str(e)}")
+        st.error(f"Errore nella conversione da WEBM a WAV: {e.stderr}")
         return False
 
 def convert_to_ogg(input_path, output_path):
