@@ -50,7 +50,7 @@ def convert_webm_to_wav(input_path, wav_path):
         ffmpeg.input(input_path).output(wav_path, format='wav').run(overwrite_output=True)
         return True
     except ffmpeg.Error as e:
-        st.error(f"Errore nella conversione da WEBM a WAV: {e.stderr.decode()}")
+        st.error(f"Errore nella conversione da WEBM a WAV: {e}")
         return False
 
 def convert_to_ogg(input_path, output_path):
@@ -78,7 +78,7 @@ def convert_to_ogg(input_path, output_path):
         return True
 
     except ffmpeg.Error as e:
-        st.error(f"Errore durante la conversione in OGG: {e.stderr.decode()}")
+        st.error(f"Errore durante la conversione in OGG: {e}")
         return False
 
 
