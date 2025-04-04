@@ -78,7 +78,7 @@ def convert_to_ogg(input_path, output_path):
         return True
 
     except ffmpeg.Error as e:
-        st.error(f"Errore durante la conversione in OGG: {e}")
+        st.error(f"Errore durante la conversione in OGG: {e.stderr.decode() if e.stderr else str(e)}")
         return False
 
 
