@@ -129,7 +129,7 @@ def get_audio_recorder_html(n,domande):
             //    audioA.click();
             //    document.body.removeChild(audioA);
             //}
-}
+            //}
             
             parent.window.token = allTranscriptions;  // Passa il testo a Streamlit 
         }
