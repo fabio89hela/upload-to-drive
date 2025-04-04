@@ -69,7 +69,7 @@ def convert_to_ogg(input_path, output_path):
         ).run(overwrite_output=True)
         return True
     except ffmpeg.Error as e:
-        st.error(f"Errore durante la conversione in OGG: {e.stderr.decode()}")
+        st.error(f"Errore durante la conversione in OGG: {e}")
         return False
 
 def get_transcriptions_from_n8n(file_id,nome,cartella):
