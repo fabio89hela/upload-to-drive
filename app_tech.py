@@ -336,8 +336,9 @@ with col_center:
             if st.session_state["uploaded_file2"]:
                 with st.spinner("Caricando..."):
                     file_content = st.session_state["uploaded_file2"].read().decode("utf-8")
+                    file_content_final=st.text_area("Contenuto del file", value=file_content, height=300)
                     with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
-                        temp_text_file.write(file_content)
+                        temp_text_file.write(file_content_final)
                         output_path = temp_text_file.name
                     temp_name_personalised=c+"_"+data+"_"+fo+"caricamento_testo.txt"
                     if st.button("Salva su Drive"):
