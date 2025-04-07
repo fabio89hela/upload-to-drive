@@ -336,8 +336,7 @@ with col_center:
             if st.session_state["uploaded_file2"]:
                 with st.spinner("Caricando..."):
                     file_content = st.session_state["uploaded_file2"].read().decode("utf-8")
-                    st.write(file_content)
-                    st.write(st.session_state["uploaded_file2"])
+                    st.text_area(file_content)
                     with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
                         temp_text_file.write(file_content)
                         output_path = temp_text_file.name
