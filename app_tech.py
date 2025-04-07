@@ -340,7 +340,7 @@ with col_center:
                     with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as temp_file:
                         temp_file.write(st.session_state["uploaded_file2"].getbuffer())
                         input_path = temp_file.name
-                    with tempfile.NamedTemporaryFiledelete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
                         output_path = temp_text_file.name
                     temp_name_personalised=c+"_"+data+"_"+fo+"caricamento_testo.txt"
                     if st.button("Salva su Drive"):
