@@ -328,6 +328,26 @@ with col_center:
                                 st.success(f"Salvataggio completato")
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+            # Caricamento di un file txt
+            st.session_state["uploaded_file2"] = st.file_uploader("Carica un file di testo (TXT, DOC o DOCX)", type=["txt","doc","docx"])
+            if st.session_state["uploaded_file2"]:
+                with st.spinner("Caricando..."):
+                    ext = st.session_state["uploaded_file2"].name.split('.')[-1]
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as temp_file:
+                        temp_file.write(st.session_state["uploaded_file2"].getbuffer())
+                        input_path = temp_file.name
+
+                    # Percorso per il file convertito
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".ogg") as temp_ogg_file:
+                        output_path = temp_ogg_file.name
+        
+                    if 1>0:
+                        # Carica su Google Drive
+                        temp_name_personalised=c+"_"+data+"_"+fo+".txt"
+                        temp_name_personalised_noogg=c+"_"+data+"_"+fo
+                        if st.button("Salva su Drive"):
+                            file_ids = authenticate_and_upload(temp_name_personalised, output_path)
+                            st.success("File caricato su Drive")
 
     elif mode == "Registra un nuovo audio":
         if st.session_state["ricomincia"]==False:
