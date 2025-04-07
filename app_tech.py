@@ -270,7 +270,7 @@ with col_center:
 
     if mode == "Carica un file":
         file_ids=[]
-        if =st.radio("Cosa vuoi caricare?",["Audio","Testo"])=="Audio":
+        if st.radio("Cosa vuoi caricare?",["Audio","Testo"])=="Audio":
             # Caricamento di un file audio locale
             st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV, WEBM o MP3)", type=["wav","webm","mp3"])
             if st.session_state["uploaded_file"]:
