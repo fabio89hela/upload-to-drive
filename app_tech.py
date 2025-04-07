@@ -23,6 +23,8 @@ if "selezione2" not in st.session_state:
     st.session_state["selezione2"]=0
 if "uploaded_file" not in st.session_state:
     st.session_state["uploaded_file"]=None
+if "uploaded_file2" not in st.session_state:
+    st.session_state["uploaded_file2"]=None
 if "ricomincia" not in st.session_state:
     st.session_state["ricomincia"]=False
 if "file_upload_ids" not in st.session_state:
@@ -40,7 +42,7 @@ if "data_fo" not in st.session_state:
 if "completa_survey" not in st.session_state:
     st.session_state["completa_survey"]="FALSE"
 if "vettore_opzioni" not in st.session_state:
-    st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
+    st.session_state["vettore_opzioni"]=["Carica un file", "Registra un nuovo audio"]
 
 #N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook-test/trascrizione" #test link
 N8N_WEBHOOK_URL = "https://develophela.app.n8n.cloud/webhook/trascrizione" #production link
@@ -204,16 +206,16 @@ with col1:
     #    a=riavvia(0,False)
 with col3:
     #if st.session_state["completa_survey"]=="TRUE":
-        #st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
+        #st.session_state["vettore_opzioni"]=["Carica un file", "Registra un nuovo audio","Completa Fase 1"]
         #st.session_state["selezione1"]=2
     #else:
-        #st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
+        #st.session_state["vettore_opzioni"]=["Carica un file", "Registra un nuovo audio"]
         #st.session_state["selezione1"]=0
     #mode = st.radio("Scegli un'opzione:", st.session_state["vettore_opzioni"],index=st.session_state["selezione1"],disabled=st.session_state["ricomincia"])
-    mode = st.radio("Scegli un'opzione:", ["Carica un file audio", "Registra un nuovo audio"],index=st.session_state["selezione1"])
+    mode = st.radio("Scegli un'opzione:", ["Carica un file", "Registra un nuovo audio"],index=st.session_state["selezione1"])
     if mode=="Registra un nuovo audio":
         st.session_state["selezione1"]=1
-    elif mode=="Carica un file audio":
+    elif mode=="Carica un file":
         st.session_state["selezione1"]=0
     #else:
     #    st.session_state["selezione1"]=2
@@ -253,10 +255,10 @@ with col_center:
         if completa_survey[0]!=st.session_state["completa_survey"]:
             st.session_state["completa_survey"]=completa_survey[0]
             #if st.session_state["completa_survey"]=="TRUE":
-            #    st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio","Completa Fase 1"]
+            #    st.session_state["vettore_opzioni"]=["Carica un file", "Registra un nuovo audio","Completa Fase 1"]
             #    st.session_state["selezione1"]=2
             #else:
-            #    st.session_state["vettore_opzioni"]=["Carica un file audio", "Registra un nuovo audio"]
+            #    st.session_state["vettore_opzioni"]=["Carica un file", "Registra un nuovo audio"]
             #    st.session_state["selezione1"]=0
             st.rerun()
         data_valore=st.date_input("Data dell'intervista", value="today",format="DD/MM/YYYY")
@@ -266,9 +268,9 @@ with col_center:
             st.warning("Attenzione: serve completare anche la fase 1, le cui domande sono riportate per ultime.")
             #st.session_state["selezione1"]=2
 
-    if mode == "Carica un file audio":
+    if mode == "Carica un file":
         file_ids=[]
-        if True:
+        if =st.radio("Cosa vuoi caricare?",["Audio","Testo"])=="Audio":
             # Caricamento di un file audio locale
             st.session_state["uploaded_file"] = st.file_uploader("Carica un file audio (WAV, WEBM o MP3)", type=["wav","webm","mp3"])
             if st.session_state["uploaded_file"]:
@@ -328,6 +330,7 @@ with col_center:
                                 st.success(f"Salvataggio completato")
                             except Exception as e:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
+        else:
             # Caricamento di un file txt
             st.session_state["uploaded_file2"] = st.file_uploader("Carica un file di testo (TXT, DOC o DOCX)", type=["txt","doc","docx"])
             if st.session_state["uploaded_file2"]:
