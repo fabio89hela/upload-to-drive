@@ -332,15 +332,12 @@ with col_center:
                                 st.error(f"Errore durante il salvataggio su Google Drive: {e}")
         else:
             # Caricamento di un file txt
-            st.session_state["uploaded_file2"] = st.file_uploader("Carica un file di testo (TXT, DOC o DOCX)", type=["txt","doc","docx"])
+            st.session_state["uploaded_file2"] = st.file_uploader("Carica un file di testo (TXT)", type=["txt"])
             if st.session_state["uploaded_file2"]:
                 with st.spinner("Caricando..."):
-                    ext = st.session_state["uploaded_file2"].name.split('.')[-1]
-                    st.write(ext)
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=f".{ext}") as temp_file:
-                        temp_file.write(st.session_state["uploaded_file2"].getbuffer())
-                        input_path = temp_file.name
+                    file_content = st.session_state["uploaded_file2"].read().decode("utf-8")
                     with tempfile.NamedTemporaryFile(delete=False, suffix=".txt", mode="w", encoding="utf-8") as temp_text_file:
+                        temp_text_file.write(file_content)
                         output_path = temp_text_file.name
                     temp_name_personalised=c+"_"+data+"_"+fo+"caricamento_testo.txt"
                     if st.button("Salva su Drive"):
